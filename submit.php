@@ -44,6 +44,8 @@ if (isset($_POST["sign_up_submit"])) {
     $id = $accountHandler->register($_POST);
     if ($id) {
         $_SESSION["uid"] = $id;
+        $userObj = new User($conn, $_SESSION["uid"]);
+        $_SESSION["userLoggedIn"] = $userObj->getUsername();
     }
     header("Location:index.php");
     exit;
@@ -54,6 +56,8 @@ if (isset($_POST["sign_in_submit"])) {
     $id = $accountHandler->signIn($_POST);
     if ($id) {
         $_SESSION["uid"] = $id;
+        $userObj = new User($conn, $_SESSION["uid"]);
+        $_SESSION["userLoggedIn"] = $userObj->getUsername();
     }
     header("Location:index.php");
     exit;

@@ -18,13 +18,6 @@ CREATE TABLE IF NOT EXISTS `users` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `category`
---
-
-INSERT INTO `users` (`first_name`,`last_name`, `username`, `email`, `password`, `sign_up_date`, `avatar_path`) VALUES
-('Hanjie', 'Yang', 'nwxk312', 'yhj_apply@126.com', '1234567a', '2020-03-26 10:32:14', './assets/imgs/avatars/default.png');
-
 
 -- --------------------------------------------------------
 
@@ -36,7 +29,7 @@ INSERT INTO `users` (`first_name`,`last_name`, `username`, `email`, `password`, 
 
 CREATE TABLE IF NOT EXISTS `videos` (
     `id` INT NOT NULL AUTO_INCREMENT,
-    `uid` INT NOT NULL,
+    `uploaded_by` VARCHAR(30) NOT NULL,
     `title` VARCHAR(30) NOT NULL,
     `description` TEXT,
     `privacy` TINYINT DEFAULT 1,

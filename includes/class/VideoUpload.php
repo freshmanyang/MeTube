@@ -4,7 +4,7 @@
 class VideoUpload
 {
     private $conn; // database connection descriptor
-    private $videoData, $title, $description, $privacy, $category, $uid;
+    private $videoData, $title, $description, $privacy, $category, $uploaded_by;
     private $sizeLimit = 10000000; // size limitation for a single uploaded video
     private $validVideoFormats = array('avi', 'wmv', 'mp4', 'mpeg', 'rmvb', '3gp', 'mkv', 'flv');
     private $targetDir = "./uploads/videos/"; // local directory for video storage
@@ -16,14 +16,14 @@ class VideoUpload
         $this->conn = $conn;
     }
 
-    public function setData($videoData, $title, $description, $privacy, $category, $uid)
+    public function setData($videoData, $title, $description, $privacy, $category, $uploaded_by)
     {
         $this->videoData = $videoData;
         $this->title = $title;
         $this->description = $description;
         $this->privacy = $privacy;
         $this->category = $category;
-        $this->uid = $uid;
+        $this->uploaded_by = $uploaded_by;
     }
 
     private function isNoPostErr($postErr)
@@ -54,9 +54,9 @@ class VideoUpload
     private function insertVideoData($finalFilePath)
     {
         // insert video data into database
-        $query = $this->conn->prepare("INSERT INTO videos(uid, title, description, privacy, file_path, category, upload_date)
-                                        VALUES(:uid, :title, :description, :privacy, :file_path, :category, :upload_date)");
-        $query->bindParam(":uid", $this->uid); // bindParam works only by passing reference (not by passing a direct value)
+        $query = $this->conn->prepare("INSERT INTO videos(uploaded_by, title, description, privacy, file_path, category, upload_date)
+                                        VALUES(:uploaded_by, :title, :description, :privacy, :file_path, :category, :upload_date)");
+        $query->bindParam(":uploaded_by", $this->uploaded_by); // bindParam works only by passing reference (not by passing a direct value)
         $query->bindParam(":title", $this->title);
         $query->bindParam(":description", $this->description);
         $query->bindParam(":privacy", $this->privacy);

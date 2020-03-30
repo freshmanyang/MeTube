@@ -16,7 +16,7 @@
                                 $_POST['description'],
                                 $_POST['privacy'],
                                 $_POST['category'],
-                                $userLoginInObj->getUserId());
+                                $userLoginInObj->getUserName());
         $res = $videoUploadObj->upload();
         ?>
     </div>
