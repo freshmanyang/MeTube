@@ -71,5 +71,6 @@ class AccountHandler
     public function signOut()
     {
         unset($_SESSION["uid"]);
+        unset($_SESSION["userLoggedIn"]);
     }
 }
