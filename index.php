@@ -6,6 +6,7 @@
             if(isset($_SESSION['uid'])){
                 echo $userLoginInObj->getUsername()." Login success.</div>";
             }
+            echo 'alan';
         ?>
     </div>
 </main>
