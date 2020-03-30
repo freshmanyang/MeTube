@@ -1,0 +1,120 @@
+.profile-main-section{
+    width:100%;
+    height: 100%;
+    background-color: #f5f5f5;
+    padding-top: 56px;
+    display: flex;
+    justify-content: center;
+}
+
+
+.profile-main-content{
+    width: 840px;
+    height: 100%;
+    color: #5f6368;
+}
+
+.profile-main-content h1,
+.profile-main-content h2{
+    color: #202124;
+}
+
+.profile-main-content header{
+    padding-top: 24px;
+}
+
+.profile-main-content header h1{
+    padding: 0;
+    width: 100%;
+    font-size: 28px;
+    text-align: center;
+
+}
+.profile-main-content header p{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-size: 16px;
+    text-align: center;
+}
+
+.profile-main-content article{
+    margin: 24px 12px 0 12px;
+    border: 1px #b6bcc1 solid;
+    border-radius: 10px;
+}
+
+.profile-main-content .content-header{
+    padding: 24px 24px 8px 24px;
+}
+
+.content-header h2{
+    margin: 0;
+    font-size: 22px;
+}
+
+.content-header p{
+    margin: 0;
+    padding-top: 8px;
+    font-size: 14px;
+    font-style: italic;
+    color: #202124;
+}
+
+.profile-btn{
+    margin: 0;
+    padding: 15px 24px 16px 24px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+}
+
+#editable.profile-btn:hover{
+    background-color: #dedede;
+}
+
+.profile-btn h3{
+    font-size: 11px;
+    margin: 0 24px 0 0;
+    padding: 0;
+    flex-basis: 156px;
+}
+
+.profile-btn p{
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+
+p.has-value{
+    font-size: 16px;
+    color: #202124;
+}
+
+.profile-btn .avatar-lg{
+    margin-left: auto;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.profile-btn .icon-arrowright{
+    font-size: 16px;
+    margin-left: auto;
+}
+
+.profile-main-content article .profile-btn:last-child{
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/*update_birthday_modal icon*/
+#custom_input_group_text.input-group-text{
+    height: 38px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.icon-calender{
+    font-size: 24px;
+}

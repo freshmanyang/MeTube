@@ -1,0 +1,417 @@
+/**************************************** reset *****************************************/
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.iconfont{
+    font-size: 24px;
+    color: #606060;
+}
+
+/**************************************** fix bs modal shifting *****************************************/
+.disable-modal-shifting {
+    pointer-events: none;
+}
+
+/**************************************** header style setting *****************************************/
+.master-head-container {
+    height: 56px;
+    width: 100%;
+    border-bottom: 1px solid #e8e8e8;
+    position: fixed; /* relative to the viewport */
+    top: 0;
+    left: 0;
+    z-index: 999;
+    padding: 7px 16px;
+    box-sizing: border-box; /* include padding and border to width and height */
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.master-head-button {
+    width: 40px;
+    height: 40px;
+    margin-right: 16px;
+    border: none;
+    outline: none !important;
+    background-color: #ffffff;
+    text-decoration: none;
+}
+
+.logo {
+    height: 24px;
+    width: 129px;
+    display: block;
+}
+
+.logo:hover {
+    text-decoration: none;
+}
+
+.logo .icon-play {
+    font-size: 24px;
+    color: #7a3374;
+    float: left;
+    line-height: 24px;
+}
+
+.logo .logo-name {
+    font-size: 20px;
+    font-style: italic;
+    font-weight: bold;
+    letter-spacing: -2px;
+    color: #7a3374;
+    text-align: center;
+    padding-left: 2px;
+    display: inline-block;
+    height: 100%;
+    line-height: 24px;
+}
+
+.search-container {
+    margin: 0 40px;
+    height: 32px;
+    flex-grow: 1; /* set flex-grow to auto fill the rest of space, it equals to flex: 1; */
+    display: flex;
+    justify-content: center;
+}
+
+.search-container .search-form {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.search-form .search-box {
+    max-width: 600px;
+    flex-grow: 1;
+    border: 1px solid #d3d3d3;
+    border-right: none;
+    border-radius: 2px 0 0 2px;
+    box-shadow: inset 0 1px 2px #eeeeee;
+    padding: 2px 6px;
+}
+
+.search-box.has-focus {
+    border: 1px solid #1c62b9;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.search-box input {
+    width: 100%;
+    outline: none;
+    margin-left: 4px;
+    padding: 1px;
+    border: 0;
+    color: #111111;
+    font-family: 'Roboto', 'Noto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.search-form .search-button {
+    cursor: pointer;
+    width: 65px;
+    border: 1px solid #d3d3d3;
+    background-color: #f8f8f8;
+    border-radius: 0 2px 2px 0;
+    margin: 0;
+    outline: none !important;
+}
+
+.search-form .search-button:hover {
+    border-color: #c6c6c6;
+    background-color: #f0f0f0;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.search-button .icon-search {
+    color: #979797;
+}
+
+.search-button:hover .icon-search {
+    color: #232323;
+}
+
+.end {
+    width: 200px;
+    height: 40px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.end a {
+    display: block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.end a, .end button {
+    margin: 0 6px;
+}
+
+.end .btn-primary {
+    height: 80%;
+}
+
+.avatar-button {
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.avatar-button .avatar-sm {
+    /*vertical-align: middle;*/
+    width: 24px;
+    height: 24px;
+    margin-bottom: 1px;
+    border-radius: 50%;
+}
+
+.header-popup-wrapper {
+    position: fixed;
+    top: 56px;
+    right: 0;
+    width: 290px;
+    /*height: 400px;*/
+    background-color: #ffffff;
+    z-index: 999;
+}
+
+.header-popup-wrapper .header {
+    width: 100%;
+    height: 80px;
+}
+
+.header-popup-wrapper .header .header-renderer {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    border-bottom: 1px solid #e8e8e8;
+
+}
+
+.header-renderer .avatar-md {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    float: left;
+}
+
+.header-renderer .username {
+    margin: 0;
+    padding-left: 10px;
+    float: left;
+    width: 60%;
+    color: #030303;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+}
+
+.header-renderer .email {
+    margin: 0;
+    padding-left: 10px;
+    font-size: 14px;
+    line-height: 20px;
+    float: left;
+    width: 60%;
+}
+
+
+.endpoint {
+    display: block;
+    cursor: pointer;
+    width: 100%;
+    height: 40px;
+    color: #212529;
+    font-size: 14px;
+}
+
+.endpoint:hover {
+    background-color: #f2f2f2;
+    text-decoration-line: none;
+    color: #212529;
+}
+
+.endpoint .endpoint-content{
+    width: 100%;
+    height: 100%;
+    padding-left: 16px;
+    padding-right: 32px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.endpoint .endpoint-content i{
+    font-size: 24px;
+    padding-right: 16px;
+    color: #909090;
+}
+
+.endpoint .endpoint-content p{
+    margin: 0;
+    height: 40px;
+    line-height: 40px;
+}
+
+
+/**************************************** nav bar style setting *****************************************/
+.side-nav-container {
+    width: 240px;
+    background-color: #ffffff;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    height: 100%;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.side-nav-container .endpoint .endpoint-content{
+    padding: 0 24px;
+}
+
+.side-nav-container .endpoint .endpoint-content i{
+    font-size: 24px;
+    padding-right: 24px;
+    color: #909090;
+}
+
+/**************************************** main section style setting *****************************************/
+.main-section-container {
+    /*height: 100%;*/
+    background-color: #f5f5f5;
+    padding-top: 56px;
+}
+
+.main-content-container {
+    padding: 10px 30px;
+    display: flex;
+}
+
+.form-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.column {
+    width: 50%;
+    min-height: 300px;
+    padding: 20px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+select.form-control {
+    -webkit-appearance: menulist;
+}
+
+/************************************ dialog modal on upload page *********************************************/
+#loading_modal .modal-content {
+    background-color: transparent;
+    border: none;
+}
+
+#loading_modal .modal-body {
+    text-align: center;
+}
+
+#loading_modal img {
+    width: 20%;
+    height: 20%;
+}
+
+#loading_modal p {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    color: #7a3374;
+}
+
+/************************************ sign up/ sign in modal *********************************************/
+#sign_up_modal .modal-title, .sign-modal-msg,
+#sign_in_modal .modal-title {
+    color: #7a3374;
+}
+
+#sign_up_modal .btn-primary,
+#sign_in_modal .btn-primary {
+    background-color: #7a3374;
+    border-color: #7a3374;
+}
+
+/************************************ alert modal *********************************************/
+.modal-confirm {
+    color: #434e65;
+    width: 525px;
+}
+.modal-confirm .modal-content {
+    padding: 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+}
+.modal-confirm .modal-header {
+    background: #e85e6c;
+    border-bottom: none;
+    position: relative;
+    text-align: center;
+    margin: -20px -20px 0;
+    border-radius: 5px 5px 0 0;
+    padding: 35px;
+}
+.modal-confirm h4 {
+    text-align: center;
+    font-size: 36px;
+    margin: 10px 0;
+}
+.modal-confirm .btn {
+    min-height: 40px;
+    border-radius: 3px;
+}
+
+.modal-confirm .icon-box {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    z-index: 9;
+    padding: 15px;
+    text-align: center;
+}
+.modal-confirm .icon-box .icon-error {
+    font-size: 95px;
+    margin: -2px 0 0 -2px;
+    color: #ffffff;
+}
+.modal-confirm.modal-dialog {
+    margin-top: 80px;
+}
+.modal-confirm .btn {
+    color: #fff;
+    background: #eeb711;
+    text-decoration: none;
+    transition: all 0.4s;
+    line-height: normal;
+    border-radius: 30px;
+    margin-top: 10px;
+    padding: 6px 20px;
+    min-width: 150px;
+    border: none;
+}
+.modal-confirm .btn:hover, .modal-confirm .btn:focus {
+    background: #eda645;
+    outline: none;
+}

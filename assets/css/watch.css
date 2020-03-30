@@ -1,0 +1,13 @@
+.watch-left{
+    flex: 1;
+}
+
+.watch-left .video-player{
+    width: 100%;
+}
+
+.suggestion{
+    max-width: 425px;
+    height: 100%;
+    flex-grow: 1;
+}
