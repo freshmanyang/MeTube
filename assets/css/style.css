@@ -423,7 +423,7 @@ select.form-control {
 .contactPage{
     /*background-color: #efefee;*/
     height:90vh;
-    width: 100%;
+    width: 70%;
     display:flex;
     flex-direction: column;
     justify-content: center;
@@ -443,8 +443,8 @@ select.form-control {
 }
 .contactPage_head h1{
 
-    background-color: #fcf8e3;
-    border:1px solid #dedede ;
+    /*background-color: #fcf8e3;*/
+    /*border:1px solid #dedede ;*/
     border-radius: 3px;
     text-align:center;
 }
@@ -540,13 +540,14 @@ select.form-control {
 /*channel.php*/
 #channelPage{
     width:100%;
-    margin:0 auto;
+    margin:0 250px;
 
 }
 
 #channelPage .container{
-    margin-right:0;
-    margin-left:0;
+    /*margin-right:0;*/
+    /*margin-left:0;*/
+    margin:0 auto;
 
 }
 @media (min-width: 1600px){

@@ -1,0 +1,9 @@
+#showvideofromplaylist{
+    display:flex;
+    flex-flow: row wrap;
+    margin:0 300px;
+}
+#showvideofromplaylist  p{
+    flex-basis: 100%;
+}
+

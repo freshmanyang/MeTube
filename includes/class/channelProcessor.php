@@ -26,7 +26,8 @@ class  channelProcessor
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views =$value["views"];
-            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
+            $upload_date = $value["upload_date"];
+//            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
@@ -60,7 +61,8 @@ class  channelProcessor
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views =$value["views"];
-            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
+            $upload_date = $value["upload_date"];
+//            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
@@ -96,7 +98,8 @@ class  channelProcessor
                 $title = $value["title"];
                 $uploaded_by = $value["uploaded_by"];
                 $views = $value["views"];
-                $upload_date = date('Y-m-d H:i:s', $value["upload_date"]);
+//                $upload_date = date('Y-m-d H:i:s', $value["upload_date"]);
+                $upload_date = $value["upload_date"];
                 $videoid = $value["id"];
                 $thumbnailpath = $this->getthumbnail($videoid);
                 $thumbnailpath = $thumbnailpath["file_path"];
@@ -213,17 +216,28 @@ class  channelProcessor
         $query = $this->conn->prepare("DELETE FROM thumbnails WHERE  video_id IN ($qMarks)");
         $query->execute($deleteList);
     }
-    private function checkPlayList($playlistname){
+    public function deleteVideoinplaylist($deleteList,$deleteplaylist){
+        var_dump($deleteList,$deleteplaylist);
+        $qMarks = str_repeat('?,', count($deleteList) - 1) . '?';
+        $mainUser = "'".$this->usernameLoggedIn."'";
+        $playlist = "'".$deleteplaylist."'";
+        $query = $this->conn->prepare("DELETE FROM playlist WHERE mainuser=$mainUser AND playlistname=$playlist AND video_id IN ($qMarks)");
+        $query->execute($deleteList);
+
+    }
+
+
+    private function queryPlayList($playlistname){
         $query = $this->conn->prepare("SELECT * FROM playlist where mainuser=:mainuser and playlistname=:playlistname");
         $query->bindParam(':mainuser', $this->usernameLoggedIn);
         $query->bindParam(':playlistname',$playlistname);
         $query->execute();
         $dbresult = $query->fetchAll(PDO::FETCH_ASSOC);
-        return count($dbresult);
+        return $dbresult;
     }
     public function createPlayList($playlistname){
         if(!empty($playlistname)){
-        if(!$this->checkPlayList($playlistname)){
+        if(!count($this->queryPlayList($playlistname))){
 
         $query = $this->conn->prepare("INSERT INTO playlist (mainuser,playlistname) value(:mainuser,:playlistname)");
         $query->bindParam(':mainuser', $this->usernameLoggedIn);
@@ -237,6 +251,26 @@ class  channelProcessor
             return "You can not add empty record";
         }
 
+    }
+
+    public function deletePlayList($playlistname){
+        $deleteplaylistvideoid= array();
+        foreach ($playlistname as  $playlistnamelist) {
+
+
+            $playlistvideorecord = $this->queryPlayList($playlistnamelist);
+            foreach ($playlistvideorecord as  $value) {
+                array_push($deleteplaylistvideoid,$value["video_id"]);
+            }
+
+            $qMarks = str_repeat('?,', count($deleteplaylistvideoid) - 1) . '?';
+
+            $mainUser = "'".$this->usernameLoggedIn."'";
+            $playlistnamelist = "'".$playlistnamelist."'";
+            $query = $this->conn->prepare("DELETE FROM playlist WHERE mainuser=$mainUser AND playlistname=$playlistnamelist AND video_id IN ($qMarks)");
+            $query->execute($deleteplaylistvideoid);
+        }
+        return "Delete Playlist successful";
     }
     private function getVideoInfoViaPlayList($playlist){
         $query = $this->conn->prepare("SELECT * FROM playlist where mainuser=:mainuser and playlistname=:playlistname");
@@ -253,15 +287,16 @@ class  channelProcessor
         $dbresult = $query->fetchAll(PDO::FETCH_ASSOC);
         $allplaylist ='';
         foreach ($dbresult as  $value) {
-            $allplaylist .= '<p><input type="checkbox" name="playList[]" value ='.$value["playlistname"].'>';
-            $allplaylist .=  '&nbsp'.$value["playlistname"].'</p>';
+            $allplaylist .= '<p><input type="checkbox" name="deletePlayList[]" value ='.$value["playlistname"].'>';
+            $allplaylist .=  '&nbsp<a href="Playlist.php?playlist='.$value["playlistname"].'&channel='.$this->user.'">'.$value["playlistname"].'</a></p>';
             $allVideoid = $this->getVideoInfoViaPlayList($value["playlistname"]);
             $qMarks = str_repeat('?,', count($allVideoid) - 1) . '?';
             $allvideoidarray =array();
             foreach($allVideoid as $value){
                array_push($allvideoidarray,$value['video_id']);
             }
-            $query = $this->conn->prepare("select * FROM videos WHERE id IN ($qMarks)");
+            $mainUser = "'".$this->usernameLoggedIn."'";
+            $query = $this->conn->prepare("select * FROM videos WHERE uploaded_by=$mainUser and id IN ($qMarks)");
             $query->execute($allvideoidarray);
             $videoresult = $query->fetchAll(PDO::FETCH_ASSOC);
             $playlistVideoPath = '';
@@ -271,7 +306,8 @@ class  channelProcessor
                 $title = $value["title"];
                 $uploaded_by = $value["uploaded_by"];
                 $views = $value["views"];
-                $upload_date = date('Y-m-d H:i:s', $value["upload_date"]);
+//                $upload_date = date('Y-m-d H:i:s', $value["upload_date"]);
+                $upload_date = $value["upload_date"];
                 $videoid = $value["id"];
                 $thumbnailpath = $this->getthumbnail($videoid);
                 $thumbnailpath = $thumbnailpath["file_path"];
@@ -291,6 +327,47 @@ class  channelProcessor
         }
         return $allplaylist;
     }
+    public function showVideoFromPlaylist($playlistname){
+        $playlistvideorecord = $this->queryPlayList($playlistname);
+        $videoidfromplaylist =array();
+
+
+        foreach ($playlistvideorecord as  $value) {
+            $videoidfromplaylist[] = $value["video_id"];
+       }
+
+        $videoinfofromplaylist = $this->queryDeleteVideoList($videoidfromplaylist);
+        if(!count($videoinfofromplaylist)){
+            $deletebutton= "You don't have any videos in this playlist";
+        }else{
+            $deletebutton = " <p><input type=\"submit\" class=\"btn btn-danger\" id=\"deletevideoinplaylist\" name = \"deletevideoinplaylist\" value =\"Delete\"></p>";
+        }
+        $playlistTitle = '<p>Your are in Playlist - '.$playlistname.'</p>';
+//        $playlistTitle .= '<form action=\"channelprocess.php?channel='.$this->user.'\" method=\"post\">';
+        $playlistTitle .= $deletebutton;
+        $VideoPathplaylist =array($playlistTitle);
+        foreach ($videoinfofromplaylist as  $value) {
+
+            $title = $value["title"];
+            $uploaded_by = $value["uploaded_by"];
+            $views =$value["views"];
+            $upload_date = $value["upload_date"];
+//            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
+            $videoid = $value["id"];
+            $thumbnailpath = $this->getthumbnail($videoid);
+            $thumbnailpath = $thumbnailpath["file_path"];
+            $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a><br>";
+            array_push($VideoPathplaylist,"<div><input type=\"checkbox\" name=\"videoinplayList[]\" value = \"$videoid\">
+                    <div>$videolink<span id='videoTitle'>$title</span><br>$uploaded_by<br>$views views &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; $upload_date
+                    </div></div> &emsp;&emsp;&emsp;");
+
+        }
+//        $end='</form>';
+//        array_push($VideoPathplaylist,$end);
+//        var_dump($VideoPathplaylist);
+   return $VideoPathplaylist;
+//        return $allVideoPath;
+    }
      public function showchannelonly(){
         if(!$this->checksubscribe()){
             $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='subscribe'>Subscribe</button> </div>";
@@ -299,28 +376,25 @@ class  channelProcessor
         else{
             $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='unsubscribe'>Unsubscribe</button> </div>";
         }
-        return "
+         return "
           $button
-        <ul class=\"nav nav-tabs \">
-        <li class=\"active\"><a data-toggle=\"tab\" href=\"#Channel\">Channel</a></li>
-       
-    </ul>
-
-    <div class=\"tab-content\">
-        <div id=\"Channel\" class=\"tab-pane fade in active\">
-            
-            <div id=\"show\">
+        <ul class=\"nav nav-tabs\" id=\"myTab1\" role=\"tablist\">
+  <li id=\"channel1\" class=\"nav-item\">
+    <a id=\"channel1\" class=\"nav-link active\" id=\"home-tab\" data-toggle=\"tab\" href=\"#channel2\" role=\"tab\" aria-controls=\"home\" aria-selected=\"true\">Channel</a>
+         </li >
+</ul >
+<div class=\"tab-content\" id = \"myTabContent\" >
+  <div class=\"tab-pane fade show active\" id = \"channel2\" role = \"tabpanel\" aria-labelledby = \"home-tab\" >
+          <div id = \"show\" >
             </div>
-           
-            <div id=\"page-nav\">
-                <nav aria-label=\"Page navigation\">
-                    <ul class=\"pagination\" id=\"pagination\"></ul>
-                </nav>
-            </div>
+    <div id = \"page-nav\" >
+            <nav aria-label = \"Page navigation\" >
+            <ul class=\"pagination\" id = \"pagination\" ></ul>
+            </nav>
         </div>
-   
-    </div>
-        ";
+</div>
+ 
+</div>";
     }
     public function showall(){
 //        如果沒影片就不要出現刪除按鈕
@@ -332,7 +406,7 @@ class  channelProcessor
 
 //      create playlist button
         $createPlaylistButton = " <input type=\"button\" class=\"btn btn-outline-primary\" id=\"createPlayList\" name = \"createPlayList\" value =\"Create PlayList\">";
-        $deletePlaylistButton = " <input type=\"button\" class=\"btn btn-outline-danger\" id=\"deletePlayList\" name = \"deletePlayList\" value =\"Delete PlayList\"><br>";
+        $deletePlaylistButton = " <input type=\"submit\" class=\"btn btn-outline-danger\" id=\"deletePlayList\" name = \"deletePlayList\" value =\"Delete PlayList\"><br>";
 
 
          return "<ul class=\"nav nav-tabs\" id=\"myTab1\" role=\"tablist\">
@@ -364,7 +438,11 @@ class  channelProcessor
   </div>
   <div class=\"tab-pane fade\" id=\"myPlayList2\" role=\"tabpanel\" aria-labelledby=\"contact-tab\"> 
   $createPlaylistButton
-  <div id=\"showMyPlayList\"></div></div>
+  <form action=\"channelprocess.php?channel=$this->user\" method=\"post\">
+  $deletePlaylistButton
+  <div id=\"showMyPlayList\"></div>
+  </form>
+  </div>
 </div>";
     }
 }
