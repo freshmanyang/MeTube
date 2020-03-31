@@ -30,7 +30,7 @@ class  channelProcessor
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
-            $videolink = "<a href='watch.php?id=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a><br>";
+            $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a><br>";
 
 
             array_push($this->allVideoPath,"<div>$videolink
@@ -64,7 +64,7 @@ class  channelProcessor
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
-            $videolink = "<a href='watch.php?id=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a><br>";
+            $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a><br>";
 
 
             array_push($this->signinallVideoPath,"<div><input type=\"checkbox\" name=\"videoList[]\" value = \"$videoid\">
@@ -100,7 +100,7 @@ class  channelProcessor
                 $videoid = $value["id"];
                 $thumbnailpath = $this->getthumbnail($videoid);
                 $thumbnailpath = $thumbnailpath["file_path"];
-                $videolink = "<a href='watch.php?id=$videoid'><img src='$thumbnailpath' alt='$title' height='100' width='200'></a><br>";
+                $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='100' width='200'></a><br>";
                 $subscribeVideoPath .= "
                     <div >$videolink
                    <span id='videoTitle'>$title</span><br>$uploaded_by<br>$views views &emsp; $upload_date
@@ -197,7 +197,7 @@ class  channelProcessor
     public function deleteVideo($deleteList){
         $deletevideoinfo = $this->queryDeleteVideoList($deleteList);
         foreach ($deletevideoinfo as  $value) {
-            $this->deleteFile($value["File_path"]);
+            $this->deleteFile($value["file_path"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getallthumbnail($videoid);
             foreach($thumbnailpath as $thumbialvalue){
@@ -275,7 +275,7 @@ class  channelProcessor
                 $videoid = $value["id"];
                 $thumbnailpath = $this->getthumbnail($videoid);
                 $thumbnailpath = $thumbnailpath["file_path"];
-                $videolink = "<a href='watch.php?id=$videoid'><img src='$thumbnailpath' alt='$title' height='100' width='200'></a><br>";
+                $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='100' width='200'></a><br>";
                 $playlistVideoPath .= "<div >$videolink
                    <span id='videoTitle'>$title</span><br>$uploaded_by<br>$views views &emsp; $upload_date
                     </div> &emsp;&emsp;&emsp;";

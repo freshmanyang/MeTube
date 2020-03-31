@@ -15,7 +15,7 @@ class showAllVideo
 
     public function create(){
         foreach ($this->video as $key => $value) {
-            $filePath = $value["File_path"];
+            $filePath = $value["file_path"];
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views = $value["views"];
@@ -23,7 +23,7 @@ class showAllVideo
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
-            $videolink = "<a href='watch.php?id=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a>";
+            $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a>";
 
 
             array_push($this->allVideoPath, "<div>$videolink
@@ -54,7 +54,7 @@ class showAllVideo
         $this->categoryFilterquery = $query->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($this->categoryFilterquery as $key => $value) {
-            $filePath = $value["File_path"];
+            $filePath = $value["file_path"];
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views =$value["views"];
@@ -62,7 +62,7 @@ class showAllVideo
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
-            $videolink = "<a href='watch.php?id=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a>";
+            $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a>";
 
 
             $this->categoryFilter .= "<div>$videolink
