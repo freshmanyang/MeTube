@@ -52,11 +52,35 @@ if(isset($_POST['PlayList'])){
 
 //    header("Location:$reroute");
 }
-
+if(isset($_POST['deletePlayList'])) {
+    $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
+    $message = $channel->deletePlayList($_POST['deletePlayList']);
+    $reroute = 'channel.php?channel='.$_GET['channel'].'&tab=myPlayList';
+    echo "<script>alert('$message'); location.href = '$reroute';</script>";
+}
 
 if(isset($_POST['myplaylist'])){
     $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
     echo json_encode($channel->showPlayList());
 
 }
+if(isset($_POST['showVideoFromPlaylist'])){
+    $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
+    echo json_encode($channel->showVideoFromPlaylist($_POST['playlist']));
+
+}
+if (isset($_POST['deletevideoinplaylist'])) {
+    if(isset($_POST['videoinplayList'])) {
+    print_r($_POST['videoinplayList']);
+        $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
+        $channel->deleteVideoinplaylist($_POST['videoinplayList'],$_GET['channel']);
+//        $reroute = 'channel.php?channel='.$_GET['channel'];
+//        header("Location:$reroute");
+    }
+    else{
+//        $reroute = 'channel.php?channel='.$_GET['channel'];
+//        header("Location:$reroute");
+    }
+}
+
 ?>

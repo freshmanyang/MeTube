@@ -81,6 +81,7 @@ $("#addPlayListToDB").on('click', function() {
     $("#playList_Form").submit();
 
 });
+
 //    subscribe按鈕
     var subscribebtn = document.getElementById("subscribe");
     var unsubscribebtn = document.getElementById("unsubscribe");
@@ -139,7 +140,7 @@ $("#confirm").on('click', function() {
              datatype:'json',
              success:function(result){
                  final1 = JSON.parse(result);
-                 // console.log('channelresult=',final);
+                 console.log('channelresult=',final1);
 
                   datalength = final1.length;
                   if (datalength != 0){
