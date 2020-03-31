@@ -35,7 +35,7 @@ class showAllVideo
     }
 
     private function getthumbnail($videoid){
-        $query = $this->conn->prepare("SELECT file_path From thumbnail where video_id =:video_id and selected=1");
+        $query = $this->conn->prepare("SELECT file_path From thumbnails where video_id =:video_id and selected=1");
         $query->bindParam(':video_id',$videoid);
         $query->execute();
         return $this->thumbnail = $query->fetch(PDO::FETCH_ASSOC);
@@ -48,7 +48,7 @@ class showAllVideo
 
         }
 
-        $query = $this->conn->prepare("SELECT videos.* From videos inner join categories on videos.category = categories.id where categories.name=:category");
+        $query = $this->conn->prepare("SELECT videos.* From videos inner join category on videos.category = category.id where category.name=:category");
         $query->bindParam(':category',$category);
         $query->execute();
         $this->categoryFilterquery = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -74,7 +74,7 @@ class showAllVideo
     }
     public function getCategoryList()
     {
-        $query = $this->conn->prepare("SELECT distinct categories.* From videos inner join categories on videos.category = categories.id");
+        $query = $this->conn->prepare("SELECT distinct category.* From videos inner join category on videos.category = category.id");
         $query->execute();
         $this->categorydb = $query->fetchAll(PDO::FETCH_ASSOC);
         foreach ($this->categorydb as $key => $value) {

@@ -41,14 +41,14 @@ class  channelProcessor
     }
 
     private function getthumbnail($videoid){
-        $query = $this->conn->prepare("SELECT file_path From thumbnail where video_id =:video_id and selected=1");
+        $query = $this->conn->prepare("SELECT file_path From thumbnails where video_id =:video_id and selected=1");
         $query->bindParam(':video_id',$videoid);
         $query->execute();
         return $this->thumbnail = $query->fetch(PDO::FETCH_ASSOC);
 
     }
     private function getallthumbnail($videoid){
-        $query = $this->conn->prepare("SELECT file_path From thumbnail where video_id =:video_id ");
+        $query = $this->conn->prepare("SELECT file_path From thumbnails where video_id =:video_id ");
         $query->bindParam(':video_id',$videoid);
         $query->execute();
         return $this->thumbnail = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -188,10 +188,15 @@ class  channelProcessor
         }
     }
     private function queryDeleteVideoList($deleteList){
-
+        $qMarks = str_repeat('?,', count($deleteList) - 1) . '?';
+        $mainUser = "'".$this->usernameLoggedIn."'";
+        $query = $this->conn->prepare("Select * from videos WHERE uploaded_by= $mainUser AND id IN ($qMarks)");
+        $query->execute($deleteList);
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
     public function deleteVideo($deleteList){
-        foreach ($this->video as  $value) {
+        $deletevideoinfo = $this->queryDeleteVideoList($deleteList);
+        foreach ($deletevideoinfo as  $value) {
             $this->deleteFile($value["File_path"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getallthumbnail($videoid);
@@ -205,7 +210,7 @@ class  channelProcessor
         $mainUser = "'".$this->usernameLoggedIn."'";
         $query = $this->conn->prepare("DELETE FROM videos WHERE uploaded_by= $mainUser AND id IN ($qMarks)");
         $query->execute($deleteList);
-        $query = $this->conn->prepare("DELETE FROM thumbnail WHERE  video_id IN ($qMarks)");
+        $query = $this->conn->prepare("DELETE FROM thumbnails WHERE  video_id IN ($qMarks)");
         $query->execute($deleteList);
     }
     private function checkPlayList($playlistname){
@@ -271,8 +276,7 @@ class  channelProcessor
                 $thumbnailpath = $this->getthumbnail($videoid);
                 $thumbnailpath = $thumbnailpath["file_path"];
                 $videolink = "<a href='watch.php?id=$videoid'><img src='$thumbnailpath' alt='$title' height='100' width='200'></a><br>";
-                $playlistVideoPath .= "
-                    <div >$videolink
+                $playlistVideoPath .= "<div >$videolink
                    <span id='videoTitle'>$title</span><br>$uploaded_by<br>$views views &emsp; $upload_date
                     </div> &emsp;&emsp;&emsp;";
                 $count++;

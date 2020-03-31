@@ -423,12 +423,12 @@ select.form-control {
 .contactPage{
     /*background-color: #efefee;*/
     height:90vh;
-    width: 100vh;
+    width: 100%;
     display:flex;
     flex-direction: column;
     justify-content: center;
     align-items:center;
-
+    margin:0 auto;
 
 }
 .contactPage_head{
@@ -540,6 +540,8 @@ select.form-control {
 /*channel.php*/
 #channelPage{
     width:100%;
+    margin:0 auto;
+
 }
 
 #channelPage .container{

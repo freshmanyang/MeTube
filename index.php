@@ -1,19 +1,20 @@
 <?php require_once("./includes/header.php"); ?>
 <?php require_once("./includes/nav.php"); ?>
 <?php require_once('./includes/class/showAllVideo.php'); ?>
-<?php
-if(isset($usernameLoggedIn)){
-    echo '<div id="main-video-container"> 
-                  <div id ="welcomemessage">Welcome to MeTube,'
-        .ucfirst($usernameLoggedIn).'<br>';
-}
-if(isset($_GET['category'])){
-    echo 'You are under category -'.$_GET['category'];
-}
-$showAllVideo = new showAllVideo($conn);
-?>
+
 <main class="main-section-container" id="main">
     <div class="main-content-container">
+        <?php
+        if(isset($usernameLoggedIn)){
+            echo '<div id="main-video-container"> 
+                  <div id ="welcomemessage">Welcome to MeTube,'
+                .ucfirst($usernameLoggedIn).'<br>';
+        }
+        if(isset($_GET['category'])){
+            echo 'You are under category -'.$_GET['category'];
+        }
+        $showAllVideo = new showAllVideo($conn);
+        ?>
     </div> <!--   welcomemessage div end-->
     <!--category browse button-->
     <div class="btn-group">
@@ -70,9 +71,9 @@ $showAllVideo = new showAllVideo($conn);
                 },
                 datatype:'json',
                 success:function(result){
-                    console.log(result);
+
                     final = JSON.parse(result);
-                    console.log(final.length);
+
 
                     datalength = final.length;
 
@@ -98,7 +99,6 @@ $showAllVideo = new showAllVideo($conn);
             });
         });
     </script>
-
     </div>
 </main>
 </body>
