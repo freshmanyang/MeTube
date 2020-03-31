@@ -1,12 +1,15 @@
 <?php
 require_once('./includes/header.php');
 require_once('./includes/class/channelProcessor.php');
+require_once("./includes/nav.php");
 if(!isset($_GET['channel'])){
     echo "<script>alert('You are not choose any channel, redirect to Home page after click'); location.href = 'index.php';</script>";
 }
 $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
 
 ?>
+<main class="main-section-container" id="main">
+    <div class="main-content-container">
 <div id ="channelPage">
 
 <div class="container">
@@ -224,9 +227,8 @@ $("#confirm").on('click', function() {
 // }
     ?>
 
-</div>
-</div>
-</div>
+    </div>
+</main>
 </body>
 </html>
 
