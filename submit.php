@@ -151,9 +151,101 @@ if (isset($_POST["old_password"]) && isset($_POST["input_password"]) && isset($_
     exit;
 }
 
+// click download button, insert record into download_list
+if (isset($_POST["download"]) && isset($_POST["video_id"])) {
+    if (isset($_SESSION["uid"])) { // if signIn, insert record
+        $response['status'] = $userObj->insertRecordIntoDownloadList($_POST["video_id"]);
+    } else { // if not signIn, do nothing with the database
+        $response['status'] = false;
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// click like button
+if (isset($_POST["like"]) && isset($_POST["video_id"])) {
+    if (isset($_SESSION["uid"])) { // if signIn, insert record
+        $video_id = $_POST["video_id"];
+        if ($userObj->hasRecordInLikedList($_POST["video_id"])) {
+            // if liked before, then delete record form liked_list
+            $response['status'] = $userObj->deleteRecordFromLikedList($_POST["video_id"]);
+        } else {
+            //  if not liked before, then insert record into liked_list
+            $response['status'] = $userObj->insertRecordIntoLikedList($_POST["video_id"]);
+        }
+        // get likedCount and dislikedCount here
+        $query = $conn->prepare("SELECT * FROM liked_list WHERE video_id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->execute();
+        $likedCount = $query->rowCount();
+        $query = $conn->prepare("SELECT * FROM disliked_list WHERE video_id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->execute();
+        $dislikedCount = $query->rowCount();
+        $response['data'] = array('likedCount' => $likedCount, 'dislikedCount' => $dislikedCount);
+    } else { // if not signIn, do nothing with the database
+        $response['status'] = false;
+        $response['data'] = 'Not signIn';
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// click dislike button
+if (isset($_POST["dislike"]) && isset($_POST["video_id"])) {
+    if (isset($_SESSION["uid"])) { // if signIn, insert record
+        $video_id = $_POST["video_id"];
+        if ($userObj->hasRecordInDislikedList($_POST["video_id"])) {
+            // if liked before, then delete record form liked_list
+            $response['status'] = $userObj->deleteRecordFromDislikedList($_POST["video_id"]);
+        } else {
+            //  if not liked before, then insert record into liked_list
+            $response['status'] = $userObj->insertRecordIntoDislikedList($_POST["video_id"]);
+        }
+        // get likedCount and dislikedCount here
+        $query = $conn->prepare("SELECT * FROM liked_list WHERE video_id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->execute();
+        $likedCount = $query->rowCount();
+        $query = $conn->prepare("SELECT * FROM disliked_list WHERE video_id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->execute();
+        $dislikedCount = $query->rowCount();
+        $response['data'] = array('likedCount' => $likedCount, 'dislikedCount' => $dislikedCount);
+    } else { // if not signIn, do nothing with the database
+        $response['status'] = false;
+        $response['data'] = 'Not signIn';
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// click subscribe button
+if(isset($_POST["subscribe"])&&isset($_POST["videoOwnerName"])){
+    if (isset($_SESSION["uid"])){ // user already signIn
+        if($userObj->isSubscribed($_POST["videoOwnerName"])){
+            // if already subscribed, do unsubscribe
+            $response['status'] = $userObj->unsubscribe($_POST["videoOwnerName"]);
+            $response['data'] = '';
+        }else{
+            // if not subscribed, do subscribe
+            $response['status'] = $userObj->subscribe($_POST["videoOwnerName"]);
+            $response['data'] = '';
+        }
+    }
+    else{ // user not signIn
+        $response['status'] = false;
+        $response['data'] = 'Not signIn';
+    }
+    echo json_encode($response);
+    exit;
+}
+
 // if not of above, sing out
-$accountHandler->signOut();
-header("Location:index.php");
+if (isset($_SESSION['uid'])) {
+    $accountHandler->signOut();
+    header("Location:index.php");
+}
 ?>
 
 

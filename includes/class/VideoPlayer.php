@@ -14,7 +14,8 @@ class VideoPlayer
     {
         $autoPlay = $autoPlay ? "autoPlay" : "";
         $filePath = $this->videoObj->getFilePath();
-        return "<video class='video-player' controls $autoPlay>
+        $videoId = $this->videoObj->getVideoId();
+        return "<video class='video-player' controls controlsList='nodownload' video-target='$videoId' $autoPlay>
                     <source src='$filePath' type='video/mp4'>
                 </video>";
     }

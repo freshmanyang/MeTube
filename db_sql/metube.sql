@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS `users` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 -- --------------------------------------------------------
 
 --
@@ -29,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 CREATE TABLE IF NOT EXISTS `videos` (
     `id` INT NOT NULL AUTO_INCREMENT,
-    `uploaded_by` VARCHAR(30) NOT NULL,
+    `uploaded_by` VARCHAR(20) NOT NULL,
     `title` VARCHAR(30) NOT NULL,
     `description` TEXT,
     `privacy` TINYINT DEFAULT 1,
@@ -38,7 +37,45 @@ CREATE TABLE IF NOT EXISTS `videos` (
     `upload_date` DATETIME NOT NULL,
     `views` INT NOT NULL DEFAULT 0,
     `video_duration` VARCHAR(30) NOT NULL DEFAULT '00:00',
+    `like` INT DEFAULT 0,
+    `dislike` INT DEFAULT 0,
     PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `download_list`
+--
+
+CREATE TABLE IF NOT EXISTS `download_list` (
+    `video_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    PRIMARY KEY (`video_id`,`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `liked_list`
+--
+
+CREATE TABLE IF NOT EXISTS `liked_list` (
+    `video_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    PRIMARY KEY (`video_id`,`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `disliked_list`
+--
+
+CREATE TABLE IF NOT EXISTS `disliked_list` (
+    `video_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    PRIMARY KEY (`video_id`,`user_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -77,3 +114,42 @@ CREATE TABLE IF NOT EXISTS `thumbnails` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `contactlist`
+--
+
+
+CREATE TABLE IF NOT EXISTS `contactlist` (
+  `mainuser` VARCHAR(20) NOT NULL,
+  `username` VARCHAR(20) NOT NULL,
+  `groupname` VARCHAR(20) NOT NULL,
+  `blocked` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'block:1 nonblock:0',
+  PRIMARY KEY (`mainuser`,`username`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `playlist`
+--
+
+CREATE TABLE IF NOT EXISTS `playlist` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `mainuser` VARCHAR(20) NOT NULL,
+  `playlistname` VARCHAR(20) NOT NULL,
+  `video_id` INT NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subscriptions`
+--
+
+CREATE TABLE IF NOT EXISTS `subscriptions` (
+  `username` VARCHAR(20) NOT NULL,
+  `Subscriptions` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`username`,`Subscriptions`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

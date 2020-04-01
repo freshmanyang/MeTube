@@ -77,11 +77,13 @@ class User
         return $this->userData["email"];
     }
 
-    public function getPassword(){
+    public function getPassword()
+    {
         return $this->userData["password"];
     }
 
-    public function setPassword($encrypted_password){
+    public function setPassword($encrypted_password)
+    {
         $query = $this->conn->prepare("UPDATE users SET password=:password WHERE id=:uid");
         $query->bindParam(":password", $encrypted_password);
         $query->bindParam(":uid", $this->uid);
@@ -107,7 +109,8 @@ class User
         return false;
     }
 
-    public function getBirthday(){
+    public function getBirthday()
+    {
         return $this->userData['birthday'];
     }
 
@@ -123,7 +126,8 @@ class User
         return false;
     }
 
-    public function getGender(){
+    public function getGender()
+    {
         return $this->userData['gender'];
     }
 
@@ -137,5 +141,108 @@ class User
             return true;
         }
         return false;
+    }
+
+    // if download a video, insert record into download_list
+    public function insertRecordIntoDownloadList($video_id)
+    {
+        $query = $this->conn->prepare("INSERT IGNORE INTO download_list (video_id, user_id)
+                                            VALUES (:video_id, :user_id)");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindParam(":user_id", $this->uid);
+        return $query->execute();
+    }
+
+    // check if user liked this video
+    public function hasRecordInLikedList($video_id)
+    {
+        $query = $this->conn->prepare("SELECT video_id FROM liked_list WHERE user_id=:user_id AND video_id=:video_id LIMIT 1");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindParam(":user_id", $this->uid);
+        $query->execute();
+        return $query->fetch(PDO::FETCH_ASSOC)['video_id'];
+    }
+
+    // click like button, insert record into liked_list
+    public function insertRecordIntoLikedList($video_id)
+    {
+        if ($this->hasRecordInDislikedList($video_id)) {
+            if (!$this->deleteRecordFromDislikedList($video_id)){
+                return false;
+            }
+        }
+        $query = $this->conn->prepare("INSERT INTO liked_list (video_id, user_id)
+                                            VALUES (:video_id, :user_id)");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindParam(":user_id", $this->uid);
+        return $query->execute();
+    }
+
+    // user can also cancel the like operation
+    public function deleteRecordFromLikedList($video_id)
+    {
+        $query = $this->conn->prepare("DELETE FROM liked_list WHERE video_id=:video_id AND user_id=:user_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindParam(":user_id", $this->uid);
+        return $query->execute();
+    }
+
+    // check if user disliked this video
+    public function hasRecordInDislikedList($video_id)
+    {
+        $query = $this->conn->prepare("SELECT video_id FROM disliked_list WHERE user_id=:user_id AND video_id=:video_id LIMIT 1");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindParam(":user_id", $this->uid);
+        $query->execute();
+        return $query->fetch(PDO::FETCH_ASSOC)['video_id'];
+    }
+
+    // click like button, insert record into disliked_list
+    public function insertRecordIntoDislikedList($video_id)
+    {
+        if ($this->hasRecordInLikedList($video_id)) {
+            if(!$this->deleteRecordFromLikedList($video_id)){
+                return false;
+            }
+        }
+        $query = $this->conn->prepare("INSERT INTO disliked_list (video_id, user_id)
+                                            VALUES (:video_id, :user_id)");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindParam(":user_id", $this->uid);
+        return $query->execute();
+    }
+
+    // user can also cancel the dislike operation
+    public function deleteRecordFromDislikedList($video_id)
+    {
+        $query = $this->conn->prepare("DELETE FROM disliked_list WHERE video_id=:video_id AND user_id=:user_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindParam(":user_id", $this->uid);
+        return $query->execute();
+    }
+
+    // click subscribe button to subscribe a user
+    public function subscribe($user_name_to_subscribe){
+        $query = $this->conn->prepare("INSERT INTO subscriptions (username, Subscriptions)
+                                            VALUES (:username, :user_name_to_subscribe)");
+        $query->bindParam(":username", $this->userData["username"]);
+        $query->bindParam(":user_name_to_subscribe", $user_name_to_subscribe);
+        return $query->execute();
+    }
+
+    public function unsubscribe($user_name_to_subscribe){
+        $query = $this->conn->prepare("DELETE FROM subscriptions WHERE username=:username AND Subscriptions=:user_name_to_subscribe");
+        $query->bindParam(":username", $this->userData["username"]);
+        $query->bindParam(":user_name_to_subscribe", $user_name_to_subscribe);
+        return $query->execute();
+    }
+
+    // check if a user has already subscribed to another user
+    public function isSubscribed($user_name_to_subscribe){
+        $query = $this->conn->prepare("SELECT username FROM subscriptions WHERE username=:username AND Subscriptions=:user_name_to_subscribe LIMIT 1");
+        $query->bindParam(":username", $this->userData["username"]);
+        $query->bindParam(":user_name_to_subscribe", $user_name_to_subscribe);
+        $query->execute();
+        return $query->rowCount();
     }
 }

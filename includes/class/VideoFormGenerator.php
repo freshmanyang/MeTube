@@ -55,7 +55,7 @@ class VideoFormGenerator
     {
         return "
             <div class='form-group'>
-                <textarea class='form-control' placeholder='description' name='description' maxlength='200' rows='5'></textarea>
+                <textarea class='form-control' placeholder='description' name='description' maxlength='800' rows='5'></textarea>
             </div>
         ";
     }
