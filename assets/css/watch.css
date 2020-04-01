@@ -1,12 +1,166 @@
-.watch-left{
+.watch-left {
     flex: 1;
 }
 
-.watch-left .video-player{
+.watch-left .video-player {
     width: 100%;
 }
 
-.suggestion{
+.video-primary-info-renderer {
+    padding-top: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #d1d1d1;
+}
+
+.video-primary-info-renderer .upper-wrapper {
+    display: flex;
+    justify-content: space-between;
+    height: 32px;
+}
+
+.video-primary-info-renderer .upper-wrapper .video-title {
+    word-break: break-all;
+    color: #030303;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 32px;
+    margin: 0;
+}
+
+.video-primary-info-renderer .lower-wrapper {
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+    color: #606060;
+}
+
+.video-primary-info-renderer .lower-wrapper .views,
+.video-primary-info-renderer .lower-wrapper .dot,
+.video-primary-info-renderer .lower-wrapper .upload-date {
+    line-height: 21px;
+}
+
+.video-primary-info-renderer .lower-wrapper .right-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.watch-left-btn {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    padding: 8px;
+    color: #606060;
+    outline: none !important;
+}
+
+.watch-left-btn:hover,
+.watch-left-btn:hover i {
+    color: #7a3374;
+}
+
+.clicked {
+    color: #7a3374;
+}
+
+.watch-left-btn i {
+    font-size: 20px;
+    padding-right: 8px;
+}
+
+.right-wrapper span {
+    margin-right: 6px;
+}
+
+.right-wrapper span:last-child {
+    margin: 0;
+}
+
+.video-secondary-info-renderer{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #d1d1d1;
+}
+
+.video-secondary-info-renderer .upper-wrapper {
+    width: 100%;
+    height: 50px;
+    margin: 16px 0 8px 0;
+    display: flex;
+    justify-content: flex-start;
+
+}
+
+.video-secondary-info-renderer .upper-wrapper .video-owner-page-link {
+    width: 65px;
+    height: 100%;
+    display: block;
+}
+
+.video-owner-page-link img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.video-secondary-info-renderer .upper-wrapper .upload-info {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.upload-info a.video-owner-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #030303;
+    text-decoration: none;
+}
+
+.upload-info .subscriber-count {
+    font-size: 13px;
+    font-weight: 500;
+    color: #606060;
+}
+
+.upper-wrapper .btn-wrapper {
+    padding: 10px 0 10px 16px;
+}
+
+.video-secondary-info-renderer .lower-wrapper {
+    width: 100%;
+    padding-left: 64px;
+}
+
+.video-secondary-info-renderer .lower-wrapper p{
+    font-size: 14px;
+    font-weight: 400;
+    color: #030303;
+    margin: 0;
+}
+
+.video-secondary-info-renderer .lower-wrapper #dot{
+    display: inline;
+}
+
+.video-secondary-info-renderer .lower-wrapper #more{
+    display: none;
+}
+
+.video-secondary-info-renderer .lower-wrapper .show-more-btn{
+    font-size: 13px;
+    font-weight: 400;
+    color: #606060;
+    cursor: pointer;
+}
+
+.suggestion {
     max-width: 425px;
     height: 100%;
     flex-grow: 1;

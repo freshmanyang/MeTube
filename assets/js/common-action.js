@@ -41,7 +41,7 @@ $(function () {
     });
 
     // click profile button, show modal
-    $(".profile-btn").on("click",function () {
+    $(".profile-btn").on("click", function () {
         let modalName = $(this).attr("target-modal");
         $(modalName).modal('show');
     });
@@ -52,6 +52,6 @@ $(function () {
         $(this).find('form').removeClass('was-validated');
         $(this).find('.invalid-feedback').text('');
         $(this).find('.custom-file-label').text('');
-    })
+    });
 
 });
