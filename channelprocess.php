@@ -71,11 +71,11 @@ if(isset($_POST['showVideoFromPlaylist'])){
 }
 if (isset($_POST['deletevideoinplaylist'])) {
     if(isset($_POST['videoinplayList'])) {
-    print_r($_POST['videoinplayList']);
+//    print_r($_POST['videoinplayList']);
         $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
-        $channel->deleteVideoinplaylist($_POST['videoinplayList'],$_GET['channel']);
-//        $reroute = 'channel.php?channel='.$_GET['channel'];
-//        header("Location:$reroute");
+        $channel->deleteVideoinplaylist($_POST['videoinplayList'],$_GET['playlist']);
+        $reroute = 'Playlist.php?channel='.$_GET['channel'].'&playlist='.$_GET['playlist'];
+        header("Location:$reroute");
     }
     else{
 //        $reroute = 'channel.php?channel='.$_GET['channel'];

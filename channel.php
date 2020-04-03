@@ -219,13 +219,12 @@ $("#confirm").on('click', function() {
 
  </script>
 
- <!--想要自動跳到某個tab  但是一直不行 用上面的替代方法 bootstrap nav-->
+
  <?php
-//    if(isset($_GET['tab'])){
-// //<!--     $('#myTab li:last-child a').tab('show');-->
-// //<!--       $('.nav-tabs a[href="#myPlayList"]').tab('show');-->
-//     echo '<script> $(function () {$(\'#myTab1 a[href="#myPlayList"]\').tab(\'show\')});</script>';
-// }
+// $_GET['tab']有值時 自動跳到myplaylist tab
+    if(isset($_GET['tab'])){
+     echo '<script> $(function () {$(\'#myTab1 a[href="#myPlayList2"]\').tab(\'show\')});</script>';
+ }
     ?>
 
     </div>

@@ -3,7 +3,7 @@
 
 class showAllVideo
 {
-    private $con,$video,$categoryList,$categorydb,$categoryFilter,$thumbnail,$categoryFilterquery;
+    private $conn,$video,$categoryList,$categorydb,$categoryFilter,$thumbnail,$categoryFilterquery;
     private $allVideoPath =array();
     public function __construct($con)
     {
