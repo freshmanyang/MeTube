@@ -7,7 +7,7 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
 <link rel="stylesheet" href="./assets/css/playlist.css">
 <main class="main-section-container" id="main">
     <div class="main-content-container">
-        <form action="channelprocess.php?channel=<?php echo $_GET['playlist']?>" method="post">
+        <form action="channelprocess.php?channel=<?php echo $_GET['channel']?>&playlist=<?php echo $_GET['playlist']?>" method="post">
         <div id="showvideofromplaylist">
 
         </div>

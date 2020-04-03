@@ -197,6 +197,12 @@ class  channelProcessor
         $query->execute($deleteList);
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+    private function queryPlaylistVideoList($videoList){
+        $qMarks = str_repeat('?,', count($videoList) - 1) . '?';
+        $query = $this->conn->prepare("Select * from videos WHERE  id IN ($qMarks)");
+        $query->execute($videoList);
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
     public function deleteVideo($deleteList){
         $deletevideoinfo = $this->queryDeleteVideoList($deleteList);
         foreach ($deletevideoinfo as  $value) {
@@ -217,7 +223,7 @@ class  channelProcessor
         $query->execute($deleteList);
     }
     public function deleteVideoinplaylist($deleteList,$deleteplaylist){
-        var_dump($deleteList,$deleteplaylist);
+//        var_dump($deleteList,$deleteplaylist);
         $qMarks = str_repeat('?,', count($deleteList) - 1) . '?';
         $mainUser = "'".$this->usernameLoggedIn."'";
         $playlist = "'".$deleteplaylist."'";
@@ -296,7 +302,7 @@ class  channelProcessor
                array_push($allvideoidarray,$value['video_id']);
             }
             $mainUser = "'".$this->usernameLoggedIn."'";
-            $query = $this->conn->prepare("select * FROM videos WHERE uploaded_by=$mainUser and id IN ($qMarks)");
+            $query = $this->conn->prepare("select * FROM videos WHERE id IN ($qMarks)");
             $query->execute($allvideoidarray);
             $videoresult = $query->fetchAll(PDO::FETCH_ASSOC);
             $playlistVideoPath = '';
@@ -336,7 +342,7 @@ class  channelProcessor
             $videoidfromplaylist[] = $value["video_id"];
        }
 
-        $videoinfofromplaylist = $this->queryDeleteVideoList($videoidfromplaylist);
+        $videoinfofromplaylist = $this->queryPlaylistVideoList($videoidfromplaylist);
         if(!count($videoinfofromplaylist)){
             $deletebutton= "You don't have any videos in this playlist";
         }else{
