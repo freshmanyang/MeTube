@@ -5,26 +5,35 @@
 <main class="main-section-container" id="main">
     <div class="main-content-container">
         <?php
+        $showAllVideo = new showAllVideo($conn);
         if(isset($usernameLoggedIn)){
             echo '<div id="main-video-container"> 
                   <div id ="welcomemessage">Welcome to MeTube,'
                 .ucfirst($usernameLoggedIn).'<br>';
+
         }
         if(isset($_GET['category'])){
             echo 'You are under category -'.$_GET['category'];
         }
-        $showAllVideo = new showAllVideo($conn);
+
         ?>
     </div> <!--   welcomemessage div end-->
     <!--category browse button-->
     <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Category
+        <button type="button" id="category" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <?php
+            if (isset($_GET['category'])){
+            echo $_GET['category'];
+            }
+            else{
+                echo 'Category';
+            }
+            ?>
         </button>
         <div class="dropdown-menu" id="categoryList">
             <a class='dropdown-item' href='#'>All</a>
             <?php
-            echo $showAllVideo->getCategoryList();
+            echo $showAllVideo->getCategoryListWithBlock($usernameLoggedIn);
             ?>
         </div>
     </div>
@@ -33,6 +42,7 @@
         $(document).ready(function () {
             $('#categoryList a').on('click', function(){
                 var category = ($(this).text());
+
                 // alert(category);
                 var href = "index.php?category="+category;
                 window.location.assign(href);
@@ -44,7 +54,17 @@
         <?php
         If(isset($_GET['category'])){
             echo '<div id="categoryvideopage">';
-            echo $showAllVideo->categoryFilter($_GET['category']);
+            if(is_array($showAllVideo->getCategoryVideoswithBlock($usernameLoggedIn,$_GET['category']))){
+                $videoswithblock = $showAllVideo->getCategoryVideoswithBlock($usernameLoggedIn,$_GET['category']);
+//                print_r($videoswithblock);
+                foreach($videoswithblock as $value){
+                    echo $value;
+                }
+
+            }
+            else{
+            echo $showAllVideo->getCategoryVideoswithBlock($usernameLoggedIn,$_GET['category']);
+            }
             echo '</div>';
         }else{
             echo '<div id ="allvideopage"> </div>';
@@ -67,18 +87,16 @@
 
                 url:'showallvideoprocess.php',
                 data:{
-                    showallvideo:"1"
+                    showallvideo:"1",
+                    loginUser:'<?php echo $usernameLoggedIn ?>'
+
                 },
                 datatype:'json',
                 success:function(result){
-
                     final = JSON.parse(result);
-
-
                     datalength = final.length;
-
                     window.pagObj = $('#pagination').twbsPagination({
-                        // totalPages如果妳一頁最多顯示4筆資料,那總長度就是除4
+                        // totalPages plugin if you want display 4 records at one page, total pages= total data /4
                         totalPages: (datalength % 4) ?  (datalength /4) + 1: datalength /4,
                         visiblePages: 5,
                         onPageClick: function (event, page) {

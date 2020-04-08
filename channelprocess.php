@@ -28,6 +28,11 @@ if(isset($_POST['mysubscribe'])){
     echo json_encode($channel->createMySubscriptions());
 
 }
+if(isset($_POST['myFavoritelist'])){
+    $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
+    echo json_encode($channel->showFavoriteList());
+
+}
 
 if (isset($_POST['Delete'])) {
     if(isset($_POST['videoList'])) {
@@ -47,16 +52,37 @@ if (isset($_POST['Delete'])) {
 if(isset($_POST['PlayList'])){
     $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
     $message = $channel->createPlayList($_POST['PlayList']);
-    $reroute = 'channel.php?channel='.$_GET['channel'].'&tab=myPlayList';
+    $reroute = 'channel.php?channel='.$_GET['channel'].'&tab=myPlayList2';
    echo "<script>alert('$message'); location.href = '$reroute';</script>";
 
 //    header("Location:$reroute");
 }
 if(isset($_POST['deletePlayList'])) {
-    $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
-    $message = $channel->deletePlayList($_POST['deletePlayList']);
-    $reroute = 'channel.php?channel='.$_GET['channel'].'&tab=myPlayList';
+    $reroute = 'channel.php?channel=' . $_GET['channel'] . '&tab=myPlayList2';
+    if(isset($_POST['selectedPlayList'])) {
+     $channel = new channelProcessor($conn, $_GET['channel'], $usernameLoggedIn);
+    $message = $channel->deletePlayList($_POST['selectedPlayList']);
+
     echo "<script>alert('$message'); location.href = '$reroute';</script>";
+    }
+    else{
+
+        header("Location:$reroute");
+    }
+}
+if(isset($_POST['addToFavoriteList'])) {
+    $reroute = 'channel.php?channel=' . $_GET['channel'] . '&tab=myPlayList2';
+    if(isset($_POST['selectedPlayList'])) {
+        $channel = new channelProcessor($conn, $_GET['channel'], $usernameLoggedIn);
+        $message = $channel->addToFavoriteList($_POST['selectedPlayList']);
+
+
+        echo "<script>alert('$message'); location.href = '$reroute';</script>";
+    }
+    else{
+
+        header("Location:$reroute");
+    }
 }
 
 if(isset($_POST['myplaylist'])){
@@ -78,9 +104,69 @@ if (isset($_POST['deletevideoinplaylist'])) {
         header("Location:$reroute");
     }
     else{
-//        $reroute = 'channel.php?channel='.$_GET['channel'];
-//        header("Location:$reroute");
+        $reroute = 'Playlist.php?channel='.$_GET['channel'].'&playlist='.$_GET['playlist'];
+        header("Location:$reroute");
     }
+
+}
+// add video to playlist
+if (isset($_GET['videoaddtoplaylist'])) {
+    if(isset($_GET['vid'])) {
+//    var_dump($_POST['videoList']);
+        $channel = new channelProcessor($conn,'',$usernameLoggedIn);
+        $message = $channel->addVideoTOPlaylist($_GET['videoaddtoplaylist'],$_GET['vid']);
+        $reroute = 'watch.php?vid='.$_GET['vid'];
+        echo "<script>alert('$message'); location.href = '$reroute';</script>";
+
+
+    }
+
+}
+
+if (isset($_POST['addSingleVideoToFavoriteList'])) {
+    if(isset($_POST['videoinplayList'])) {
+        $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
+        $message = $channel->addSingleVideoToFavoriteList($_POST['videoinplayList'],$_GET['playlist']);
+        $reroute = 'Playlist.php?channel='.$_GET['channel'].'&playlist='.$_GET['playlist'];
+        echo "<script>alert('$message'); location.href = '$reroute';</script>";
+    }
+    else{
+        $reroute = 'Playlist.php?channel='.$_GET['channel'].'&playlist='.$_GET['playlist'];
+        header("Location:$reroute");
+    }
+
+}
+
+if (isset($_POST['removeFromFavoriteList'])) {
+    $reroute = 'channel.php?channel='.$_GET['channel'] . '&tab=myFavoriteList2';
+    if(isset($_POST['videoList'])) {
+        $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
+        $message = $channel->removeVideoFromFavoriteList($_POST['videoList']);
+        echo "<script>alert('$message'); location.href = '$reroute';</script>";
+    }
+    else{
+
+        header("Location:$reroute");
+    }
+
+}
+
+if(isset($_POST['sortingVideos'])){
+    $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
+    if(!strcmp($_POST['sorting'],'Duration'))
+    {
+        $category = 'video_duration';
+    }
+    elseif(!strcmp($_POST['sorting'],'Views')){
+        $category = 'views';
+    }
+    elseif(!strcmp($_POST['sorting'],'Uploading_time')){
+        $category = 'upload_date';
+    }
+    elseif(!strcmp($_POST['sorting'],'Video_title')){
+        $category = 'title';
+    }
+    echo json_encode($channel->sortingVideos($category));
 }
 
 ?>

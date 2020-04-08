@@ -504,6 +504,20 @@ select.form-control {
     display:flex;
     flex-flow: row wrap;
 }
+#showAllVideo #categoryvideopage div .wrapper{
+    display: flex;
+    align-items: flex-start;
+    width:300px;
+    margin:0;
+}
+#showAllVideo #categoryvideopage div .wrapper .left{
+    flex: 0 0 auto;
+    margin:0;
+}
+#showAllVideo #categoryvideopage div .wrapper .right{
+    flex: 1 1 auto;
+    margin:0;
+}
 #showAllVideo #allvideopage{
     /*width:100%;*/
     /*height:70vh;*/
@@ -511,6 +525,20 @@ select.form-control {
     display:flex;
     flex-flow: row wrap;
 
+}
+#showAllVideo #allvideopage div .wrapper{
+    display: flex;
+    align-items: flex-start;
+    width:300px;
+    margin:0;
+}
+#showAllVideo #allvideopage div .wrapper .left{
+    flex: 0 0 auto;
+    margin:0;
+}
+#showAllVideo #allvideopage div .wrapper .right{
+    flex: 1 1 auto;
+    margin:0;
 }
 #showAllVideo #page-nav{
     /*width:100%;*/
@@ -524,12 +552,9 @@ select.form-control {
     justify-content: center;
 }
 
-#showAllVideo  #allvideopage div{
-    width:350px;
-    height:300px;
-}
+
 #showAllVideo  #allvideopage div #videoTitle{
-    /*ellipsis 過長的文字用...取代  https://www.w3schools.com/cssref/css3_pr_text-overflow.asp*/
+    /*ellipsis if text too long replace text with ...  https://www.w3schools.com/cssref/css3_pr_text-overflow.asp*/
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -561,6 +586,24 @@ select.form-control {
     flex-flow: row wrap;
 
 }
+.container .tab-content>.active #show div{
+    margin-right:30px;
+
+}
+.container .tab-content>.active #show    div .wrapper{
+    display: flex;
+    align-items: flex-start;
+    width:300px;
+    margin:0;
+}
+.container .tab-content>.active #show   div .wrapper .left{
+    flex: 0 0 auto;
+    margin:0;
+}
+.container .tab-content>.active #show   div .wrapper .right{
+    flex: 1 1 auto;
+    margin:0;
+}
 .container .tab-content>.active #show form  #delete {
     flex-basis: 100%;
 
@@ -576,15 +619,30 @@ select.form-control {
 /*my subsciptions tab*/
 #showSubscriptions .video{
     display:flex;
-    flex-direction: row;
-    /*flex-flow: row wrap;*/
+    /*flex-direction: row;*/
+    flex-flow: row wrap;
 }
 #showSubscriptions p{
     margin: 10px 0px;
 }
 #showSubscriptions  .video div{
-    width:200px;
-    height:200px;
+    /*width:250px;*/
+    /*height:200px;*/
+    margin-right:30px;
+}
+#showSubscriptions  .video  div .wrapper{
+    display: flex;
+    align-items: flex-start;
+    width:230px;
+    margin:0;
+}
+ #showSubscriptions .video  div .wrapper .left{
+    flex: 0 0 auto;
+    margin:0;
+}
+ #showSubscriptions .video  div .wrapper .right{
+    flex: 1 1 auto;
+    margin:0;
 }
 /*my playlist tab*/
 .container .tab-content>.active #showMyPlayList{
@@ -600,4 +658,68 @@ select.form-control {
     flex-basis: 100%;
 
 }
+.container .tab-content>.active #showMyPlayList div .wrapper{
+    display: flex;
+    align-items: flex-start;
+    width:230px;
+    margin:0;
+}
+.container .tab-content>.active #showMyPlayList div .wrapper .left{
+    flex: 0 0 auto;
+    margin:0;
+}
+.container .tab-content>.active #showMyPlayList div .wrapper .right{
+    flex: 1 1 auto;
+    margin:0;
+}
+.container .tab-content>.active #showMyFavoriteList{
+    display:flex;
+    flex-flow: row wrap;
+
+}
+.container .tab-content>.active #showMyFavoriteList div{
+    margin-right:30px;
+}
+.container .tab-content>.active #showMyFavoriteList div .wrapper{
+    display: flex;
+   align-items: flex-start;
+    width:300px;
+    margin:0;
+}
+.container .tab-content>.active #showMyFavoriteList div .wrapper .left{
+    flex: 0 0 auto;
+    margin:0;
+}
+.container .tab-content>.active #showMyFavoriteList div .wrapper .right{
+    flex: 1 1 auto;
+    margin:0;
+}
+
+.container .tab-content>.active #showSortingVideos{
+    display:flex;
+    flex-flow: row wrap;
+
+}
+.container .tab-content>.active #showSortingVideos div{
+    margin-right:30px;
+}
+.container .tab-content>.active #showSortingVideos div .wrapper{
+    display: flex;
+    /*The flexbox items are aligned at the start of the cross axis.By default,
+    the cross axis is vertical. This means the flexbox items will be centered vertically.*/
+    align-items: flex-start;
+    width:300px;
+    margin:0;
+
+}
+.container .tab-content>.active #showSortingVideos div .wrapper .left{
+    flex: 0 0 auto;
+    margin:0;
+}
+.container .tab-content>.active #showSortingVideos div .wrapper .right{
+    flex: 1 1 auto;
+    margin:0;
+
+}
+
 /*channel.php*/
