@@ -53,7 +53,7 @@ if(isset($_POST['contactName'])) {
 
 ?>
 
-<!--增加新聯絡人-->
+<!--Add new contact-->
 <!-- Button trigger modal -->
 <button type="button" id="showaddcontact" class="btn btn-primary" data-toggle="modal" data-target="#contactModal">Add New Contact</button>
 <br>
@@ -79,7 +79,7 @@ if(isset($_POST['contactName'])) {
                             <option value="friends">friends</option>
                             <option value="favorite">favorite</option>
                         </select>
-                        <!--                    &nbsp html空格-->
+                        <!--                    &nbsp html space-->
                         <label for="Blocked">Blocked:&nbsp&nbsp&nbsp</label><input type="checkbox" id="Blocked" name="toBlock" value="1" >
                     </div>
                 </form>
@@ -99,7 +99,7 @@ if(isset($_POST['contactName'])) {
         $("#contact_form").submit();
     });
 </script>
-<!--增加新聯絡人-->
+<!--add new contact end-->
 
 <?php
 $queryResult = $conntactList->query();
@@ -157,8 +157,8 @@ if(empty($queryResult)){
        <input type="reset" class="btn btn-outline-dark">
     </div>
     </form>
-</div><!--contactList 的div-->
-</div> <!--contactPage 的div-->
+</div><!--contactList div-->
+</div> <!--contactPage div-->
 
 
 

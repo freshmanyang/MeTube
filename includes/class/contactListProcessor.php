@@ -83,6 +83,9 @@ class contactListProcessor
         $mainUser = "'".$this->usernameLoggedIn."'";
         $query = $this->conn->prepare("UPDATE contactlist set blocked= $block WHERE mainuser= $mainUser AND username IN ($qMarks)");
         $query->execute($blockList);
+        $query = $this->conn->prepare("DELETE from subscriptions  WHERE username=$mainUser AND Subscriptions IN ($qMarks)");
+        $query->execute($blockList);
+
     }
     public function getviewfilter(){
         $query = $this->conn->prepare("SELECT distinct groupname From contactlist WHERE mainuser =:mainUser");

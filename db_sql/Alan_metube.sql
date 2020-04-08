@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3308
--- Generation Time: Mar 31, 2020 at 05:06 AM
+-- Generation Time: Apr 08, 2020 at 04:14 PM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.12
 
@@ -69,8 +69,10 @@ CREATE TABLE IF NOT EXISTS `contactlist` (
 --
 
 INSERT INTO `contactlist` (`mainuser`, `username`, `groupname`, `blocked`) VALUES
-('alan', 'lily', 'family', 1),
-('alan', 'john', 'friends', 0);
+('alan', 'lily', 'family', 0),
+('alan', 'john', 'friends', 1),
+('john', 'alan', 'friends', 0),
+('lily', 'john', '', 0);
 
 -- --------------------------------------------------------
 
@@ -83,21 +85,25 @@ CREATE TABLE IF NOT EXISTS `playlist` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `mainuser` varchar(60) COLLATE utf8mb4_general_ci NOT NULL,
   `playlistname` varchar(60) COLLATE utf8mb4_general_ci NOT NULL,
+  `favorite` tinyint(1) NOT NULL DEFAULT '0',
   `video_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `playlist`
 --
 
-INSERT INTO `playlist` (`id`, `mainuser`, `playlistname`, `video_id`) VALUES
-(4, 'alan', 'Fun', 0),
-(5, 'alan', 'POP', 0),
-(6, 'alan', 'music', 31),
-(11, 'alan', 'movie', 31),
-(10, 'alan', 'classic', 0),
-(12, 'alan', 'Test', 0);
+INSERT INTO `playlist` (`id`, `mainuser`, `playlistname`, `favorite`, `video_id`) VALUES
+(26, 'alan', 'music', 0, 0),
+(24, 'john', 'pop', 0, 0),
+(23, 'lily', 'POP', 0, 60),
+(22, 'alan', 'pop', 1, 60),
+(28, 'alan', 'music', 1, 47),
+(19, 'alan', 'pop', 1, 58),
+(10, 'alan', 'classic', 0, 0),
+(29, 'alan', 'music', 1, 31),
+(30, 'alan', 'classic', 1, 60);
 
 -- --------------------------------------------------------
 
@@ -117,8 +123,9 @@ CREATE TABLE IF NOT EXISTS `subscriptions` (
 --
 
 INSERT INTO `subscriptions` (`username`, `Subscriptions`) VALUES
-('alan', 'john'),
 ('alan', 'lily'),
+('john', 'alan'),
+('john', 'lily'),
 ('lily', 'alan'),
 ('lily', 'john');
 
@@ -135,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `thumbnails` (
   `file_path` varchar(200) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'photo path',
   `selected` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'selected:1 None:0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=139 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `thumbnails`
@@ -145,12 +152,21 @@ INSERT INTO `thumbnails` (`id`, `video_id`, `file_path`, `selected`) VALUES
 (105, 47, 'uploads/videos/thumbnails/47-5e8166f0bd1a0.jpg', 0),
 (104, 47, 'uploads/videos/thumbnails/47-5e8166f08e38e.jpg', 0),
 (103, 47, 'uploads/videos/thumbnails/47-5e8166f06c6a7.jpg', 1),
-(120, 56, 'uploads/videos/thumbnails/56-5e82c3eead9cf.jpg', 0),
-(119, 56, 'uploads/videos/thumbnails/56-5e82c3ee7e649.jpg', 0),
-(118, 56, 'uploads/videos/thumbnails/56-5e82c3ee55aea.jpg', 1),
-(117, 55, 'uploads/videos/thumbnails/55-5e82c0dc51460.jpg', 0),
-(116, 55, 'uploads/videos/thumbnails/55-5e82c0dc21272.jpg', 0),
-(115, 55, 'uploads/videos/thumbnails/55-5e82c0dbf00c1.jpg', 1),
+(138, 62, 'uploads/videos/thumbnails/62-5e839a0a673c6.jpg', 0),
+(137, 62, 'uploads/videos/thumbnails/62-5e839a0a34927.jpg', 0),
+(136, 62, 'uploads/videos/thumbnails/62-5e839a0a0d16d.jpg', 1),
+(135, 61, 'uploads/videos/thumbnails/61-5e8399c14de7d.jpg', 0),
+(134, 61, 'uploads/videos/thumbnails/61-5e8399c120b6b.jpg', 0),
+(133, 61, 'uploads/videos/thumbnails/61-5e8399c0edab9.jpg', 1),
+(132, 60, 'uploads/videos/thumbnails/60-5e8399bcaec0d.jpg', 0),
+(131, 60, 'uploads/videos/thumbnails/60-5e8399bc821e6.jpg', 0),
+(130, 60, 'uploads/videos/thumbnails/60-5e8399bc604b7.jpg', 1),
+(129, 59, 'uploads/videos/thumbnails/59-5e8399b63bee4.jpg', 0),
+(128, 59, 'uploads/videos/thumbnails/59-5e8399b60f96c.jpg', 0),
+(127, 59, 'uploads/videos/thumbnails/59-5e8399b5deb62.jpg', 1),
+(123, 57, 'uploads/videos/thumbnails/57-5e8394e0cf545.jpg', 0),
+(122, 57, 'uploads/videos/thumbnails/57-5e8394e0a2e63.jpg', 0),
+(121, 57, 'uploads/videos/thumbnails/57-5e8394e0815f6.jpg', 1),
 (55, 31, 'uploads/videos/thumbnails/31-5e7f81fe6ac27.jpg', 1),
 (56, 31, 'uploads/videos/thumbnails/31-5e7f81fe8ee00.jpg', 0),
 (57, 31, 'uploads/videos/thumbnails/31-5e7f81febccd2.jpg', 0);
@@ -175,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `gender` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Rather not say',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
@@ -183,8 +199,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`id`, `username`, `first_name`, `last_name`, `email`, `password`, `sign_up_date`, `avatar_path`, `birthday`, `gender`) VALUES
 (8, 'alan', 'alan', 'yang', 'alan@gmail.com', 'c115ab90f01175e2a876e6325c679e67c16e2e3af23442bb105fbbc78c233f8e33cc90ca222f962da621bff20e89f0df56164a5bb083939596c01b71486e57e4', '2020-03-30 18:43:56', './uploads/avatars/5e829aaaaee77.jpg', '1970-01-01', 'Rather not say'),
-(7, 'John', 'Dsaf', 'Dasf', '1@gmail.com', 'be5ba1c212c82e2ca2c275bb7267ff55', '0000-00-00 00:00:00', 'assets/profilePictures/default.png', '1970-01-01', 'Rather not say'),
-(6, 'lily', 'Lily', 'Yang', '123@gmail.com', 'be5ba1c212c82e2ca2c275bb7267ff55', '0000-00-00 00:00:00', 'assets/profilePictures/default.png', '1970-01-01', 'Rather not say');
+(9, 'john', 'john', 'john', 'john@gmail.com', 'c115ab90f01175e2a876e6325c679e67c16e2e3af23442bb105fbbc78c233f8e33cc90ca222f962da621bff20e89f0df56164a5bb083939596c01b71486e57e4', '2020-04-01 02:16:26', './assets/imgs/avatars/default.png', '1970-01-01', 'Rather not say'),
+(10, 'lily', 'lily', 'lily', 'lily@gmail.com', 'c115ab90f01175e2a876e6325c679e67c16e2e3af23442bb105fbbc78c233f8e33cc90ca222f962da621bff20e89f0df56164a5bb083939596c01b71486e57e4', '2020-04-01 02:22:25', './assets/imgs/avatars/default.png', '1970-01-01', 'Rather not say');
 
 -- --------------------------------------------------------
 
@@ -205,17 +221,20 @@ CREATE TABLE IF NOT EXISTS `videos` (
   `views` int(11) NOT NULL DEFAULT '0',
   `video_duration` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `videos`
 --
 
 INSERT INTO `videos` (`id`, `uploaded_by`, `title`, `description`, `privacy`, `file_path`, `category`, `upload_date`, `views`, `video_duration`) VALUES
-(47, 'lily', 'dgfhgh', '', 1, 'uploads/videos/5e8166ef38ff5.mp4', '1', '2020-03-28 00:15:41', 3, '00:10'),
-(31, 'lily', 'fcbvnc', '', 1, 'uploads/videos/5e7f81fd5e561.mp4', '4', '2020-03-29 00:15:41', 2, '00:10'),
-(55, 'alan', 'video1', '', 1, 'uploads/videos/5e82c0dac6823.mp4', '3', '2020-03-30 00:15:41', 0, '00:10'),
-(56, 'alan', 'video2', '', 1, 'uploads/videos/5e82c3ed2c8f8.mp4', '3', '2020-03-31 00:15:41', 0, '00:10');
+(47, 'lily', 'dgfhgh', '', 1, 'uploads/videos/5e8166ef38ff5.mp4', '1', '2020-03-28 00:15:41', 74, '00:10'),
+(31, 'lily', 'fcbvnc', '', 1, 'uploads/videos/5e7f81fd5e561.mp4', '4', '2020-03-29 00:15:41', 70, '00:10'),
+(60, 'alan', 'video4', '', 1, 'uploads/videos/5e8399bb54c7b.mp4', '1', '2020-03-31 15:27:55', 26, '00:10'),
+(59, 'alan', 'video3', '', 1, 'uploads/videos/5e8399b4d3c17.mp4', '1', '2020-03-31 15:27:48', 1, '00:10'),
+(57, 'alan', 'video1', '', 1, 'uploads/videos/5e8394df50d70.mp4', '2', '2020-03-31 15:07:11', 4, '00:10'),
+(61, 'alan', 'video5', '', 1, 'uploads/videos/5e8399bfc83e4.mp4', '1', '2020-03-31 15:27:59', 0, '00:10'),
+(62, 'alan', 'video6', '', 1, 'uploads/videos/5e839a08df13e.mp4', '1', '2020-03-31 15:29:12', 3, '00:10');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

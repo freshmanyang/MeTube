@@ -6,4 +6,17 @@
 #showvideofromplaylist  p{
     flex-basis: 100%;
 }
-
+ #showvideofromplaylist div .wrapper{
+    display: flex;
+    align-items: flex-start;
+    width:300px;
+    margin:0;
+}
+#showvideofromplaylist div .wrapper .left{
+    flex: 0 0 auto;
+    margin:0;
+}
+#showvideofromplaylist div .wrapper .right{
+    flex: 1 1 auto;
+    margin:0;
+}
