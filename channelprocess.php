@@ -153,6 +153,7 @@ if (isset($_POST['removeFromFavoriteList'])) {
 
 if(isset($_POST['sortingVideos'])){
     $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
+    $category =$_POST['sorting'];
     if(!strcmp($_POST['sorting'],'Duration'))
     {
         $category = 'video_duration';
@@ -165,6 +166,9 @@ if(isset($_POST['sortingVideos'])){
     }
     elseif(!strcmp($_POST['sorting'],'Video_title')){
         $category = 'title';
+    }
+    elseif(!strcmp($_POST['sorting'],'File_size')){
+        $category = 'file_size';
     }
     echo json_encode($channel->sortingVideos($category));
 }

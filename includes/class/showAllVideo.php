@@ -15,9 +15,10 @@ class showAllVideo
         $this->video = $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function create(){
+    public function create($username){
+        $videowithprivacy = $this->checkPrivacy($this->video,$username);
         $this->allVideoPath =[];
-        foreach ($this->video as $key => $value) {
+        foreach ($videowithprivacy as $key => $value) {
             $filePath = $value["file_path"];
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
@@ -37,7 +38,7 @@ class showAllVideo
         return $this->allVideoPath;
     }
 
-    public function categoryFilter($category){
+    public function categoryFilter($category,$username){
 //        if(!strcmp($category,'All')){
 //            return   header("Location: index.php");
 //
@@ -47,6 +48,7 @@ class showAllVideo
         $query->bindParam(':category',$category);
         $query->execute();
         $this->categoryFilterquery = $query->fetchAll(PDO::FETCH_ASSOC);
+        $this->categoryFilterquery = $this->checkPrivacy($this->categoryFilterquery,$username);
         $this->categoryFilter='';
         foreach ($this->categoryFilterquery as $key => $value) {
             $filePath = $value["file_path"];
@@ -99,6 +101,7 @@ class showAllVideo
         $query = $this->conn->prepare("SELECT distinct category.* From videos inner join category on videos.category = category.id where uploaded_by NOT IN ($qMarks)");
         $query->execute($blockUsers);
         $this->categorydb = $query->fetchAll(PDO::FETCH_ASSOC);
+        $this->categorydb = $this->checkPrivacy($this->categorydb,$username);
         foreach ($this->categorydb as $key => $value) {
             $category = $value["name"];
 
@@ -123,17 +126,46 @@ class showAllVideo
         }
         return $blockUsers;
     }
+    private function checkPrivacy($videowithblock,$username){
+
+        foreach ($videowithblock as  $value) {
+
+
+            if ($value['privacy'] == 0) {
+                $key = array_search($value, $videowithblock);
+                array_splice($videowithblock, $key, 1);
+
+            } elseif ($value['privacy'] == 2) {
+                $uploaded_by = $value["uploaded_by"];
+                $query = $this->conn->prepare("SELECT * From contactlist where username=:username and mainuser=:mainuser");
+                $query->bindParam(':username', $username);
+                $query->bindParam(':mainuser', $uploaded_by);
+                $query->execute();
+                $dbresult = $query->fetch(PDO::FETCH_ASSOC);
+                if (strcmp($dbresult['groupname'], 'friends')) {
+                    $key = array_search($value, $videowithblock);
+                    array_splice($videowithblock, $key, 1);
+                }
+            }
+        }
+        return $videowithblock;
+    }
     public function createwithBlock($username){
         $blockUsers = $this->getBlockUsername($username);
+
         if(empty($blockUsers)){
-            return $this->create();
+            return $this->create($username);
         }
         $qMarks = str_repeat('?,', count($blockUsers) - 1) . '?';
         $query = $this->conn->prepare("SELECT * From videos where uploaded_by NOT IN ($qMarks)");
         $query->execute($blockUsers);
         $videoresult = $query->fetchAll(PDO::FETCH_ASSOC);
+        $videowithprivacy = $this->checkPrivacy($videoresult,$username);
+//        if(empty($videowithprivacy)){
+//            return '';
+//        }
         $this->allVideoPathwithBlock = [];
-        foreach ($videoresult as $key => $value) {
+        foreach ($videowithprivacy as $key => $value) {
             $filePath = $value["file_path"];
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
@@ -158,7 +190,7 @@ class showAllVideo
         }
         $blockUsers = $this->getBlockUsername($username);
         if(empty($blockUsers)){
-            return $this->categoryFilter($category);
+            return $this->categoryFilter($category,$username);
         }
 
         $qMarks = str_repeat('?,', count($blockUsers) - 1) . '?';
