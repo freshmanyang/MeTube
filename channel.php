@@ -217,8 +217,10 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
                   datatype:'json',
                   success:function(result){
                       final2 = JSON.parse(result);
+                      var showMyPlayList = document.getElementById("showMyPlayList");
                       // console.log(final);
-                      document.getElementById("showMyPlayList").innerHTML += final2;
+                      if(showMyPlayList){
+                      showMyPlayList.innerHTML += final2;}
                   }
               });
              // });

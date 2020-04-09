@@ -27,6 +27,8 @@ class  channelProcessor
 
     }
     public function create(){
+        $this->video = $this->checkPrivacy($this->video,$this->usernameLoggedIn);
+        if (empty($this->video)){return [];}
         foreach ($this->video as $key => $value) {
 
             $title = $value["title"];
@@ -109,6 +111,8 @@ class  channelProcessor
             $query->bindParam(':uploaded_by',$value["Subscriptions"]);
             $query->execute();
             $this->uservideo = $query->fetchAll(PDO::FETCH_ASSOC);
+
+            $this->uservideo = $this->checkPrivacy($this->uservideo,$this->usernameLoggedIn);
             $subscribeVideoPath ="";
             $count = 1;
             if($this->uservideo){
@@ -342,7 +346,9 @@ class  channelProcessor
         foreach ($dbresult as  $value) {
             array_push($favoritelistvideoid, $value['video_id']);
         }
-
+        if(!$favoritelistvideoid){
+            return [];
+        }
         $qMarks = str_repeat('?,', count($favoritelistvideoid) - 1) . '?';
 
         $query = $this->conn->prepare("SELECT * FROM videos where id IN ($qMarks)");
@@ -553,12 +559,14 @@ class  channelProcessor
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
             $duration = $value['video_duration'];
+            $flieSize = round($value['file_size'] /1024 / 1024,2);
+
             $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a><br>";
 
 
             array_push($this->sortingVideoPath,"
                     <div>$videolink
-                    <span id='videoTitle'>$title</span><br> <div class='wrapper'><div class='left'>$uploaded_by<br>$views views</div>  <div class ='right'><span style='float:right'>$duration</span><br><span style='float:right'>$upload_date</span> </div>
+                    <span id='videoTitle'>$title</span><br> <div class='wrapper'><div class='left'>$uploaded_by <br>$views views </div>  <div class ='right'><span style='float:right'>Size:$flieSize MB&nbsp; $duration</span><br><span style='float:right'>$upload_date</span> </div>
                     </div> &emsp;&emsp;");
         }
 
@@ -578,6 +586,30 @@ class  channelProcessor
             array_push($blockUsers, $value['mainuser']);
         }
         return $blockUsers;
+    }
+    private function checkPrivacy($videowithblock,$username){
+
+        foreach ($videowithblock as  $value) {
+
+
+            if ($value['privacy'] == 0) {
+                $key = array_search($value, $videowithblock);
+                array_splice($videowithblock, $key, 1);
+
+            } elseif ($value['privacy'] == 2) {
+                $uploaded_by = $value["uploaded_by"];
+                $query = $this->conn->prepare("SELECT * From contactlist where username=:username and mainuser=:mainuser");
+                $query->bindParam(':username', $username);
+                $query->bindParam(':mainuser', $uploaded_by);
+                $query->execute();
+                $dbresult = $query->fetch(PDO::FETCH_ASSOC);
+                if (strcmp($dbresult['groupname'], 'friends')) {
+                    $key = array_search($value, $videowithblock);
+                    array_splice($videowithblock, $key, 1);
+                }
+            }
+        }
+        return $videowithblock;
     }
      public function showchannelonly($channel){
          $blockUser =$this->getBlockUsername($this->usernameLoggedIn);
@@ -689,6 +721,7 @@ class  channelProcessor
             <a class='dropdown-item' href='#'>Uploading_time</a>
             <a class='dropdown-item' href='#'>Video_title</a>
             <a class='dropdown-item' href='#'>Duration</a>
+            <a class='dropdown-item' href='#'>File_size</a>
         </div>
     </div>
   <div id=\"showSortingVideos\"></div>
