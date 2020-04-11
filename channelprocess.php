@@ -12,6 +12,7 @@ if(isset($_POST['pagefunction'])){
         echo json_encode($channel->create());
     }
 }
+
 if(isset($_POST['subscribe'])){
     $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
     if($_POST['button']==1){
@@ -171,6 +172,10 @@ if(isset($_POST['sortingVideos'])){
         $category = 'file_size';
     }
     echo json_encode($channel->sortingVideos($category));
+}
+if(isset($_POST['downloadvideo'])) {
+    $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
+    echo json_encode($channel->showDownloadedVideos());
 }
 
 ?>

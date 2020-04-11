@@ -78,31 +78,33 @@ class showAllVideo
 
     }
 
-    public function getCategoryList()
-    {
-        $query = $this->conn->prepare("SELECT distinct category.* From videos inner join category on videos.category = category.id");
-        $query->execute();
-        $this->categorydb = $query->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($this->categorydb as $key => $value) {
-            $category = $value["name"];
 
-            $this->categoryList .= "
-             <a class='dropdown-item' href='#'>$category</a>
-            ";
-        }
-        return $this->categoryList;
-    }
     public function getCategoryListWithBlock($username){
         $blockUsers = $this->getBlockUsername($username);
         if(empty($blockUsers)){
-            return $this->getCategoryList();
+            $query = $this->conn->prepare("SELECT * From videos ");
+            $query->execute();
+            $this->categorydb = $query->fetchAll(PDO::FETCH_ASSOC);
         }
+        else{
         $qMarks = str_repeat('?,', count($blockUsers) - 1) . '?';
-        $query = $this->conn->prepare("SELECT distinct category.* From videos inner join category on videos.category = category.id where uploaded_by NOT IN ($qMarks)");
+        $query = $this->conn->prepare("SELECT videos.* From videos inner join category on videos.category = category.id where uploaded_by NOT IN ($qMarks)");
         $query->execute($blockUsers);
         $this->categorydb = $query->fetchAll(PDO::FETCH_ASSOC);
-        $this->categorydb = $this->checkPrivacy($this->categorydb,$username);
-        foreach ($this->categorydb as $key => $value) {
+        }
+        $privacyresult = $this->checkPrivacy($this->categorydb,$username);
+        if (!count($privacyresult)){return '';}
+        $videowithprivacy = array();
+        foreach ($privacyresult as $key => $value) {
+            array_push($videowithprivacy,$value['category']);
+        }
+
+        $qMarks2 = str_repeat('?,', count($videowithprivacy) - 1) . '?';
+        $query = $this->conn->prepare("SELECT distinct name From category where id IN ($qMarks2)");
+        $query->execute($videowithprivacy);
+        $categorynamelist = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($categorynamelist as  $value) {
             $category = $value["name"];
 
             $this->categoryList .= "
@@ -185,10 +187,12 @@ class showAllVideo
         return $this->allVideoPathwithBlock;
 }
     public function getCategoryVideoswithBlock($username,$category){
-        if(!strcmp($category,'All')){
-            return   $this->createwithBlock($username);
-        }
+//        auto direct to index.php doesnt need below one
+//        if(!strcmp($category,'All')){
+//            return   $this->createwithBlock($username);
+//        }
         $blockUsers = $this->getBlockUsername($username);
+
         if(empty($blockUsers)){
             return $this->categoryFilter($category,$username);
         }
@@ -198,6 +202,7 @@ class showAllVideo
         $query = $this->conn->prepare("SELECT videos.* From videos inner join category on videos.category = category.id where category.name=$category and videos.uploaded_by NOT IN ($qMarks)");
          $query->execute($blockUsers);
         $dbresult = $query->fetchAll(PDO::FETCH_ASSOC);
+        $dbresult = $this->checkPrivacy($dbresult,$username);
 
         $categoryFilterquerywithBlock ='';
         foreach ($dbresult as  $value) {

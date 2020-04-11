@@ -21,9 +21,9 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
     <!-- iconfont css -->
-    <link rel="stylesheet" href="./assets/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/assets/iconfont/iconfont.css">
     <!-- main style css -->
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -47,8 +47,8 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
     <!-- pagination-->
     <script src="../assets/js/jquery.twbsPagination.js" type="text/javascript"></script>
     <!-- local js -->
-    <script src="./assets/js/common-action.js" defer></script>
-    <script src="./assets/js/account.js" defer></script>
+    <script src="/assets/js/common-action.js" defer></script>
+    <script src="/assets/js/account.js" defer></script>
     <title>MeTube</title>
 </head>
 <body>
@@ -83,9 +83,12 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
         <div class="header">
             <div class="header-renderer">
                 <?php
-                echo "<img src='" . $userLoginInObj->getAvatarPath() . "' class='avatar-md'>";
-                echo "<p class='username' id='header_username'>" . $userLoginInObj->getUsername() . "</p>";
-                echo "<p class='email'>" . $userLoginInObj->getEmail() . "</p>";
+                $userAvatarPath = $userLoginInObj->getAvatarPath();
+                $userName = $userLoginInObj->getUsername();
+                $userEmail = $userLoginInObj->getEmail();
+                echo "<img src='$userAvatarPath' class='avatar-md' user-id='$uid'>";
+                echo "<p class='username' id='header_username'>$userName</p>";
+                echo "<p class='email'>$userEmail</p>";
                 ?>
             </div>
         </div>

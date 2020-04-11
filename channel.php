@@ -295,10 +295,50 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
                   });
 
              });
+     //       Downloaded Videos record
+              $('#myTab1 a[href="#downloadedVideos2"]').on("click", function () {
+                 $.ajax({
+                     type:'POST',
+                     // url:'includes/class/channelProcessor.php',
+                     url:'channelprocess.php',
+                     data:{
+                         downloadvideo:"1",
+                         user:user,
 
+                     },
+                     datatype:'json',
+                     success:function(result) {
+                         var tablecontent ='';
+                         final6 = JSON.parse(result);
+                         //clear table data first
+                         $('#showdownload').empty('');
+                         if (!Array.isArray(final6))
+                         {
+                             document.getElementById("ShowDownloadedVideos").innerText = 'No Downloaded Videos records';
+                         }
+                         else{
+                             $('#showdownload').append($("<thead>" +
+                                 "<tr>" +
+                                 "<th scope=\"col\">#</th>" +
+                                 "<th scope=\"col\">Title</th>" +
+                                 "<th scope=\"col\">Upload_By</th>" +
+                                 "<th scope=\"col\">Upload_Date</th>" +
+                                 "<th scope=\"col\">Duration</th>" +
+                                 "<th scope=\"col\">File_Size</th>" +
+                                 "</tr>" +
+                                 "</thead>" +
+                                 "<tbody>"));
+                         $.each(final6,function(index,item){
+                             tablecontent += item;
+                         })
+                             tablecontent += "</tbody>";
+                             $('#showdownload').append(tablecontent);
+                         }
+                     }
+                 });
+              });
 
-     });
-
+ });
 
 
  </script>

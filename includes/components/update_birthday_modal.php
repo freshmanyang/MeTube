@@ -6,7 +6,7 @@
                 <h5 class="modal-title" id="modal_title">Birthday</h5>
             </div>
             <div class="modal-body">
-                <form enctype="multipart/form-data" class="needs-validation" id="update_birthday_form" novalidate>
+                <form enctype="multipart/form-data" class="needs-validation" id="update_birthday_form" autocomplete='off' novalidate>
                     <div class="form-group">
                         <div class="input-group date" id="birthday_time_picker" data-target-input="nearest">
                             <input type="text" class="form-control datetimepicker-input" name="update_birthday"
