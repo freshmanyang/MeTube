@@ -16,13 +16,13 @@ date_default_timezone_set("America/New_York"); /* timezone setting */
 
 
 /* use PDO to connection database rather than using mysqli_init()*/
-//const DSN = "mysql:host=127.0.0.1:8889;dbname=MeTube";
-//const USER_NAME = "root";
-//const PASSWD = "root";
-
-const DSN = "mysql:host=localhost:3308;dbname=youtube";
+const DSN = "mysql:host=127.0.0.1:8889;dbname=MeTube";
 const USER_NAME = "root";
-const PASSWD = "";
+const PASSWD = "root";
+
+//const DSN = "mysql:host=localhost:3308;dbname=youtube";
+//const USER_NAME = "root";
+//const PASSWD = "";
 
 try {
     $conn = new PDO(DSN, USER_NAME, PASSWD);

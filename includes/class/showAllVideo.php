@@ -24,7 +24,7 @@ class showAllVideo
             $uploaded_by = $value["uploaded_by"];
             $views = $value["views"];
 //            $upload_date = date('Y-m-d H:i:s', $value["upload_date"]);
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
@@ -55,7 +55,7 @@ class showAllVideo
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views =$value["views"];
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
 //            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
@@ -173,7 +173,7 @@ class showAllVideo
             $uploaded_by = $value["uploaded_by"];
             $views = $value["views"];
 //            $upload_date = date('Y-m-d H:i:s', $value["upload_date"]);
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
@@ -210,7 +210,7 @@ class showAllVideo
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views =$value["views"];
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
 //            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
