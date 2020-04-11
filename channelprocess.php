@@ -74,6 +74,7 @@ if(isset($_POST['deletePlayList'])) {
 if(isset($_POST['addToFavoriteList'])) {
     $reroute = 'channel.php?channel=' . $_GET['channel'] . '&tab=myPlayList2';
     if(isset($_POST['selectedPlayList'])) {
+
         $channel = new channelProcessor($conn, $_GET['channel'], $usernameLoggedIn);
         $message = $channel->addToFavoriteList($_POST['selectedPlayList']);
 

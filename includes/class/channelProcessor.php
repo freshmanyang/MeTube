@@ -9,6 +9,7 @@ class  channelProcessor
     private $signinallVideoPath = array();
     private $sortingVideoPath = array();
     private $tableVideoRecord = array();
+
     public function __construct($conn, $user, $usernameLoggedIn)
     {
         $this->user = $user;
@@ -40,7 +41,7 @@ class  channelProcessor
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views = $value["views"];
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
 //            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
@@ -81,7 +82,7 @@ class  channelProcessor
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views = $value["views"];
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
 //            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
@@ -133,7 +134,7 @@ class  channelProcessor
                     $uploaded_by = $value["uploaded_by"];
                     $views = $value["views"];
 //                $upload_date = date('Y-m-d H:i:s', $value["upload_date"]);
-                    $upload_date = $value["upload_date"];
+                    $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
                     $videoid = $value["id"];
                     $thumbnailpath = $this->getthumbnail($videoid);
                     $thumbnailpath = $thumbnailpath["file_path"];
@@ -393,7 +394,7 @@ class  channelProcessor
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views = $value["views"];
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
 //            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
@@ -438,20 +439,22 @@ class  channelProcessor
         $dbresult = $this->getPlayList();
         $allplaylist = '';
         foreach ($dbresult as $value) {
-            $allplaylist .= '<p><input type="checkbox" name="selectedPlayList[]" value =' . $value["playlistname"] . '>';
+            $allplaylist .= "<p><input type='checkbox' name='selectedPlayList[]' value='" . $value["playlistname"] . "'>";
             $allplaylist .= '&nbsp<a href="Playlist.php?playlist=' . $value["playlistname"] . '&channel=' . $this->user . '" target="_blank">' . $value["playlistname"] . '</a></p>';
             $allVideoid = $this->getVideoInfoViaPlayList($value["playlistname"]);
 //            Print_r($value["playlistname"]);
 //            Print_r($allVideoid);
             $allvideoidarray = array();
             foreach ($allVideoid as $value) {
-                if ($value['video_id'] != 0){
-                array_push($allvideoidarray, $value['video_id']);}
+                if ($value['video_id'] != 0) {
+                    array_push($allvideoidarray, $value['video_id']);
+                }
             }
 //            Print_r($allvideoidarray);
             if (empty($allvideoidarray)) {
                 $allplaylist .= '<p> This Playlist doesn\'t have any videos yet!<p>';
-                continue;}
+                continue;
+            }
             $qMarks = str_repeat('?,', count($allvideoidarray) - 1) . '?';
             $query = $this->conn->prepare("select * FROM videos WHERE id IN ($qMarks)");
             $query->execute($allvideoidarray);
@@ -465,7 +468,7 @@ class  channelProcessor
                     $uploaded_by = $value["uploaded_by"];
                     $views = $value["views"];
 //                $upload_date = date('Y-m-d H:i:s', $value["upload_date"]);
-                    $upload_date = $value["upload_date"];
+                    $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
                     $videoid = $value["id"];
                     $thumbnailpath = $this->getthumbnail($videoid);
                     $thumbnailpath = $thumbnailpath["file_path"];
@@ -507,8 +510,8 @@ class  channelProcessor
             $addToFavoriteListButton = "&emsp;<input type=\"submit\" class=\"btn btn-outline-info\" id=\"addSingleVideoToFavoriteList\" name = \"addSingleVideoToFavoriteList\" value =\"Add to FavoriteList\"></p>";
         }
         $playlistTitle = '<p>Your are in Playlist - ' . $playlistname . '</p>';
-        $playlistTitle .= "<p><a href=\"channel.php?channel=".$this->usernameLoggedIn."&tab=myPlayList2\">Go back to my PlayList!</a></p>";
-        $playlistTitle .= "<p><a href=\"channel.php?channel=".$this->usernameLoggedIn."&tab=myFavoriteList2\">Go back to my FavoriteList!</a></p>";
+        $playlistTitle .= "<p><a href=\"channel.php?channel=" . $this->usernameLoggedIn . "&tab=myPlayList2\">Go back to my PlayList!</a></p>";
+        $playlistTitle .= "<p><a href=\"channel.php?channel=" . $this->usernameLoggedIn . "&tab=myFavoriteList2\">Go back to my FavoriteList!</a></p>";
         //        $playlistTitle .= '<form action=\"channelprocess.php?channel='.$this->user.'\" method=\"post\">';
         $playlistTitle .= $deletebutton;
         $playlistTitle .= $addToFavoriteListButton;
@@ -518,7 +521,7 @@ class  channelProcessor
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views = $value["views"];
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
 //            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
@@ -612,7 +615,7 @@ class  channelProcessor
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views = $value["views"];
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
 //            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
@@ -685,10 +688,10 @@ class  channelProcessor
         $dbresult = $query->fetchALL(PDO::FETCH_ASSOC);
 
         $downloadVideoList = array();
-        foreach ($dbresult as  $value) {
+        foreach ($dbresult as $value) {
             array_push($downloadVideoList, $value['video_id']);
         }
-        if (empty($downloadVideoList)){
+        if (empty($downloadVideoList)) {
             return '';
         }
 
@@ -698,17 +701,17 @@ class  channelProcessor
         $videoRecords = $query->fetchAll(PDO::FETCH_ASSOC);
         $count = 1;
 
-        foreach ($videoRecords as  $value) {
+        foreach ($videoRecords as $value) {
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
 //            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $duration = $value['video_duration'];
             $flieSize = round($value['file_size'] / 1024 / 1024, 2);
             $videolink = "<a href='watch.php?vid=$videoid'>$title</a>";
-            $table = '<tr> <th scope="row">'.$count.'</th>';
-            $table .= '<td>' . $videolink . '</td>' . '<td>' . $uploaded_by . '</td>'. '<td>' . $upload_date . '</td>'. '<td>' . $duration . '</td>'. '<td>' . $flieSize . '</td>';
+            $table = '<tr> <th scope="row">' . $count . '</th>';
+            $table .= '<td>' . $videolink . '</td>' . '<td>' . $uploaded_by . '</td>' . '<td>' . $upload_date . '</td>' . '<td>' . $duration . '</td>' . '<td>' . $flieSize . ' M</td>';
             $table .= '</tr>';
             $count++;
             array_push($this->tableVideoRecord, $table);
@@ -765,7 +768,7 @@ class  channelProcessor
         }
 
         $createPlaylistButton = "<input type=\"button\" class=\"btn btn-outline-primary\" id=\"createPlayList\" name = \"createPlayList\" value =\"Create PlayList\">";
-        $deletePlaylistButton = "<input type=\"submit\" class=\"btn btn-outline-danger\" id=\"deletePlayList\" name = \"deletePlayList\" value =\"Remove whole PlayList\">";
+        $deletePlaylistButton = "<input type=\"submit\" class=\"btn btn-outline-danger\" id=\"deletePlayList\" name = \"deletePlayList\" value =\"Remove PlayList\">";
         $addToFavoriteListButton = "<input type=\"submit\" class=\"btn btn-outline-info\" id=\"addToFavoriteList\" name = \"addToFavoriteList\" value =\"Add to FavoriteList\">";
         $removeVideofromFavoritelistbtn = "<input type=\"submit\" class=\"btn btn-outline-info\" id=\"removeFromFavoriteList\" name = \"removeFromFavoriteList\" value =\"Remove From FavoriteList\">";
         return "<ul class=\"nav nav-tabs\" id=\"myTab1\" role=\"tablist\">
@@ -810,7 +813,7 @@ class  channelProcessor
   
   <div class=\"tab-pane fade\" id=\"myPlayList2\" role=\"tabpanel\" aria-labelledby=\"contact-tab\"> 
   $createPlaylistButton
-  <form action=\"channelprocess.php?channel=$this->user\" method=\"post\">
+  <form action=\"channelprocess.php?channel=$this->user\" method=\"post\" style='display: inline'>
   $deletePlaylistButton
   $addToFavoriteListButton
   <div id=\"showMyPlayList\"></div>
