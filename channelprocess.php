@@ -173,5 +173,9 @@ if(isset($_POST['sortingVideos'])){
     }
     echo json_encode($channel->sortingVideos($category));
 }
+if(isset($_POST['downloadvideo'])) {
+    $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
+    echo json_encode($channel->showDownloadedVideos());
+}
 
 ?>

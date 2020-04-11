@@ -1,0 +1,17 @@
+.main-section-container{
+    margin-left:300px;
+
+}
+#main-content-container.paddingTop {
+
+    padding-top: 240px;
+
+}
+
+#advanced-search-container{
+
+    height: 240px;
+    width: auto;
+    background-color: #dedede;
+    position: fixed;
+}
