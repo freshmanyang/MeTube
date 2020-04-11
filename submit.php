@@ -97,6 +97,7 @@ if (isset($_POST["input_username"])) {
     if ($userObj->setUsername($_POST["input_username"])) {
         $response['status'] = true;
         $response['data'] = $userObj->getUsername();
+        $_SESSION["userLoggedIn"] = $userObj->getUsername();
     } else {
         $response['status'] = false;
         $response['data'] = '';

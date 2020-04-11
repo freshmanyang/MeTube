@@ -11,7 +11,7 @@
             <p>Profile</p>
         </div>
     </a>
-    <a href="./contact.php" class="endpoint">
+    <a href="./contactList.php" class="endpoint">
         <div class="endpoint-content">
             <i class="iconfont icon-people"></i>
             <p>People & sharing</p>
@@ -21,6 +21,12 @@
         <div class="endpoint-content">
             <i class="iconfont icon-video"></i>
             <p>Your video</p>
+        </div>
+    </a>
+    <a href="./channel.php?channel=<?php echo $usernameLoggedIn?>" class="endpoint">
+        <div class="endpoint-content">
+<!--            <i class="iconfont icon-video"></i>-->
+            <p>Your Channel</p>
         </div>
     </a>
 </nav>

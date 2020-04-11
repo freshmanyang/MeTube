@@ -2,8 +2,10 @@
 require_once("./includes/config.php");
 require_once("./includes/class/User.php");
 require_once("./includes/class/Video.php");
+//require_once('./includes/clemsonconfig.php');
 $uid = isset($_SESSION['uid']) ? $_SESSION['uid'] : '';
 $userLoginInObj = new User($conn, $uid);
+$usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn'] : '';
 ?>
 <!doctype html>
 <html lang="en">
@@ -42,6 +44,8 @@ $userLoginInObj = new User($conn, $uid);
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+    <!-- pagination-->
+    <script src="../assets/js/jquery.twbsPagination.js" type="text/javascript"></script>
     <!-- local js -->
     <script src="/assets/js/common-action.js" defer></script>
     <script src="/assets/js/account.js" defer></script>
