@@ -19,7 +19,7 @@ class VideoFormGenerator
         $categoryInput = $this->createCategoryInput();
         $uploadButton = $this->createUploadButton();
         return "
-            <form action='./media_upload_process.php' method='post' enctype='multipart/form-data' id='upload_video_form'>
+            <form action='./media_upload_process.php' method='post' enctype='multipart/form-data' id='upload_video_form' autocomplete='off'>
                 $fileInput
                 $titleInput
                 $descriptionInput

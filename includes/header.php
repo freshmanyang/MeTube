@@ -19,9 +19,9 @@ $userLoginInObj = new User($conn, $uid);
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
     <!-- iconfont css -->
-    <link rel="stylesheet" href="./assets/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/assets/iconfont/iconfont.css">
     <!-- main style css -->
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -43,8 +43,8 @@ $userLoginInObj = new User($conn, $uid);
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
     <!-- local js -->
-    <script src="./assets/js/common-action.js" defer></script>
-    <script src="./assets/js/account.js" defer></script>
+    <script src="/assets/js/common-action.js" defer></script>
+    <script src="/assets/js/account.js" defer></script>
     <title>MeTube</title>
 </head>
 <body>
@@ -79,9 +79,12 @@ $userLoginInObj = new User($conn, $uid);
         <div class="header">
             <div class="header-renderer">
                 <?php
-                echo "<img src='" . $userLoginInObj->getAvatarPath() . "' class='avatar-md'>";
-                echo "<p class='username' id='header_username'>" . $userLoginInObj->getUsername() . "</p>";
-                echo "<p class='email'>" . $userLoginInObj->getEmail() . "</p>";
+                $userAvatarPath = $userLoginInObj->getAvatarPath();
+                $userName = $userLoginInObj->getUsername();
+                $userEmail = $userLoginInObj->getEmail();
+                echo "<img src='$userAvatarPath' class='avatar-md' user-id='$uid'>";
+                echo "<p class='username' id='header_username'>$userName</p>";
+                echo "<p class='email'>$userEmail</p>";
                 ?>
             </div>
         </div>

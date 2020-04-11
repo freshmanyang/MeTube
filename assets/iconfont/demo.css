@@ -338,8 +338,8 @@
 }
 
 .hljs-string,
-.hljs-variable,
-.hljs-template-variable,
+.hljs-letiable,
+.hljs-template-letiable,
 .hljs-strong,
 .hljs-emphasis,
 .hljs-quote {
@@ -521,7 +521,7 @@ pre[class*="language-"] {
 
 .token.regex,
 .token.important,
-.token.variable {
+.token.letiable {
   color: #e90;
 }
 

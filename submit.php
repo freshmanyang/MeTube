@@ -1,6 +1,7 @@
 <?php
 require_once("./includes/config.php");
 require_once("./includes/class/AccountHandler.php");
+require_once("./includes/class/CommentHandler.php");
 require_once("./includes/class/AvatarUpload.php");
 require_once("./includes/class/User.php");
 
@@ -47,7 +48,8 @@ if (isset($_POST["sign_up_submit"])) {
         $userObj = new User($conn, $_SESSION["uid"]);
         $_SESSION["userLoggedIn"] = $userObj->getUsername();
     }
-    header("Location:index.php");
+//    header("Location:index.php");
+    echo "<script type='text/javascript'>history.go(-1)</script>";
     exit;
 }
 
@@ -59,7 +61,8 @@ if (isset($_POST["sign_in_submit"])) {
         $userObj = new User($conn, $_SESSION["uid"]);
         $_SESSION["userLoggedIn"] = $userObj->getUsername();
     }
-    header("Location:index.php");
+//    header("Location:index.php");
+    echo "<script type='text/javascript'>history.go(-1)</script>";
     exit;
 }
 
@@ -221,19 +224,17 @@ if (isset($_POST["dislike"]) && isset($_POST["video_id"])) {
 }
 
 // click subscribe button
-if(isset($_POST["subscribe"])&&isset($_POST["videoOwnerName"])){
-    if (isset($_SESSION["uid"])){ // user already signIn
-        if($userObj->isSubscribed($_POST["videoOwnerName"])){
+if (isset($_POST["subscribe"]) && isset($_POST["videoOwnerName"])) {
+    if (isset($_SESSION["uid"])) { // user already signIn
+        if ($userObj->isSubscribed($_POST["videoOwnerName"])) {
             // if already subscribed, do unsubscribe
             $response['status'] = $userObj->unsubscribe($_POST["videoOwnerName"]);
-            $response['data'] = '';
-        }else{
+        } else {
             // if not subscribed, do subscribe
             $response['status'] = $userObj->subscribe($_POST["videoOwnerName"]);
-            $response['data'] = '';
         }
-    }
-    else{ // user not signIn
+        $response['data'] = $userObj->getSubscribeCountByName($_POST["videoOwnerName"]);
+    } else { // user not signIn
         $response['status'] = false;
         $response['data'] = 'Not signIn';
     }
@@ -241,10 +242,70 @@ if(isset($_POST["subscribe"])&&isset($_POST["videoOwnerName"])){
     exit;
 }
 
-// if not of above, sing out
+// click comment button, post a new comment
+if (isset($_POST["post_comment"]) && isset($_POST["video_id"]) && isset($_POST["user_id"]) && isset($_POST["text"])) {
+    if (isset($_SESSION["uid"])) { // user already signIn
+        $commentsObj = new CommentHandler($conn, $_POST["video_id"]);
+        if ($commentsObj->postComment($_POST)) { // insert comment success
+            $response['status'] = true;
+            $commentCount = $commentsObj->getCommentsCount();
+            $lastInsertedComment = $commentsObj->getLastInsertedCommentByUserId($_POST["user_id"]);
+            $lastCommentDiv = $commentsObj->commentsRenderer(array($lastInsertedComment))[0];
+            $response['data'] = array('comment_count' => $commentCount, 'my_new_comment' => $lastCommentDiv);
+        } else { // failed to insert the new comment
+            $response['status'] = false;
+            $response['data'] = '';
+        }
+    } else { // user not sign in
+        $response['status'] = false;
+        $response['data'] = 'Not signIn';
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// click reply button, post a new reply
+if (isset($_POST["post_reply"]) && isset($_POST["video_id"]) && isset($_POST["comment_id"]) && isset($_POST["user_id"]) && isset($_POST["text"])) {
+    if (isset($_SESSION["uid"])) {
+        $commentsObj = new CommentHandler($conn, $_POST["video_id"]);
+        if ($commentsObj->postReply($_POST)) { // insert reply success
+            $response['status'] = true;
+            $lastInsertedReply = $commentsObj->getLastInsertedReplyByUserId($_POST["user_id"]);
+            $lastReplyDiv = $commentsObj->repliesRenderer(array($lastInsertedReply))[0];
+            $response['data'] = $lastReplyDiv;
+        } else {// failed to insert the new reply
+            $response['status'] = false;
+            $response['data'] = '';
+        }
+    }else { // user not sign in
+        $response['status'] = false;
+        $response['data'] = 'Not signIn';
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// window scroll to bottom, get 5 more comments
+if (isset($_POST["get_comment"]) && isset($_POST["video_id"]) && isset($_POST["page"])) {
+    $start = $_POST["page"] * 5;
+    $commentsObj = new CommentHandler($conn, $_POST["video_id"]);
+    $newComments = $commentsObj->getComments($start, 5);
+    if ($newComments) {
+        $response['status'] = true;
+        $newCommentsDiv = $commentsObj->commentsRenderer($newComments);
+        $response['data'] = $newCommentsDiv;
+    } else {
+        $response['status'] = false;
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// if nothing above, sing out
 if (isset($_SESSION['uid'])) {
     $accountHandler->signOut();
-    header("Location:index.php");
+//    header("Location:index.php");
+    echo "<script type='text/javascript'>history.go(-1)</script>";
 }
 ?>
 
