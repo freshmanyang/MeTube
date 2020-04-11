@@ -1,6 +1,7 @@
 <?php require_once("./includes/header.php"); ?>
 <?php require_once("./includes/nav.php"); ?>
 <?php require_once("./includes/class/VideoPlayer.php"); ?>
+<?php require_once("./includes/class/CommentHandler.php"); ?>
 <link rel="stylesheet" href="./assets/css/watch.css">
 <script src="./assets/js/watch_page.js" defer></script>
 <main class="main-section-container" id="main">
@@ -13,6 +14,8 @@
         $videoObj = new Video($conn, $_GET['vid'], $userLoginInObj);
         $videoObj->incrementView();
         $videoPlayer = new VideoPlayer($videoObj);
+        $commentsObj = new CommentHandler($conn, $_GET['vid']);
+        $comments = $commentsObj->getComments(0, 5);
         ?>
         <div class="watch-left">
             <?php
@@ -24,7 +27,7 @@
                         <?php echo $videoObj->getTitle(); ?>
                     </h1>
                     <?php echo "<a href='" . $videoObj->getFilePath() . "' download='" . $videoObj->getTitle() . "'>
-                        <button class=\"btn btn-primary btn-sm\" id=\"download_btn\" video-target='" . $videoObj->getVideoId() . "'>Download</button></a>" ?>
+                        <button class=\"btn btn-primary btn-sm\" id=\"download_btn\" video-id='" . $videoObj->getVideoId() . "'>Download</button></a>" ?>
                 </div>
                 <div class="lower-wrapper">
                     <div class="left-wrapper">
@@ -70,12 +73,17 @@
                     <a href="" class="video-owner-page-link">
                         <?php
                         $videoOwnerAvatar = $videoObj->getVideoOwnerAvatar();
-                        echo "<img src='$videoOwnerAvatar' alt=''>";
+                        $videoOwnerId = $videoObj->getUserId();
+                        echo "<img src='$videoOwnerAvatar' alt='' user-id='$videoOwnerId'>";
                         ?>
                     </a>
                     <div class="upload-info">
-                        <a href="" class="video-owner-name"><?php echo $videoObj->getVideoOwnerName(); ?></a>
-                        <div class="subscriber-count"><?php echo $videoObj->getSubscriptionCount(); ?> subscribers</div>
+                        <?php
+                        $videoOwnerName = $videoObj->getVideoOwnerName();
+                        $subscribeCount = $userLoginInObj->getSubscribeCountByName($videoOwnerName);
+                        echo "<a href=\"\" class=\"video-owner-name\">$videoOwnerName</a>";
+                        echo "<div class=\"subscriber-count\">$subscribeCount subscribers</div>";
+                        ?>
                     </div>
                     <div class="btn-wrapper">
                         <?php
@@ -91,18 +99,58 @@
                 <div class="lower-wrapper">
                     <?php
                     $descriptionText = $videoObj->getDescription();
+                    $descriptionText = nl2br($descriptionText); // convert \n and \r\n to <br \>
                     if (strlen($descriptionText) > 100) {
                         $c = substr($descriptionText, 0, 100);
                         $h = substr($descriptionText, 100);
                         echo "<p>$c<span id='dots'>...</span><span id='more'>$h</span></p>";
-                        echo "<div class='show-more-btn' id='show_more_btn'>SHOW MORE</div>";
-                    }
-                    else{
+                        echo "<span class='show-more-btn' id='show_more_btn'>SHOW MORE</span>";
+                    } else {
                         echo "<p>$descriptionText</p>";
                     }
                     ?>
                 </div>
-
+            </div>
+            <div class="comments-section">
+                <div class="comments-header-renderer">
+                    <?php
+                    $commentCount = $commentsObj->getCommentsCount();
+                    echo "<div class='comment-count'> $commentCount Comments</div>"
+                    ?>
+                    <?php if (isset($_SESSION["uid"])): ?>
+                        <div class="comment-box">
+                            <a href="" class="user-page-link">
+                                <?php
+                                $userAvatarPath = $userLoginInObj->getAvatarPath();
+                                echo "<img src='$userAvatarPath' alt='' user-id='$uid'>";
+                                ?>
+                            </a>
+                            <div class="comment-editor-wrapper">
+                                <div id="comment_editor" contenteditable="true">Add a public comment...</div>
+                                <div class="button-wrapper">
+                                    <button class="btn btn-default btn-sm" id="cancel_comment">CANCEL</button>
+                                    <button class="btn btn-secondary btn-sm" id="submit_comment" disabled>COMMENT
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif ?>
+                </div>
+                <div class="comments-wrapper">
+                    <?php if (isset($comments)): ?>
+                        <!-- Display comments -->
+                        <?php
+                        $commentElements = $commentsObj->commentsRenderer($comments);
+                        foreach ($commentElements as $commentElement){
+                            echo $commentElement;
+                        }
+                        ?>
+                    <?php endif ?>
+                </div>
+                <div class="loading-image-wrapper">
+                    <img class="loading-image" src="./assets/imgs/loading.gif" style="display: none">
+                </div>
+                <div class="no-more-data" style="display: none;">No more data</div>
             </div>
         </div>
         <div class="suggestion">

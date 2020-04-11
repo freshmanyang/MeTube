@@ -6,15 +6,15 @@
 
 CREATE TABLE IF NOT EXISTS `users` (
     `id` INT NOT NULL AUTO_INCREMENT,
-    `first_name` VARCHAR(20) NOT NULL,
-    `last_name` VARCHAR(20) NOT NULL,
-    `username` VARCHAR(20) NOT NULL UNIQUE,
-    `email` VARCHAR(30) NOT NULL UNIQUE,
+    `first_name` letCHAR(20) NOT NULL,
+    `last_name` letCHAR(20) NOT NULL,
+    `username` letCHAR(20) NOT NULL UNIQUE,
+    `email` letCHAR(30) NOT NULL UNIQUE,
     `password` CHAR(128) NOT NULL,
     `sign_up_date` DATETIME NOT NULL,
-    `avatar_path` VARCHAR(200) NOT NULL,
+    `avatar_path` letCHAR(200) NOT NULL,
     `birthday` DATE DEFAULT '1970-01-01',
-    `gender` VARCHAR(20) DEFAULT 'Rather not say',
+    `gender` letCHAR(20) DEFAULT 'Rather not say',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -28,15 +28,15 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 CREATE TABLE IF NOT EXISTS `videos` (
     `id` INT NOT NULL AUTO_INCREMENT,
-    `uploaded_by` VARCHAR(20) NOT NULL,
-    `title` VARCHAR(30) NOT NULL,
+    `uploaded_by` letCHAR(20) NOT NULL,
+    `title` letCHAR(30) NOT NULL,
     `description` TEXT,
     `privacy` TINYINT DEFAULT 1,
-    `file_path` VARCHAR(250) NOT NULL,
-    `category` VARCHAR(50),
+    `file_path` letCHAR(250) NOT NULL,
+    `category` letCHAR(50),
     `upload_date` DATETIME NOT NULL,
     `views` INT NOT NULL DEFAULT 0,
-    `video_duration` VARCHAR(30) NOT NULL DEFAULT '00:00',
+    `video_duration` letCHAR(30) NOT NULL DEFAULT '00:00',
     `like` INT DEFAULT 0,
     `dislike` INT DEFAULT 0,
     PRIMARY KEY (`id`)
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `disliked_list` (
 
 CREATE TABLE IF NOT EXISTS `category` (
     `id` INT NOT NULL AUTO_INCREMENT,
-    `name` varchar(30) NOT NULL,
+    `name` letchar(30) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -108,7 +108,7 @@ INSERT INTO `category` (`name`) VALUES
 CREATE TABLE IF NOT EXISTS `thumbnails` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `video_id` INT NOT NULL,
-    `file_path` VARCHAR(250) NOT NULL,
+    `file_path` letCHAR(250) NOT NULL,
     `selected` BOOLEAN DEFAULT false,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -121,9 +121,9 @@ CREATE TABLE IF NOT EXISTS `thumbnails` (
 
 
 CREATE TABLE IF NOT EXISTS `contactlist` (
-  `mainuser` VARCHAR(20) NOT NULL,
-  `username` VARCHAR(20) NOT NULL,
-  `groupname` VARCHAR(20) NOT NULL,
+  `mainuser` letCHAR(20) NOT NULL,
+  `username` letCHAR(20) NOT NULL,
+  `groupname` letCHAR(20) NOT NULL,
   `blocked` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'block:1 nonblock:0',
   PRIMARY KEY (`mainuser`,`username`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -136,8 +136,8 @@ CREATE TABLE IF NOT EXISTS `contactlist` (
 
 CREATE TABLE IF NOT EXISTS `playlist` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `mainuser` VARCHAR(20) NOT NULL,
-  `playlistname` VARCHAR(20) NOT NULL,
+  `mainuser` letCHAR(20) NOT NULL,
+  `playlistname` letCHAR(20) NOT NULL,
   `video_id` INT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -149,7 +149,38 @@ CREATE TABLE IF NOT EXISTS `playlist` (
 --
 
 CREATE TABLE IF NOT EXISTS `subscriptions` (
-  `username` VARCHAR(20) NOT NULL,
-  `Subscriptions` VARCHAR(20) NOT NULL,
+  `username` letCHAR(20) NOT NULL,
+  `Subscriptions` letCHAR(20) NOT NULL,
   PRIMARY KEY (`username`,`Subscriptions`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comments`
+--
+
+CREATE TABLE IF NOT EXISTS `comments` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `video_id` INT NOT NULL,
+  `user_id` INT NOT NULL,
+  `text` TEXT NOT NULL,
+  comment_date DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `replies`
+--
+
+CREATE TABLE IF NOT EXISTS `replies` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `comment_id` INT NOT NULL,
+  `user_id` INT NOT NULL,
+  `text` TEXT NOT NULL,
+  comment_date DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+

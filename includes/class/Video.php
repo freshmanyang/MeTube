@@ -26,7 +26,13 @@ class Video
 
     public function getUserId()
     {
-        return $this->videoData['uid'];
+        $query = $this->conn->prepare("SELECT users.id FROM users INNER JOIN videos ON 
+                                       videos.uploaded_by=users.username WHERE videos.id=:video_id");
+        $query->bindParam(":video_id", $this->videoData['id']);
+        if($query->execute()){
+            return $query->fetch(PDO::FETCH_ASSOC)['id'];
+        }
+        return '';
     }
 
     public function getTitle()
@@ -96,26 +102,20 @@ class Video
         return $query->rowCount();
     }
 
-    public function getVideoOwnerName(){
+    public function getVideoOwnerName()
+    {
         $query = $this->conn->prepare("SELECT uploaded_by FROM videos WHERE id=:video_id");
         $query->bindParam(":video_id", $this->videoData['id']);
         $query->execute();
         return $query->fetch(PDO::FETCH_ASSOC)['uploaded_by'];
     }
 
-    public function getVideoOwnerAvatar(){
+    public function getVideoOwnerAvatar()
+    {
         $videoOwnerName = $this->getVideoOwnerName();
         $query = $this->conn->prepare("SELECT avatar_path FROM users WHERE username=:username");
         $query->bindParam(":username", $videoOwnerName);
         $query->execute();
         return $query->fetch(PDO::FETCH_ASSOC)['avatar_path'];
-    }
-
-    public function getSubscriptionCount(){
-        $videoOwnerName = $this->getVideoOwnerName();
-        $query = $this->conn->prepare("SELECT * FROM subscriptions WHERE Subscriptions=:video_owner_name");
-        $query->bindParam(":video_owner_name", $videoOwnerName);
-        $query->execute();
-        return $query->rowCount();
     }
 }

@@ -245,4 +245,12 @@ class User
         $query->execute();
         return $query->rowCount();
     }
+
+    public function getSubscribeCountByName($user_name){
+        $query = $this->conn->prepare("SELECT * FROM subscriptions WHERE Subscriptions=:user_name");
+        $query->bindParam(":user_name", $user_name);
+        $query->execute();
+        return $query->rowCount();
+    }
+
 }

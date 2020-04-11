@@ -30,7 +30,7 @@ if( isset($_POST['ajax']) && isset($_POST['checked']) ){
     $(document).ready(function(){
         $('#but').click(function(){
 
-            var checkarr = [];
+            let checkarr = [];
             $("input[type=checkbox]:checked").each(function(index,element){
                 checkarr.push($(element).val());
             });
