@@ -12,6 +12,7 @@ if(isset($_POST['pagefunction'])){
         echo json_encode($channel->create());
     }
 }
+
 if(isset($_POST['subscribe'])){
     $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
     if($_POST['button']==1){

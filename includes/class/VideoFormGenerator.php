@@ -79,7 +79,7 @@ class VideoFormGenerator
         $query = $this->conn->prepare("SELECT * FROM category");
         $query->execute(); // run execute
         $html = "<div class='form-group'><select class='selectpicker' data-width='100%' title='Choose a category...' name='category'>";
-        for ($i = 0; $row = $query->fetch(PDO::FETCH_ASSOC); $i++) {  // get the next line as associated array
+        for ($i = 1; $row = $query->fetch(PDO::FETCH_ASSOC); $i++) {  // get the next line as associated array
             $html .= "<option value='$i'>" . $row["name"] . "</option>";
         }
         $html .= "</select></div>";

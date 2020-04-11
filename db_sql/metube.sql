@@ -138,7 +138,8 @@ CREATE TABLE IF NOT EXISTS `playlist` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `mainuser` VARCHAR(20) NOT NULL,
   `playlistname` VARCHAR(20) NOT NULL,
-  `video_id` INT NOT NULL,
+  `favorite` tinyint(1) NOT NULL DEFAULT '0',
+  `video_id` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
