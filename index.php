@@ -42,9 +42,13 @@
         $(document).ready(function () {
             $('#categoryList a').on('click', function(){
                 var category = ($(this).text());
-
-                // alert(category);
                 var href = "index.php?category="+category;
+                if(category === 'All'){
+                     href = "index.php";
+
+                }
+                // alert(category);
+
                 window.location.assign(href);
             });
         });
