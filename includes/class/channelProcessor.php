@@ -708,7 +708,7 @@ class  channelProcessor
             $flieSize = round($value['file_size'] / 1024 / 1024, 2);
             $videolink = "<a href='watch.php?vid=$videoid'>$title</a>";
             $table = '<tr> <th scope="row">'.$count.'</th>';
-            $table .= '<td>' . $videolink . '</td>' . '<td>' . $uploaded_by . '</td>'. '<td>' . $upload_date . '</td>'. '<td>' . $duration . '</td>'. '<td>' . $flieSize . '</td>';
+            $table .= '<td>' . $videolink . '</td>' . '<td>' . $uploaded_by . '</td>'. '<td>' . $upload_date . '</td>'. '<td>' . $duration . '</td>'. '<td>' . $flieSize . ' M</td>';
             $table .= '</tr>';
             $count++;
             array_push($this->tableVideoRecord, $table);
@@ -765,7 +765,7 @@ class  channelProcessor
         }
 
         $createPlaylistButton = "<input type=\"button\" class=\"btn btn-outline-primary\" id=\"createPlayList\" name = \"createPlayList\" value =\"Create PlayList\">";
-        $deletePlaylistButton = "<input type=\"submit\" class=\"btn btn-outline-danger\" id=\"deletePlayList\" name = \"deletePlayList\" value =\"Remove whole PlayList\">";
+        $deletePlaylistButton = "<input type=\"submit\" class=\"btn btn-outline-danger\" id=\"deletePlayList\" name = \"deletePlayList\" value =\"Remove PlayList\">";
         $addToFavoriteListButton = "<input type=\"submit\" class=\"btn btn-outline-info\" id=\"addToFavoriteList\" name = \"addToFavoriteList\" value =\"Add to FavoriteList\">";
         $removeVideofromFavoritelistbtn = "<input type=\"submit\" class=\"btn btn-outline-info\" id=\"removeFromFavoriteList\" name = \"removeFromFavoriteList\" value =\"Remove From FavoriteList\">";
         return "<ul class=\"nav nav-tabs\" id=\"myTab1\" role=\"tablist\">
@@ -810,7 +810,7 @@ class  channelProcessor
   
   <div class=\"tab-pane fade\" id=\"myPlayList2\" role=\"tabpanel\" aria-labelledby=\"contact-tab\"> 
   $createPlaylistButton
-  <form action=\"channelprocess.php?channel=$this->user\" method=\"post\">
+  <form action=\"channelprocess.php?channel=$this->user\" method=\"post\" style='display: inline'>
   $deletePlaylistButton
   $addToFavoriteListButton
   <div id=\"showMyPlayList\"></div>

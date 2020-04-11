@@ -62,7 +62,7 @@ class VideoUpload
         $query->bindParam(":privacy", $this->privacy);
         $query->bindParam(":file_path", $finalFilePath);
         $query->bindParam(":category", $this->category);
-        $query->bindValue(":upload_date", date ("Y-m-d H:i:s"));
+        $query->bindValue(":upload_date", date("Y-m-d H:i:s"));
         return $query->execute();
     }
 
@@ -118,6 +118,15 @@ class VideoUpload
         return $query->execute();
     }
 
+    private function uploadVideoSize($finalFilePath, $videoID)
+    {
+        $finalFileSize = filesize($finalFilePath);
+        $query = $this->conn->prepare("UPDATE videos SET file_size=:file_size where id=:videoId");
+        $query->bindParam(':file_size', $finalFileSize);
+        $query->bindParam(':videoId', $videoID);
+        return $query->execute();
+    }
+
     private function createThumbNails($finalFilePath)
     {
         // create three thumbnails for an uploaded video
@@ -129,6 +138,10 @@ class VideoUpload
         // Insert duration into database before generate thumbnails
         if (!$this->uploadVideoDuration($duration, $videoID)) {
             echo "Failed to update video duration.";
+            return false;
+        }
+        if (!$this->uploadVideoSize($finalFilePath, $videoID)) {
+            echo "Failed to update video size.";
             return false;
         }
         for ($i = 1; $i <= $tnNum; $i++) {
@@ -202,6 +215,7 @@ class VideoUpload
             echo "Failed to delete video!";
             return false;
         }
+
         // create thumbnails
         if (!$this->createThumbNails($finalFilePath)) {
             echo "Error in function: createThumbNails";
