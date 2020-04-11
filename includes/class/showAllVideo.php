@@ -3,8 +3,8 @@
 
 class showAllVideo
 {
-    private $conn,$video,$categoryList,$categorydb,$categoryFilter,$thumbnail,$categoryFilterquery;
-    private $allVideoPath =array();
+    private $conn, $video, $categoryList, $categorydb, $categoryFilter, $thumbnail, $categoryFilterquery;
+    private $allVideoPath = array();
     private $allVideoPathwithBlock = array();
 
     public function __construct($con)
@@ -15,47 +15,58 @@ class showAllVideo
         $this->video = $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function create($username){
-        $videowithprivacy = $this->checkPrivacy($this->video,$username);
-        $this->allVideoPath =[];
+    public function create($username)
+    {
+        $videowithprivacy = $this->checkPrivacy($this->video, $username);
+        $this->allVideoPath = [];
         foreach ($videowithprivacy as $key => $value) {
             $filePath = $value["file_path"];
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $views = $value["views"];
-//            $upload_date = date('Y-m-d H:i:s', $value["upload_date"]);
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
             $duration = $value['video_duration'];
             $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a>";
-            array_push($this->allVideoPath, "<div>$videolink
-                    <br>
-                    <span id='videoTitle'>$title</span><br> <div class='wrapper'><div class='left'>$uploaded_by<br>$views views</div>  <div class ='right'><span style='float:right'>$duration</span><br><span style='float:right'>$upload_date</span> </div></div>
+            array_push($this->allVideoPath, "
+                    <div>$videolink
+                        <br>
+                        <span id='videoTitle'>$title</span>
+                        <br>
+                        <div class='wrapper'>
+                            <div class='left'>$uploaded_by<br>$views views</div>
+                            <div class ='right'>
+                                <span style='float:right'>$duration</span>
+                                <br>
+                                <span style='float:right'>$upload_date</span>
+                            </div>
+                        </div>
                     </div> &emsp;&emsp;&emsp;");
         }
         return $this->allVideoPath;
     }
 
-    public function categoryFilter($category,$username){
+    public function categoryFilter($category, $username)
+    {
 //        if(!strcmp($category,'All')){
 //            return   header("Location: index.php");
 //
 //        }
 
         $query = $this->conn->prepare("SELECT videos.* From videos inner join category on videos.category = category.id where category.name=:category");
-        $query->bindParam(':category',$category);
+        $query->bindParam(':category', $category);
         $query->execute();
         $this->categoryFilterquery = $query->fetchAll(PDO::FETCH_ASSOC);
-        $this->categoryFilterquery = $this->checkPrivacy($this->categoryFilterquery,$username);
-        $this->categoryFilter='';
+        $this->categoryFilterquery = $this->checkPrivacy($this->categoryFilterquery, $username);
+        $this->categoryFilter = '';
         foreach ($this->categoryFilterquery as $key => $value) {
             $filePath = $value["file_path"];
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
-            $views =$value["views"];
-            $upload_date = $value["upload_date"];
+            $views = $value["views"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
 //            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
@@ -70,9 +81,11 @@ class showAllVideo
         }
         return $this->categoryFilter;
     }
-    private function getthumbnail($videoid){
+
+    private function getthumbnail($videoid)
+    {
         $query = $this->conn->prepare("SELECT file_path From thumbnails where video_id =:video_id and selected=1");
-        $query->bindParam(':video_id',$videoid);
+        $query->bindParam(':video_id', $videoid);
         $query->execute();
         return $this->thumbnail = $query->fetch(PDO::FETCH_ASSOC);
 
@@ -92,16 +105,18 @@ class showAllVideo
         }
         return $this->categoryList;
     }
-    public function getCategoryListWithBlock($username){
+
+    public function getCategoryListWithBlock($username)
+    {
         $blockUsers = $this->getBlockUsername($username);
-        if(empty($blockUsers)){
+        if (empty($blockUsers)) {
             return $this->getCategoryList();
         }
         $qMarks = str_repeat('?,', count($blockUsers) - 1) . '?';
         $query = $this->conn->prepare("SELECT distinct category.* From videos inner join category on videos.category = category.id where uploaded_by NOT IN ($qMarks)");
         $query->execute($blockUsers);
         $this->categorydb = $query->fetchAll(PDO::FETCH_ASSOC);
-        $this->categorydb = $this->checkPrivacy($this->categorydb,$username);
+        $this->categorydb = $this->checkPrivacy($this->categorydb, $username);
         foreach ($this->categorydb as $key => $value) {
             $category = $value["name"];
 
@@ -111,6 +126,7 @@ class showAllVideo
         }
         return $this->categoryList;
     }
+
     private function checkBlock($username)
     {
         $query = $this->conn->prepare("SELECT * From contactlist where username=:username and blocked = 1");
@@ -118,7 +134,9 @@ class showAllVideo
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
-    private function getBlockUsername($username){
+
+    private function getBlockUsername($username)
+    {
         $dbresult = $this->checkBlock($username);
         $blockUsers = array();
         foreach ($dbresult as $key => $value) {
@@ -126,9 +144,11 @@ class showAllVideo
         }
         return $blockUsers;
     }
-    private function checkPrivacy($videowithblock,$username){
 
-        foreach ($videowithblock as  $value) {
+    private function checkPrivacy($videowithblock, $username)
+    {
+
+        foreach ($videowithblock as $value) {
 
 
             if ($value['privacy'] == 0) {
@@ -150,17 +170,19 @@ class showAllVideo
         }
         return $videowithblock;
     }
-    public function createwithBlock($username){
+
+    public function createwithBlock($username)
+    {
         $blockUsers = $this->getBlockUsername($username);
 
-        if(empty($blockUsers)){
+        if (empty($blockUsers)) {
             return $this->create($username);
         }
         $qMarks = str_repeat('?,', count($blockUsers) - 1) . '?';
         $query = $this->conn->prepare("SELECT * From videos where uploaded_by NOT IN ($qMarks)");
         $query->execute($blockUsers);
         $videoresult = $query->fetchAll(PDO::FETCH_ASSOC);
-        $videowithprivacy = $this->checkPrivacy($videoresult,$username);
+        $videowithprivacy = $this->checkPrivacy($videoresult, $username);
 //        if(empty($videowithprivacy)){
 //            return '';
 //        }
@@ -171,7 +193,7 @@ class showAllVideo
             $uploaded_by = $value["uploaded_by"];
             $views = $value["views"];
 //            $upload_date = date('Y-m-d H:i:s', $value["upload_date"]);
-            $upload_date = $value["upload_date"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
@@ -183,29 +205,31 @@ class showAllVideo
                     </div> &emsp;&emsp;&emsp;");
         }
         return $this->allVideoPathwithBlock;
-}
-    public function getCategoryVideoswithBlock($username,$category){
-        if(!strcmp($category,'All')){
-            return   $this->createwithBlock($username);
+    }
+
+    public function getCategoryVideoswithBlock($username, $category)
+    {
+        if (!strcmp($category, 'All')) {
+            return $this->createwithBlock($username);
         }
         $blockUsers = $this->getBlockUsername($username);
-        if(empty($blockUsers)){
-            return $this->categoryFilter($category,$username);
+        if (empty($blockUsers)) {
+            return $this->categoryFilter($category, $username);
         }
 
         $qMarks = str_repeat('?,', count($blockUsers) - 1) . '?';
-        $category = "'".$category."'";
+        $category = "'" . $category . "'";
         $query = $this->conn->prepare("SELECT videos.* From videos inner join category on videos.category = category.id where category.name=$category and videos.uploaded_by NOT IN ($qMarks)");
-         $query->execute($blockUsers);
+        $query->execute($blockUsers);
         $dbresult = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        $categoryFilterquerywithBlock ='';
-        foreach ($dbresult as  $value) {
+        $categoryFilterquerywithBlock = '';
+        foreach ($dbresult as $value) {
             $filePath = $value["file_path"];
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
-            $views =$value["views"];
-            $upload_date = $value["upload_date"];
+            $views = $value["views"];
+            $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
 //            $upload_date = date('Y-m-d H:i:s',$value["upload_date"]);
             $videoid = $value["id"];
             $thumbnailpath = $this->getthumbnail($videoid);
@@ -223,4 +247,5 @@ class showAllVideo
 
 
 }
+
 ?>

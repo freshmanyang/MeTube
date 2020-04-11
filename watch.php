@@ -2,6 +2,8 @@
 <?php require_once("./includes/nav.php"); ?>
 <?php require_once("./includes/class/VideoPlayer.php"); ?>
 <?php require_once("./includes/class/CommentHandler.php"); ?>
+<?php require_once('./includes/class/channelProcessor.php'); ?>
+<?php $channel = new channelProcessor($conn,'',$usernameLoggedIn);?>
 <link rel="stylesheet" href="./assets/css/watch.css">
 <script src="./assets/js/watch_page.js" defer></script>
 <main class="main-section-container" id="main">
@@ -65,6 +67,7 @@
                             <i class="iconfont icon-save"></i>
                             <span>SAVE</span>
                         </button>
+                        <?php require_once("./includes/components/add_to_playlist_modal.php"); ?>
                     </div>
                 </div>
             </div>
@@ -154,6 +157,7 @@
             </div>
         </div>
         <div class="suggestion">
+
         </div>
     </div>
 </main>

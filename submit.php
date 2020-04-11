@@ -278,7 +278,7 @@ if (isset($_POST["post_reply"]) && isset($_POST["video_id"]) && isset($_POST["co
             $response['status'] = false;
             $response['data'] = '';
         }
-    }else { // user not sign in
+    } else { // user not sign in
         $response['status'] = false;
         $response['data'] = 'Not signIn';
     }
@@ -305,8 +305,12 @@ if (isset($_POST["get_comment"]) && isset($_POST["video_id"]) && isset($_POST["p
 // if nothing above, sing out
 if (isset($_SESSION['uid'])) {
     $accountHandler->signOut();
-//    header("Location:index.php");
-    echo "<script type='text/javascript'>history.go(-1)</script>";
+    $url = $_SERVER['HTTP_REFERER'];
+    if (strpos($url, 'watch.php') === false) { // go back to index.php from any page when logout except from watch.php
+        header("Location:index.php");
+    } else {
+        echo "<script type='text/javascript'>history.go(-1)</script>";
+    }
 }
 ?>
 
