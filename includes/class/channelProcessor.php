@@ -9,6 +9,7 @@ class  channelProcessor
     private $signinallVideoPath = array();
     private $sortingVideoPath = array();
     private $tableVideoRecord = array();
+
     public function __construct($conn, $user, $usernameLoggedIn)
     {
         $this->user = $user;
@@ -116,11 +117,11 @@ class  channelProcessor
         }
 
 
-        foreach ($this->mysubscription as $key => $value) {
-            $username = ucfirst($value["Subscriptions"]);
+        foreach ($this->mysubscription as $key => $subscriptionValue) {
+            $username = ucfirst($subscriptionValue["Subscriptions"]);
 //            according subscribe to find video
             $query = $this->conn->prepare("SELECT * From videos where uploaded_by=:uploaded_by");
-            $query->bindParam(':uploaded_by', $value["Subscriptions"]);
+            $query->bindParam(':uploaded_by', $subscriptionValue["Subscriptions"]);
             $query->execute();
             $this->uservideo = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -400,7 +401,7 @@ class  channelProcessor
             $thumbnailpath = $thumbnailpath["file_path"];
             $duration = $value['video_duration'];
             $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a><br>";
-            array_push($favoritelistvideopath, "<div><input type=\"checkbox\" name=\"videoList[]\" value = \"$videoid\">
+            array_push($favoritelistvideopath, "<div><input type=\"checkbox\" name=\"favoriteList[]\" value = \"$videoid\">
                     <div>$videolink
                   <span id='videoTitle'>$title</span><br> <div class='wrapper'><div class='left'>$uploaded_by<br>$views views</div>  <div class ='right'><span style='float:right'>$duration</span><br><span style='float:right'>$upload_date</span> </div></div>
                     </div>&emsp;&emsp;");
@@ -436,22 +437,26 @@ class  channelProcessor
     public function showPlayList()
     {
         $dbresult = $this->getPlayList();
-        $allplaylist = '';
+
+        $allplaylist ='';
         foreach ($dbresult as $value) {
-            $allplaylist .= '<p><input type="checkbox" name="selectedPlayList[]" value =' . $value["playlistname"] . '>';
+
+            $allplaylist .= "<p><input type='checkbox' name='selectedPlayList[]' value='" . $value["playlistname"] . "'>";
             $allplaylist .= '&nbsp<a href="Playlist.php?playlist=' . $value["playlistname"] . '&channel=' . $this->user . '" target="_blank">' . $value["playlistname"] . '</a></p>';
             $allVideoid = $this->getVideoInfoViaPlayList($value["playlistname"]);
 //            Print_r($value["playlistname"]);
 //            Print_r($allVideoid);
             $allvideoidarray = array();
             foreach ($allVideoid as $value) {
-                if ($value['video_id'] != 0){
-                array_push($allvideoidarray, $value['video_id']);}
+                if ($value['video_id'] != 0) {
+                    array_push($allvideoidarray, $value['video_id']);
+                }
             }
 //            Print_r($allvideoidarray);
             if (empty($allvideoidarray)) {
                 $allplaylist .= '<p> This Playlist doesn\'t have any videos yet!<p>';
-                continue;}
+                continue;
+            }
             $qMarks = str_repeat('?,', count($allvideoidarray) - 1) . '?';
             $query = $this->conn->prepare("select * FROM videos WHERE id IN ($qMarks)");
             $query->execute($allvideoidarray);
@@ -507,12 +512,25 @@ class  channelProcessor
             $addToFavoriteListButton = "&emsp;<input type=\"submit\" class=\"btn btn-outline-info\" id=\"addSingleVideoToFavoriteList\" name = \"addSingleVideoToFavoriteList\" value =\"Add to FavoriteList\"></p>";
         }
         $playlistTitle = '<p>Your are in Playlist - ' . $playlistname . '</p>';
-        $playlistTitle .= "<p><a href=\"channel.php?channel=".$this->usernameLoggedIn."&tab=myPlayList2\">Go back to my PlayList!</a></p>";
-        $playlistTitle .= "<p><a href=\"channel.php?channel=".$this->usernameLoggedIn."&tab=myFavoriteList2\">Go back to my FavoriteList!</a></p>";
+        $playlistTitle .= "<p><a href=\"channel.php?channel=" . $this->usernameLoggedIn . "&tab=myPlayList2\">Go back to my PlayList!</a></p>";
+        $playlistTitle .= "<p><a href=\"channel.php?channel=" . $this->usernameLoggedIn . "&tab=myFavoriteList2\">Go back to my FavoriteList!</a></p>";
         //        $playlistTitle .= '<form action=\"channelprocess.php?channel='.$this->user.'\" method=\"post\">';
         $playlistTitle .= $deletebutton;
         $playlistTitle .= $addToFavoriteListButton;
+
         $VideoPathplaylist = array($playlistTitle);
+//
+        return $VideoPathplaylist;
+    }
+        public function showVideoFromPlaylistRecord($playlistname){
+            $playlistvideorecord = $this->queryPlayList($playlistname);
+            $videoidfromplaylist = array();
+            foreach ($playlistvideorecord as $value) {
+                $videoidfromplaylist[] = $value["video_id"];
+            }
+
+            $videoinfofromplaylist = $this->queryPlaylistVideoList($videoidfromplaylist);
+            $VideoPathplaylist= array();
         foreach ($videoinfofromplaylist as $value) {
 
             $title = $value["title"];
@@ -564,6 +582,15 @@ class  channelProcessor
 
     public function addVideoTOPlaylist($playlist, $vid)
     {
+        $query = $this->conn->prepare("SELECT * FROM playlist where video_id=:videoid AND playlistname=:playlistname and mainuser=:mainuser");
+        $query->bindParam(':videoid', $vid);
+        $query->bindParam(':playlistname', $playlist);
+        $query->bindParam(':mainuser', $this->usernameLoggedIn);
+        $query->execute();
+        if( count($query->fetchAll(PDO::FETCH_ASSOC)))
+        {
+            return 'This video already in playlist '.$playlist;
+        }
         $query = $this->conn->prepare("INSERT INTO playlist (mainuser,playlistname,video_id) value(:mainuser,:playlistname,:videoid)");
         $query->bindParam(':mainuser', $this->usernameLoggedIn);
         $query->bindParam(':playlistname', $playlist);
@@ -685,10 +712,10 @@ class  channelProcessor
         $dbresult = $query->fetchALL(PDO::FETCH_ASSOC);
 
         $downloadVideoList = array();
-        foreach ($dbresult as  $value) {
+        foreach ($dbresult as $value) {
             array_push($downloadVideoList, $value['video_id']);
         }
-        if (empty($downloadVideoList)){
+        if (empty($downloadVideoList)) {
             return '';
         }
 
@@ -698,7 +725,7 @@ class  channelProcessor
         $videoRecords = $query->fetchAll(PDO::FETCH_ASSOC);
         $count = 1;
 
-        foreach ($videoRecords as  $value) {
+        foreach ($videoRecords as $value) {
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
             $upload_date = date('Y-m-d', strtotime($value["upload_date"]));
@@ -707,8 +734,8 @@ class  channelProcessor
             $duration = $value['video_duration'];
             $flieSize = round($value['file_size'] / 1024 / 1024, 2);
             $videolink = "<a href='watch.php?vid=$videoid'>$title</a>";
-            $table = '<tr> <th scope="row">'.$count.'</th>';
-            $table .= '<td>' . $videolink . '</td>' . '<td>' . $uploaded_by . '</td>'. '<td>' . $upload_date . '</td>'. '<td>' . $duration . '</td>'. '<td>' . $flieSize . ' M</td>';
+            $table = '<tr> <th scope="row">' . $count . '</th>';
+            $table .= '<td>' . $videolink . '</td>' . '<td>' . $uploaded_by . '</td>' . '<td>' . $upload_date . '</td>' . '<td>' . $duration . '</td>' . '<td>' . $flieSize . ' M</td>';
             $table .= '</tr>';
             $count++;
             array_push($this->tableVideoRecord, $table);
@@ -716,7 +743,32 @@ class  channelProcessor
 
         return $this->tableVideoRecord;
     }
+    public function addFriend($channel){
+        $query = $this->conn->prepare("SELECT * From contactlist where username=:username and mainuser=:mainuser");
+        $query->bindParam(':username', $channel);
+        $query->bindParam(':mainuser', $this->usernameLoggedIn);
+        $query->execute();
+        if(count($query->fetchALL(PDO::FETCH_ASSOC))){
+            return 'You already have '.$channel.' in your contact list!';
+        }
+        else{
+        $groupname = 'friends';
+        $query = $this->conn->prepare("INSERT INTO contactlist (mainuser,username,groupname) value(:mainuser,:username,:groupname)");
+        $query->bindParam(':mainuser', $this->usernameLoggedIn);
+        $query->bindParam(':username', $channel);
+        $query->bindParam(':groupname',$groupname);
+        $query->execute();
+        }
+        return 'Add '.$channel.' becomes Friend successful';
+    }
+    public function setVideosPrivacy($videoslist,$privacy){
+        $qMarks = str_repeat('?,', count($videoslist) - 1) . '?';
+        $mainUser = "'" . $this->usernameLoggedIn . "'";
+        $query = $this->conn->prepare("UPDATE videos SET privacy=$privacy WHERE  uploaded_by=$mainUser AND id IN ($qMarks)");
+        $query->execute($videoslist);
+        Return 'Set Privacy successful';
 
+    }
     public function showchannelonly($channel)
     {
         $blockUser = $this->getBlockUsername($this->usernameLoggedIn);
@@ -729,13 +781,15 @@ class  channelProcessor
         }
 
         if (!$this->checksubscribe($this->user)) {
-            $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='subscribe'>Subscribe</button> </div>";
+            $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='subscribe'>Subscribe</button> ";
 
         } else {
-            $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='unsubscribe'>Unsubscribe</button> </div>";
+            $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='unsubscribe'>Unsubscribe</button> ";
         }
+        $addToFriendButton= "<button type=\"button\"  class=\"btn btn-success\"  id='addFriend'>Add Friend</button> </div>";
+
         return "
-          $button
+          $button $addToFriendButton  
         <ul class=\"nav nav-tabs\" id=\"myTab1\" role=\"tablist\">
   <li id=\"channel1\" class=\"nav-item\">
     <a id=\"channel1\" class=\"nav-link active\" id=\"home-tab\" data-toggle=\"tab\" href=\"#channel2\" role=\"tab\" aria-controls=\"home\" aria-selected=\"true\">Channel</a>
@@ -761,9 +815,14 @@ class  channelProcessor
         if (!count($this->video)) {
             $deletebutton = "";
         } else {
-            $deletebutton = " <input type=\"submit\" class=\"btn btn-danger\" id=\"delete\" name = \"Delete\" value =\"Delete videos permanent\"><br>";
+            $deletebutton = " <input type=\"submit\" class=\"btn btn-danger\" id=\"delete\" name = \"Delete\" value =\"Delete videos permanent\">";
         }
-
+        $selectplaylistbtn = "<input type=\"checkbox\" id=\"selectplaylistbtn\"  value=\"Select All\"/>";
+        $selectplaylist = '<label for="selectplaylistbtn">Select All:</label>';
+        $favorlistbtn = "<input type=\"checkbox\" id=\"selectfavoritelistbtn\"  value=\"Select All\"/>";
+        $favorlist = '<label for="selectfavoritelistbtn">Select All:</label>';
+        $selectallbtn = "<input type=\"checkbox\" id=\"selectallbtn\"  value=\"Select All\"/>";
+        $setPrivacybtn = "<input type=\"button\" class=\"btn btn-warning\" id=\"setPrivacy\" name = \"setPrivacy\" value =\"Set Videos Privacy\"><br>";
         $createPlaylistButton = "<input type=\"button\" class=\"btn btn-outline-primary\" id=\"createPlayList\" name = \"createPlayList\" value =\"Create PlayList\">";
         $deletePlaylistButton = "<input type=\"submit\" class=\"btn btn-outline-danger\" id=\"deletePlayList\" name = \"deletePlayList\" value =\"Remove PlayList\">";
         $addToFavoriteListButton = "<input type=\"submit\" class=\"btn btn-outline-info\" id=\"addToFavoriteList\" name = \"addToFavoriteList\" value =\"Add to FavoriteList\">";
@@ -793,7 +852,7 @@ class  channelProcessor
 <div class=\"tab-content\" id=\"myTabContent\">
   <div class=\"tab-pane fade show active\" id=\"channel2\" role=\"tabpanel\" aria-labelledby=\"home-tab\">
   <form action=\"channelprocess.php?channel=$this->user\" method=\"post\">
-            $deletebutton
+            $deletebutton $setPrivacybtn  <label for=\"selectallbtn\">Select All:</label> $selectallbtn 
             <div id=\"show\">
             </div>
   </form>
@@ -813,13 +872,15 @@ class  channelProcessor
   <form action=\"channelprocess.php?channel=$this->user\" method=\"post\" style='display: inline'>
   $deletePlaylistButton
   $addToFavoriteListButton
+  <div>$selectplaylist $selectplaylistbtn</div>
   <div id=\"showMyPlayList\"></div>
   </form>
   </div>
   
   <div class=\"tab-pane fade\" id=\"myFavoriteList2\" role=\"tabpanel\" aria-labelledby=\"contact-tab\">
      <form action=\"channelprocess.php?channel=$this->user\" method=\"post\">
-     $removeVideofromFavoritelistbtn
+     $removeVideofromFavoritelistbtn 
+     <div>$favorlist $favorlistbtn</div>
      <div id=\"showMyFavoriteList\"></div>
      </form>
   </div>

@@ -18,10 +18,11 @@
         <div id="search_result">
             search_result
             <?php if(isset($_POST['advancedSearch'])){
-                $search->showAdvancedSearch($_POST['file_size_min'],$_POST['file_size_max']);
-                var_dump($_POST['file_size_min']);
-                echo  $_POST['file_size_min'];
-                echo  $_POST['file_size_max'];
+                $searchResult = $search->showAdvancedSearch($_POST['file_size_min'],$_POST['file_size_max']);
+                foreach($searchResult as )
+                //                var_dump($_POST['file_size_min']);
+//                echo  $_POST['file_size_min'];
+//                echo  $_POST['file_size_max'];
             }
             ?>
         </div>
