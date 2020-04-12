@@ -70,8 +70,43 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
         </div>
     </div>
 </div>
+<!--set videos privacy modal-->
+    <div class="modal" id ="privacyModal" tabindex="-1" role="dialog" data-backdrop ='static' data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Privacy</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="btn-group">
+                        <button type="button" id="privacyList" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Privacy
+                        </button>
+                        <div class="dropdown-menu" id="Privacy">
+                            <a class='dropdown-item' href='#'>Public</a>
+                            <a class='dropdown-item' href='#'>Private</a>
+                            <a class='dropdown-item' href='#'>Friends</a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="confirmSetPrivacy" class="btn btn-primary">Set</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 
+
+
+<!--End set videos privacy modal-->
     <script type="text/javascript">
     //handler create playlist button
     $("#createPlayList").on('click', function() {
@@ -82,7 +117,87 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
         $("#playList_Form").submit();
 
     });
+    //modal set videos privacy button
+    $("#setPrivacy").on('click', function() {
+        $('#privacyModal').modal("show");
+    });
 
+    // channel tab select all btn or unselect all
+    var selectallbtn = document.getElementById("selectallbtn");
+    var selectedVideos = document.getElementsByName('videoList[]');
+    if(selectallbtn) {
+        $('#selectallbtn').click(function() {
+            if(this.checked) {
+                // Iterate each checkbox
+                $(selectedVideos).each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(selectedVideos).each(function() {
+                    this.checked = false;
+                });
+            }
+        });
+    }
+    // favoritelist tab select all btn or unselect all
+    var selectfavoritelistbtn = document.getElementById("selectfavoritelistbtn");
+
+    var favoriteList = document.getElementsByName('favoriteList[]');
+    if(selectfavoritelistbtn) {
+        $('#selectfavoritelistbtn').click(function() {
+            if(this.checked) {
+                // Iterate each checkbox
+                $(favoriteList).each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(favoriteList).each(function() {
+                    this.checked = false;
+                });
+            }
+        });
+    }
+
+
+
+    // my playlist tab select all btn or unselect all
+    var selectplaylistbtn = document.getElementById("selectplaylistbtn");
+     var selectedPlayList = document.getElementsByName('selectedPlayList[]');
+    if(selectplaylistbtn) {
+
+        $('#selectplaylistbtn').click(function() {
+            if(this.checked) {
+                // Iterate each checkbox
+                $(selectedPlayList).each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(selectedPlayList).each(function() {
+                    this.checked = false;
+                });
+            }
+        });
+    }
+
+    // Add friend button handler
+    var addfriendbtn = document.getElementById("addFriend");
+    if(addfriendbtn){
+    addfriendbtn.addEventListener("click", addFriend);}
+    function addFriend() {
+        var user='<?php echo $_GET['channel']; ?>';
+        $.ajax({
+            type:'POST',
+            url:'channelprocess.php',
+            data:{
+                addFriend:"1",
+                user:user
+            },
+            success:function(result) {
+                alert(result);
+            }
+        })
+
+    };
 //    subscribe button handler
     var subscribebtn = document.getElementById("subscribe");
     var unsubscribebtn = document.getElementById("unsubscribe");
@@ -124,19 +239,44 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
 
     });
 
-    // Videos sorting button
-    //$('#sortingList a').on('click', function(){
-    //    var sortingName = ($(this).text());
-    //    // alert(category);
-    //    var channel = '<?php //echo $_GET['channel'];?>//';
-    //    var href = "channelprocess.php?sorting="+sortingName+"&channel="+channel;
-    //    window.location.assign(href);
-    //});
 
 
-//            page plugin    $(function () is jQuery short-hand for $(document).ready(function() { ... });
+
+//          $(function () is jQuery short-hand for $(document).ready(function() { ... });
          $(function () {
              var user='<?php echo $_GET['channel']; ?>';
+
+//set privacy modal confirm button
+             var privacy ='';
+             $('#Privacy a').on('click', function() {
+                 privacy = ($(this).text());
+                 $("#privacyList").text(privacy);
+             });
+             //handle set privacy
+             $('#confirmSetPrivacy').on("click", function () {
+                 var selectedVideos = document.getElementsByName('videoList[]');
+                 var videolist = new Array();
+                 for(var i = 0; i < selectedVideos.length; i++){
+                     if(selectedVideos[i].checked)
+                     {videolist.push(selectedVideos[i].value);}
+                 }
+                $.ajax({
+                     type: 'POST',
+                     url: 'channelprocess.php',
+                     data: {
+                         setPrivacy: "1",
+                         user: user,
+                         privacy:privacy,
+                         videolist:videolist
+                     },
+                     success: function (result) {
+                         $('#privacyModal').modal("hide");
+                        alert(result);
+
+                     }
+                 });
+             });
+
          //channel tab + page function
          $.ajax({
              type:'POST',
@@ -223,6 +363,8 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
                       showMyPlayList.innerHTML += final2;}
                   }
               });
+
+
              // });
              //my FavoriteList
              // $('#myTab1 a[href="#myFavoriteList2"]').on("click", function () {
@@ -239,7 +381,9 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
                          final3 = JSON.parse(result);
                          final3.forEach(arrayfunction);
                          function arrayfunction(value) {
+                             if (document.getElementById("showMyFavoriteList")){
                              document.getElementById("showMyFavoriteList").innerHTML += value;
+                             }
                          }
 
 

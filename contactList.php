@@ -125,7 +125,10 @@ if(empty($queryResult)){
         <input type="submit"  class="btn btn-outline-info" name ="viewFilter" value ="Filter">
     </div>
     <div class="viewtable">
-    <table class="table table-striped">
+        <p><label for="selectcontactbtn">Select All:</label>
+            <input type="checkbox" id="selectcontactbtn"  value="Select All"/></p>
+
+        <table class="table table-striped">
         <thead class="thead-dark">
         <tr>
             <th scope="col">#</th>
@@ -165,5 +168,24 @@ if(empty($queryResult)){
 
     </div>
 </main>
+<script>
+    // select all btn or unselect all
+    var selectcontactbtn = document.getElementById("selectcontactbtn");
+    var selectedConatactlist = document.getElementsByName('contactList[]');
+
+        $('#selectcontactbtn').click(function() {
+            if(this.checked) {
+                // Iterate each checkbox
+                $(selectedConatactlist).each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $(selectedConatactlist).each(function() {
+                    this.checked = false;
+                });
+            }
+        });
+
+</script>
 </body>
 </html>

@@ -1,22 +1,28 @@
-#showvideofromplaylist{
+.main-content-container{
     display:flex;
     flex-flow: row wrap;
-    margin:0 300px;
+    margin: 0 300px;
 }
+
 #showvideofromplaylist  p{
     flex-basis: 100%;
 }
- #showvideofromplaylist div .wrapper{
+#showvideosrecord{
+    display:flex;
+    flex-flow: row wrap;
+}
+
+ #showvideosrecord div .wrapper{
     display: flex;
     align-items: flex-start;
     width:300px;
     margin:0;
 }
-#showvideofromplaylist div .wrapper .left{
+#showvideosrecord div .wrapper .left{
     flex: 0 0 auto;
     margin:0;
 }
-#showvideofromplaylist div .wrapper .right{
+#showvideosrecord div .wrapper .right{
     flex: 1 1 auto;
     margin:0;
 }
