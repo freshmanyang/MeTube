@@ -9,9 +9,15 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
     <div class="main-content-container">
 
         <form action="channelprocess.php?channel=<?php echo $_GET['channel']?>&playlist=<?php echo $_GET['playlist']?>" method="post">
+
+
         <div id="showvideofromplaylist">
 
         </div>
+         <div><label for="selectoneplaylistbtn">Select All:</label>
+                <input type="checkbox" id="selectoneplaylistbtn"  value="Select All"/>
+        <div id="showvideosrecord"></div>
+         </div>
         </form>
     </div>
 
@@ -37,6 +43,44 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
                     }
                 }
                 });
+           $.ajax({
+               type:'POST',
+               url:'channelprocess.php',
+               data:{
+                   showVideoFromPlaylistrecord:"1",
+                   user:user,
+                   playlist:playlist
+               },
+               datatype:'json',
+               success:function(result){
+                   final = JSON.parse(result);
+
+                   final.forEach(arrayfunction);
+                   function arrayfunction(value){
+                       document.getElementById("showvideosrecord").innerHTML += value;
+                   }
+               }
+           });
+
+           // select all btn or unselect all
+           var selectoneplaylistbtn = document.getElementById("selectoneplaylistbtn");
+           var selectedPlayList = document.getElementsByName('videoinplayList[]');
+           if(selectoneplaylistbtn) {
+
+               $('#selectoneplaylistbtn').click(function() {
+                   if(this.checked) {
+                       // Iterate each checkbox
+                       $(selectedPlayList).each(function() {
+                           this.checked = true;
+                       });
+                   } else {
+                       $(selectedPlayList).each(function() {
+                           this.checked = false;
+                       });
+                   }
+               });
+           }
+
        });
 </script>
 

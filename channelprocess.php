@@ -50,6 +50,7 @@ if (isset($_POST['Delete'])) {
 }
 
 
+
 if(isset($_POST['PlayList'])){
     $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
     $message = $channel->createPlayList($_POST['PlayList']);
@@ -97,6 +98,11 @@ if(isset($_POST['showVideoFromPlaylist'])){
     echo json_encode($channel->showVideoFromPlaylist($_POST['playlist']));
 
 }
+if(isset($_POST['showVideoFromPlaylistrecord'])){
+    $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
+    echo json_encode($channel->showVideoFromPlaylistRecord($_POST['playlist']));
+}
+
 if (isset($_POST['deletevideoinplaylist'])) {
     if(isset($_POST['videoinplayList'])) {
 //    print_r($_POST['videoinplayList']);
@@ -141,9 +147,9 @@ if (isset($_POST['addSingleVideoToFavoriteList'])) {
 
 if (isset($_POST['removeFromFavoriteList'])) {
     $reroute = 'channel.php?channel='.$_GET['channel'] . '&tab=myFavoriteList2';
-    if(isset($_POST['videoList'])) {
+    if(isset($_POST['favoriteList'])) {
         $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
-        $message = $channel->removeVideoFromFavoriteList($_POST['videoList']);
+        $message = $channel->removeVideoFromFavoriteList($_POST['favoriteList']);
         echo "<script>alert('$message'); location.href = '$reroute';</script>";
     }
     else{
@@ -179,4 +185,29 @@ if(isset($_POST['downloadvideo'])) {
     echo json_encode($channel->showDownloadedVideos());
 }
 
+
+if (isset($_POST['addFriend'])) {
+        $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
+       echo $message = $channel->addFriend($_POST['user']);
+}
+if (isset($_POST['setPrivacy'])) {
+//    $reroute = 'channel.php?channel='.$_POST['user'];
+    if(isset($_POST['videolist'])) {
+        if(!strcmp($_POST['privacy'],'Public')){
+            $privacy = 1;
+        }
+        elseif(!strcmp($_POST['privacy'],'Private')){
+            $privacy = 0;
+        }
+        elseif(!strcmp($_POST['privacy'],'Friends')){
+            $privacy = 2;
+        }
+
+        $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
+        echo $channel->setVideosPrivacy($_POST['videolist'],$privacy);
+    }
+    else{
+        echo 'You didnot choose any videos';
+    }
+}
 ?>
