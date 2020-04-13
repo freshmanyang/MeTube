@@ -105,7 +105,7 @@
                         visiblePages: 5,
                         onPageClick: function (event, page) {
                             document.getElementById("allvideopage").innerHTML ="";
-                            console.info(page + ' (from options)');
+                            // console.info(page + ' (from options)');
                             for ($i = 4; $i >0 ; $i--) {
                                 if ( !(final[page * 4 - $i] == null)){
                                     document.getElementById("allvideopage").innerHTML +=
@@ -114,7 +114,7 @@
                             }
                         }
                     }).on('page', function (event, page) {
-                        console.info(page + ' (from event listening)');
+                        // console.info(page + ' (from event listening)');
                     });
 
                 }

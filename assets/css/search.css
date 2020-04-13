@@ -1,17 +1,48 @@
 .main-section-container{
     margin-left:300px;
-
 }
 #main-content-container.paddingTop {
-
     padding-top: 240px;
-
 }
-
 #advanced-search-container{
 
     height: 240px;
-    width: auto;
+    width: 50%;
     background-color: #dedede;
-    position: fixed;
+    /*position: fixed;*/
+}
+#search_result{
+    width:60%;
+    display:flex;
+    flex-flow: column ;
+}
+#search_result #singlevideo {
+  margin: 20px 0px;
+    display:flex;
+    flex-flow: row;
+}
+#search_result #singlevideo  #videocontent{
+    /*align-items: flex-start;*/
+    margin:0px 10px;
+    display:flex;
+    flex-flow: row wrap;
+}
+#search_result #singlevideo  #videocontent h3{
+  text-align: center;
+    flex-basis: 100%;
+}
+
+#search_result #singlevideo #videocontent ul li {
+    float:left;
+    width: 200px;
+
+}
+
+#search_result #singlevideo #videocontent p{
+    flex-basis: 100%;
+    margin-left:30px;
+}
+ #page-nav ul {
+    display: flex;
+    justify-content: center;
 }
