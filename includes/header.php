@@ -59,11 +59,11 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
         <span class="logo-name">MeTube</span>
     </a>
     <div class="search-container">
-        <form class="search-form" action="./search.php">
+        <form class="search-form" action="./search.php" method="get">
             <div class="search-box" id="search_box">
-                <input id="search_input" type="text" placeholder="Search">
+                <input id="search_input" name="search_input" type="search" placeholder="Search">
             </div>
-            <button class="search-button"><i class="iconfont icon-search"></i></button>
+            <button type="submit" class="search-button"><i class="iconfont icon-search"></i></button>
         </form>
     </div>
     <div class="end">

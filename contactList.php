@@ -125,13 +125,12 @@ if(empty($queryResult)){
         <input type="submit"  class="btn btn-outline-info" name ="viewFilter" value ="Filter">
     </div>
     <div class="viewtable">
-        <p><label for="selectcontactbtn">Select All:</label>
-            <input type="checkbox" id="selectcontactbtn"  value="Select All"/></p>
 
         <table class="table table-striped">
         <thead class="thead-dark">
         <tr>
-            <th scope="col">#</th>
+            <th scope="col"><label for="selectcontactbtn">Select All:</label>
+                <input type="checkbox" id="selectcontactbtn"  value="Select All"/></th>
             <th scope="col">Selected</th>
             <th scope="col">Username</th>
             <th scope="col">Groupname</th>
@@ -154,6 +153,7 @@ if(empty($queryResult)){
         ?>
         </tbody>
     </table>
+
         <input type="submit" class="btn btn-outline-danger" name = "Delete" value ="Delete">
        <input type="submit" class="btn btn-outline-warning" name ="Block" value ="Block">
        <input type="submit" class="btn btn-outline-success" name ="unBlock" value ="Unblock">
