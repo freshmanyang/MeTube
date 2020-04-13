@@ -101,7 +101,7 @@ class VideoUpload
     {
         // upload the video duration to database
         $hours = floor($duration / 3600);
-        $hours = ($hours < 1) ? "" : $hours . ":";
+        $hours = ($hours < 10) ? "0" . $hours . ":" : $hours . ":";
 
         $minutes = floor(($duration - (int)$hours * 3600) / 60);
         $minutes = ($minutes < 10) ? "0" . $minutes . ":" : $minutes . ":";
@@ -110,6 +110,7 @@ class VideoUpload
         $seconds = ($seconds < 10) ? "0" . $seconds : $seconds;
 
         $duration = $hours . $minutes . $seconds;
+        $duration = date("H:i:s", strtotime($duration));
 
         // insert duration into database
         $query = $this->conn->prepare("UPDATE videos SET video_duration = :duration WHERE id = :videoID");

@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `videos` (
     `category` VARCHAR(50),
     `upload_date` DATETIME NOT NULL,
     `views` INT NOT NULL DEFAULT 0,
-    `video_duration` VARCHAR(30) NOT NULL DEFAULT '00:00',
+    `video_duration` TIME NOT NULL DEFAULT '00:00:00',
     `file_size` INT(10) DEFAULT 0,
     `like` INT DEFAULT 0,
     `dislike` INT DEFAULT 0,

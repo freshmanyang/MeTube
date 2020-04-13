@@ -20,7 +20,7 @@
     <a href="./upload.php" class="endpoint" id="to_upload">
         <div class="endpoint-content">
             <i class="iconfont icon-video"></i>
-            <p>Your video</p>
+            <p>Upload new video</p>
         </div>
     </a>
     <a href="./channel.php?channel=<?php echo $usernameLoggedIn?>" class="endpoint" id="to_channel">
