@@ -12,11 +12,12 @@
 
         $videoUploadObj = new VideoUpload($conn);
         $videoUploadObj->setData($_FILES['file'],
-                                $_POST['title'],
-                                $_POST['description'],
-                                $_POST['privacy'],
-                                $_POST['category'],
-                                $userLoginInObj->getUserName());
+                                 $_POST['title'],
+                                 $_POST['description'],
+                                 $_POST['keywords'],
+                                 $_POST['privacy'],
+                                 $_POST['category'],
+            $userLoginInObj->getUserName());
         $res = $videoUploadObj->upload();
         ?>
     </div>
