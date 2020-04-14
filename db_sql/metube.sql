@@ -186,3 +186,28 @@ CREATE TABLE IF NOT EXISTS `replies` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `keyword`
+--
+
+CREATE TABLE IF NOT EXISTS `keyword` (
+  `keyword_id` INT NOT NULL AUTO_INCREMENT,
+  `keyword` VARCHAR(30) NOT NULL UNIQUE,
+  `search_times` INT(10) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`keyword_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `keyword`
+--
+
+CREATE TABLE IF NOT EXISTS `video_keyword` (
+  `video_id` INT NOT NULL,
+  `keyword_id` INT NOT NULL,
+  PRIMARY KEY (`keyword_id`,`video_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+

@@ -15,6 +15,7 @@ class VideoFormGenerator
         $fileInput = $this->createFileInput();
         $titleInput = $this->createTitleInput();
         $descriptionInput = $this->createDescriptionInput();
+        $keywordsInput = $this->createKeywordsInput();
         $privacyInput = $this->createPrivacyInput();
         $categoryInput = $this->createCategoryInput();
         $uploadButton = $this->createUploadButton();
@@ -23,6 +24,7 @@ class VideoFormGenerator
                 $fileInput
                 $titleInput
                 $descriptionInput
+                $keywordsInput
                 $privacyInput
                 $categoryInput
                 $uploadButton
@@ -55,7 +57,16 @@ class VideoFormGenerator
     {
         return "
             <div class='form-group'>
-                <textarea class='form-control' placeholder='description' name='description' maxlength='800' rows='5'></textarea>
+                <textarea class='form-control' placeholder='Input description' name='description' maxlength='800' rows='5'></textarea>
+            </div>
+        ";
+    }
+
+    private function createKeywordsInput()
+    {
+        return "
+            <div class='form-group'>
+                <textarea class='form-control' placeholder='Input keywords, split with comma or space' name='keywords' maxlength='100' rows='2' required></textarea>
             </div>
         ";
     }

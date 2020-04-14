@@ -4,7 +4,7 @@
 class VideoUpload
 {
     private $conn; // database connection descriptor
-    private $videoData, $title, $description, $privacy, $category, $uploaded_by;
+    private $videoData, $title, $description, $keywords, $privacy, $category, $uploaded_by;
     private $sizeLimit = 10000000; // size limitation for a single uploaded video
     private $validVideoFormats = array('avi', 'wmv', 'mp4', 'mpeg', 'rmvb', '3gp', 'mkv', 'flv');
     private $targetDir = "./uploads/videos/"; // local directory for video storage
@@ -16,11 +16,12 @@ class VideoUpload
         $this->conn = $conn;
     }
 
-    public function setData($videoData, $title, $description, $privacy, $category, $uploaded_by)
+    public function setData($videoData, $title, $description, $keywords, $privacy, $category, $uploaded_by)
     {
         $this->videoData = $videoData;
         $this->title = $title;
         $this->description = $description;
+        $this->keywords = preg_split("/[\s,]+/", $keywords); // use (" ", \r, \t, \n, \f) to split keywords
         $this->privacy = $privacy;
         $this->category = $category;
         $this->uploaded_by = $uploaded_by;
@@ -128,6 +129,35 @@ class VideoUpload
         return $query->execute();
     }
 
+    private function uploadKeywords($videoID)
+    {
+        foreach ($this->keywords as $keyword) {
+            // insert keyword in to keyword table
+            $query = $this->conn->prepare("INSERT IGNORE INTO keyword (keyword) VALUES (:keyword)");
+            $query->bindParam(':keyword', $keyword);
+            if ($query->execute()) {
+                // get keyword_id for each keyword
+                $query = $this->conn->prepare("SELECT keyword_id FROM keyword WHERE keyword=:keyword LIMIT 1");
+                $query->bindParam(':keyword', $keyword);
+                if (!$query->execute()) {
+                    return false;
+                }
+                $keywordID = $query->fetch(PDO::FETCH_ASSOC)['keyword_id'];
+                // insert video_id keyword_id into video_keyword table
+                $query = $this->conn->prepare("INSERT IGNORE INTO video_keyword (video_id, keyword_id) 
+                                               VALUES (:video_id, :keyword_id)");
+                $query->bindParam(':video_id', $videoID);
+                $query->bindParam(':keyword_id', $keywordID);
+                if (!$query->execute()) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private function createThumbNails($finalFilePath)
     {
         // create three thumbnails for an uploaded video
@@ -143,6 +173,10 @@ class VideoUpload
         }
         if (!$this->uploadVideoSize($finalFilePath, $videoID)) {
             echo "Failed to update video size.";
+            return false;
+        }
+        if(!$this->uploadKeywords($videoID)){
+            echo "Failed to insert keywords into database.";
             return false;
         }
         for ($i = 1; $i <= $tnNum; $i++) {

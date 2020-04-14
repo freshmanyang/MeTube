@@ -438,7 +438,7 @@ class  channelProcessor
     {
         $dbresult = $this->getPlayList();
 
-        $allplaylist ='';
+        $allplaylist = '';
         foreach ($dbresult as $value) {
 
             $allplaylist .= "<p><input type='checkbox' name='selectedPlayList[]' value='" . $value["playlistname"] . "'>";
@@ -522,15 +522,17 @@ class  channelProcessor
 //
         return $VideoPathplaylist;
     }
-        public function showVideoFromPlaylistRecord($playlistname){
-            $playlistvideorecord = $this->queryPlayList($playlistname);
-            $videoidfromplaylist = array();
-            foreach ($playlistvideorecord as $value) {
-                $videoidfromplaylist[] = $value["video_id"];
-            }
 
-            $videoinfofromplaylist = $this->queryPlaylistVideoList($videoidfromplaylist);
-            $VideoPathplaylist= array();
+    public function showVideoFromPlaylistRecord($playlistname)
+    {
+        $playlistvideorecord = $this->queryPlayList($playlistname);
+        $videoidfromplaylist = array();
+        foreach ($playlistvideorecord as $value) {
+            $videoidfromplaylist[] = $value["video_id"];
+        }
+
+        $videoinfofromplaylist = $this->queryPlaylistVideoList($videoidfromplaylist);
+        $VideoPathplaylist = array();
         foreach ($videoinfofromplaylist as $value) {
 
             $title = $value["title"];
@@ -587,9 +589,8 @@ class  channelProcessor
         $query->bindParam(':playlistname', $playlist);
         $query->bindParam(':mainuser', $this->usernameLoggedIn);
         $query->execute();
-        if( count($query->fetchAll(PDO::FETCH_ASSOC)))
-        {
-            return 'This video already in playlist '.$playlist;
+        if (count($query->fetchAll(PDO::FETCH_ASSOC))) {
+            return 'This video already in playlist ' . $playlist;
         }
         $query = $this->conn->prepare("INSERT INTO playlist (mainuser,playlistname,video_id) value(:mainuser,:playlistname,:videoid)");
         $query->bindParam(':mainuser', $this->usernameLoggedIn);
@@ -743,25 +744,28 @@ class  channelProcessor
 
         return $this->tableVideoRecord;
     }
-    public function addFriend($channel){
+
+    public function addFriend($channel)
+    {
         $query = $this->conn->prepare("SELECT * From contactlist where username=:username and mainuser=:mainuser");
         $query->bindParam(':username', $channel);
         $query->bindParam(':mainuser', $this->usernameLoggedIn);
         $query->execute();
-        if(count($query->fetchALL(PDO::FETCH_ASSOC))){
-            return 'You already have '.$channel.' in your contact list!';
+        if (count($query->fetchALL(PDO::FETCH_ASSOC))) {
+            return 'You already have ' . $channel . ' in your contact list!';
+        } else {
+            $groupname = 'friends';
+            $query = $this->conn->prepare("INSERT INTO contactlist (mainuser,username,groupname) value(:mainuser,:username,:groupname)");
+            $query->bindParam(':mainuser', $this->usernameLoggedIn);
+            $query->bindParam(':username', $channel);
+            $query->bindParam(':groupname', $groupname);
+            $query->execute();
         }
-        else{
-        $groupname = 'friends';
-        $query = $this->conn->prepare("INSERT INTO contactlist (mainuser,username,groupname) value(:mainuser,:username,:groupname)");
-        $query->bindParam(':mainuser', $this->usernameLoggedIn);
-        $query->bindParam(':username', $channel);
-        $query->bindParam(':groupname',$groupname);
-        $query->execute();
-        }
-        return 'Add '.$channel.' becomes Friend successful';
+        return 'Add ' . $channel . ' becomes Friend successful';
     }
-    public function setVideosPrivacy($videoslist,$privacy){
+
+    public function setVideosPrivacy($videoslist, $privacy)
+    {
         $qMarks = str_repeat('?,', count($videoslist) - 1) . '?';
         $mainUser = "'" . $this->usernameLoggedIn . "'";
         $query = $this->conn->prepare("UPDATE videos SET privacy=$privacy WHERE  uploaded_by=$mainUser AND id IN ($qMarks)");
@@ -769,6 +773,7 @@ class  channelProcessor
         Return 'Set Privacy successful';
 
     }
+
     public function showchannelonly($channel)
     {
         $blockUser = $this->getBlockUsername($this->usernameLoggedIn);
@@ -786,10 +791,9 @@ class  channelProcessor
         } else {
             $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='unsubscribe'>Unsubscribe</button> ";
         }
-        $addToFriendButton= "<button type=\"button\"  class=\"btn btn-success\"  id='addFriend'>Add Friend</button> </div>";
+        $addToFriendButton = "<button type=\"button\"  class=\"btn btn-success\"  id='addFriend'>Add Friend</button> </div>";
 
-        return "
-          $button $addToFriendButton  
+        return (isset($_SESSION['uid']) ? "$button $addToFriendButton" : "") . "
         <ul class=\"nav nav-tabs\" id=\"myTab1\" role=\"tablist\">
   <li id=\"channel1\" class=\"nav-item\">
     <a id=\"channel1\" class=\"nav-link active\" id=\"home-tab\" data-toggle=\"tab\" href=\"#channel2\" role=\"tab\" aria-controls=\"home\" aria-selected=\"true\">Channel</a>
