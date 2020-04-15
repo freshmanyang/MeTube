@@ -86,6 +86,8 @@
 
     <script type="text/javascript">
         $(function () {
+            // setup how many records in one page for channel and videos sorting tab
+            var recordsPerPage = 8;
             $.ajax({
                 type:'POST',
 
@@ -101,15 +103,15 @@
                     datalength = final.length;
                     window.pagObj = $('#pagination').twbsPagination({
                         // totalPages plugin if you want display 4 records at one page, total pages= total data /4
-                        totalPages: (datalength % 4) ?  (datalength /4) + 1: datalength /4,
+                        totalPages: (datalength % recordsPerPage) ?  (datalength /recordsPerPage) + 1: datalength /recordsPerPage,
                         visiblePages: 5,
                         onPageClick: function (event, page) {
                             document.getElementById("allvideopage").innerHTML ="";
                             // console.info(page + ' (from options)');
-                            for ($i = 4; $i >0 ; $i--) {
-                                if ( !(final[page * 4 - $i] == null)){
+                            for ($i = recordsPerPage; $i >0 ; $i--) {
+                                if ( !(final[page * recordsPerPage - $i] == null)){
                                     document.getElementById("allvideopage").innerHTML +=
-                                        final[page * 4 - $i] ;
+                                        final[page * recordsPerPage - $i] ;
                                 }
                             }
                         }

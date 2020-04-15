@@ -14,6 +14,10 @@ if(isset($_POST['pagefunction'])){
 }
 
 if(isset($_POST['subscribe'])){
+    if ($usernameLoggedIn=='') {
+        echo '';
+    }
+    else{
     $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
     if($_POST['button']==1){
       echo $channel->addsubscribe();
@@ -21,6 +25,7 @@ if(isset($_POST['subscribe'])){
     }
     else{
         echo $channel->unsubscribe();
+    }
     }
 }
 
@@ -166,10 +171,10 @@ if(isset($_POST['sortingVideos'])){
     {
         $category = 'video_duration';
     }
-    elseif(!strcmp($_POST['sorting'],'Views')){
+    elseif(!strcmp($_POST['sorting'],'Most Viewed')){
         $category = 'views';
     }
-    elseif(!strcmp($_POST['sorting'],'Uploading_time')){
+    elseif(!strcmp($_POST['sorting'],'Most recently uploaded')){
         $category = 'upload_date';
     }
     elseif(!strcmp($_POST['sorting'],'Video_title')){
@@ -188,7 +193,12 @@ if(isset($_POST['downloadvideo'])) {
 
 if (isset($_POST['addFriend'])) {
         $channel = new channelProcessor($conn,$_POST['user'],$usernameLoggedIn);
-       echo $message = $channel->addFriend($_POST['user']);
+        if($usernameLoggedIn =='') {
+            echo '';
+        }
+        else{
+               echo $message = $channel->addFriend($_POST['user']);
+        }
 }
 if (isset($_POST['setPrivacy'])) {
 //    $reroute = 'channel.php?channel='.$_POST['user'];

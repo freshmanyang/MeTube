@@ -590,7 +590,7 @@ select.form-control {
 /*channel.php*/
 #channelPage {
     width: 100%;
-    margin: 0 250px;
+    margin-left:250px;
 
 }
 

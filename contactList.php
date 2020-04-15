@@ -3,7 +3,7 @@ require_once('./includes/header.php');
 require_once('./includes/class/contactListProcessor.php');
 require_once("./includes/nav.php");
 if(empty($usernameLoggedIn)){
-    echo "<script>alert('You are not login, redirect to Login page after click'); location.href = 'index.php';</script>";
+    echo "<script>alert('You are not login, redirect to home page after click'); location.href = 'index.php';</script>";
 //    header("refresh:3;url=index.php");
 }
 $conntactList = new contactListProcessor($conn,$usernameLoggedIn);
