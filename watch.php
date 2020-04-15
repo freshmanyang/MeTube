@@ -18,6 +18,7 @@
         $videoPlayer = new VideoPlayer($videoObj);
         $commentsObj = new CommentHandler($conn, $_GET['vid']);
         $comments = $commentsObj->getComments(0, 5);
+        $channelLink =  (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=';
         ?>
         <div class="watch-left">
             <?php
@@ -73,7 +74,7 @@
             </div>
             <div class="video-secondary-info-renderer">
                 <div class="upper-wrapper">
-                    <a href="" class="video-owner-page-link">
+                    <a href="<?php echo $channelLink . $videoObj->getVideoOwnerName();?>" class="video-owner-page-link">
                         <?php
                         $videoOwnerAvatar = $videoObj->getVideoOwnerAvatar();
                         $videoOwnerId = $videoObj->getUserId();
@@ -84,7 +85,8 @@
                         <?php
                         $videoOwnerName = $videoObj->getVideoOwnerName();
                         $subscribeCount = $userLoginInObj->getSubscribeCountByName($videoOwnerName);
-                        echo "<a href=\"\" class=\"video-owner-name\">$videoOwnerName</a>";
+                        $href = $channelLink . $videoObj->getVideoOwnerName();
+                        echo "<a href='$href' class=\"video-owner-name\">$videoOwnerName</a>";
                         echo "<div class=\"subscriber-count\">$subscribeCount subscribers</div>";
                         ?>
                     </div>
@@ -122,7 +124,7 @@
                     ?>
                     <?php if (isset($_SESSION["uid"])): ?>
                         <div class="comment-box">
-                            <a href="" class="user-page-link">
+                            <a href="<?php echo $channelLink . $userLoginInObj->getUsername()?>" class="user-page-link">
                                 <?php
                                 $userAvatarPath = $userLoginInObj->getAvatarPath();
                                 echo "<img src='$userAvatarPath' alt='' user-id='$uid'>";

@@ -26,6 +26,12 @@ class searchProcessor
         $query->execute();
         return  $query->fetch(PDO::FETCH_ASSOC);
     }
+    private function getcategoryid($categoryname){
+        $query = $this->conn->prepare("SELECT * From category where name=:name");
+        $query->bindParam(':name', $categoryname);
+        $query->execute();
+        return  $query->fetch(PDO::FETCH_ASSOC);
+    }
     private function getAllVideoID($blockuser){
         if(empty($blockuser)){
             $query = $this->conn->prepare("SELECT id From videos ");
@@ -52,7 +58,10 @@ class searchProcessor
         $query->execute($videoidlist);
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function showAdvancedSearch($usernameLoggedIn,$keyword,$file_size_min,$file_size_max){
+    public function showAdvancedSearch($usernameLoggedIn,$keyword,$file_size_min,$file_size_max,
+                                       $duration_min,$duration_max,$views_min,$views_max,
+                                       $uploadDatestart,$uploadDateend,$category,$videoTitle,
+                                       $uploadBy,$description){
         $blockUsers ='';
         if ($usernameLoggedIn) {
             $blockUsers = $this->getBlockUsername($usernameLoggedIn);
@@ -67,19 +76,96 @@ class searchProcessor
         if(!empty($blockUsers)){
             $videoidlist = $this->removeBlockVideo($blockUsers,$videoidlist);
         }
-//        var_dump($videoidlist);
-
-
         if(! (empty($file_size_min) && empty($file_size_max))){
             $videoidlist = $this->fileSizeFilter($videoidlist,$file_size_min,$file_size_max);
         }
+        if(! (empty($duration_min) && empty($duration_max))){
+            $videoidlist = $this->durationFilter($videoidlist,$duration_min,$duration_max);
+        }
 
-        $fileSizeFilter = $this->getAllVideofromid($videoidlist);
+        if(! (empty($views_min) && empty($views_max))){
+            $videoidlist = $this->viewsFilter($videoidlist,$views_min,$views_max);
+        }
+        if(! (empty($uploadDatestart) && empty($uploadDateend))){
+            $videoidlist = $this->uploadDateFilter($videoidlist,$uploadDatestart,$uploadDateend);
+        }
+        $all = "All";
+        if(!(empty($category)) && strcmp($category,$all)){
+
+            $videoidlist = $this->categoryFilter($videoidlist,$category);
+        }
+        if(! empty($videoTitle)){
+            $videoidlist = $this->titleFilter($videoidlist,$videoTitle);
+        }
+        if(!empty($uploadBy)){
+            $videoidlist = $this->uploadbyFilter($videoidlist,$uploadBy);
+        }
+        if(!empty($description)){
+            $videoidlist = $this->DescriptionFilter($videoidlist,$description);
+        }
+
+        $allvideorecords = $this->getAllVideofromid($videoidlist);
+        $filterAllDone = $this->checkPrivacy($allvideorecords,$usernameLoggedIn);
+        return $this->getDetailHTML($filterAllDone);
 
 
+    }
+    private function DescriptionFilter($videolist,$description){
+        $keywordlist = explode(" ", $description);
 
+        $relatedVideolist = array();
+        $videoidlist = array();
+        $qMarks = str_repeat('?,', count($videolist) - 1) . '?';
+        foreach($keywordlist as $value){
+            $keyword = '%'.$value.'%';
+            $query = $this->conn->prepare("SELECT * from videos where id  IN ($qMarks) and description like '$keyword'");
+            $query->execute($videolist);
 
-        $filterAllDone = $this->checkPrivacy($fileSizeFilter,$usernameLoggedIn);
+            $videorecord = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($videorecord as $value){
+                $videoidlist[] = $value["id"];
+
+            }
+            $videoidresult = array_diff($videoidlist, $relatedVideolist);
+            $relatedVideolist= array_merge($relatedVideolist,$videoidresult);
+        }
+        return $relatedVideolist;
+    }
+    private function uploadbyFilter($videolist,$uploadBy){
+
+        $keywordlist = explode(" ", $uploadBy);
+
+        $relatedVideolist = array();
+        $videoidlist = array();
+        $qMarks = str_repeat('?,', count($videolist) - 1) . '?';
+        foreach($keywordlist as $value){
+            $keyword = '%'.$value.'%';
+            $query = $this->conn->prepare("SELECT * from videos where id  IN ($qMarks) and uploaded_by like '$keyword'");
+            $query->execute($videolist);
+
+            $videorecord = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($videorecord as $value){
+                $videoidlist[] = $value["id"];
+
+            }
+            $videoidresult = array_diff($videoidlist, $relatedVideolist);
+            $relatedVideolist= array_merge($relatedVideolist,$videoidresult);
+        }
+        return $relatedVideolist;
+    }
+    private function getKeywordfromVideoID($videoid){
+        $query = $this->conn->prepare("SELECT keyword.* From video_keyword inner join keyword on video_keyword.keyword_id = keyword.keyword_id where video_keyword.video_id=:videoid");
+        $query->bindParam(':videoid', $videoid);
+        $query->execute();
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        $keywordList='';
+        foreach($result as $value){
+            $keywordList .= $value["keyword"].'&nbsp;';
+        }
+        return $keywordList;
+    }
+
+    private function getDetailHTML($filterAllDone){
         foreach ($filterAllDone as $value) {
             $title = $value["title"];
             $uploaded_by = $value["uploaded_by"];
@@ -87,6 +173,7 @@ class searchProcessor
             $views = $value["views"];
             $upload_date = $value["upload_date"];
             $videoid = $value["id"];
+            $keywordList = $this->getKeywordfromVideoID($videoid);
             $thumbnailpath = $this->getthumbnail($videoid);
             $thumbnailpath = $thumbnailpath["file_path"];
             $duration = $value['video_duration'];
@@ -99,13 +186,93 @@ class searchProcessor
                 "<div id='singlevideo'>$videolink             
                     <div id='videocontent'><h3>$title</h3><ul><li>$uploaded_by</li> <li>$views views</li><li>$upload_date</li> </ul>
                      <ul><li>Catrgory:$categoryname </li><li>Duration:$duration </li> <li> Size:$flieSize M</li></ul>
-                    <p>Description:$description</p>
+                    <ul><li>Keyword:$keywordList</li></ul>
+                    <ul id='description'><li>Description:</li>$description</ul>
                     </div>                
                     </div>");
         }
 //        var_dump($this->adVancedSearchVideolist);
         return $this->adVancedSearchVideolist;
-//        check_privacy
+    }
+
+    private function titleFilter($videolist,$keyword){
+        $keywordlist = explode(" ", $keyword);
+
+        $relatedVideolist = array();
+        $videoidlist = array();
+        $qMarks = str_repeat('?,', count($videolist) - 1) . '?';
+        foreach($keywordlist as $value){
+            $keyword = '%'.$value.'%';
+            $query = $this->conn->prepare("SELECT * from videos where id  IN ($qMarks) and title like '$keyword'");
+            $query->execute($videolist);
+
+            $videorecord = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($videorecord as $value){
+                $videoidlist[] = $value["id"];
+
+            }
+            $videoidresult = array_diff($videoidlist, $relatedVideolist);
+            $relatedVideolist= array_merge($relatedVideolist,$videoidresult);
+        }
+       return $relatedVideolist;
+    }
+    private function categoryFilter($videolist,$category){
+
+        $categoryid = $this->getcategoryid($category);
+        $categoryid = $categoryid["id"];
+        $qMarks = str_repeat('?,', count($videolist) - 1) . '?';
+        $query = $this->conn->prepare("SELECT * From videos where  id  IN ($qMarks) and category=$categoryid ");
+        $query->execute($videolist);
+        $filesizeresult = $query->fetchAll(PDO::FETCH_ASSOC);
+        $finalVideoIDlist = array();
+        foreach($filesizeresult as $value){
+            $finalVideoIDlist[] = $value["id"];
+        }
+        return $finalVideoIDlist;
+    }
+    private function uploadDateFilter($videolist,$uploadDateStart,$uploadDateEnd){
+//      original->  2020-04-13T08:00
+        $uploadDateStart = strtotime($uploadDateStart);
+        $uploadDateEnd = strtotime($uploadDateEnd);
+//       strtotime -> 1586779200
+        $uploadDateStart = "'".date("Y-m-d H:i:s",$uploadDateStart)."'";
+        $uploadDateEnd = "'".date("Y-m-d H:i:s",$uploadDateEnd)."'";
+//       date -> 2020-04-13 08:00:00
+//        var_dump($uploadDateStart);
+//        var_dump($uploadDateEnd);
+        $filterType = 'upload_date';
+        return $this->rangeFilter($videolist,$filterType,$uploadDateStart,$uploadDateEnd);
+
+
+    }
+    private function viewsFilter($videoidlist,$min,$max){
+
+        if(empty($min) && !empty($max) ){
+            $min = 0;
+        }
+        if(empty($max) && !empty($min)){
+            $max = 500;
+        }
+        $filterType = 'views';
+        return $this->rangeFilter($videoidlist,$filterType,$min,$max);
+    }
+    private function durationFilter($videoidlist,$min,$max){
+
+        if(empty($min) && !empty($max) ){
+            $min = 0;
+        }
+        if(empty($max) && !empty($min)){
+            $max = 120;
+        }
+
+        $min *=60;
+        $max *=60;
+
+        $min = "'".gmstrftime("%H:%M:%S",$min)."'";
+        $max = "'".gmstrftime("%H:%M:%S",$max)."'";
+
+        $filterType = 'video_duration';
+        return $this->rangeFilter($videoidlist,$filterType,$min,$max);
     }
     private function fileSizeFilter($videoidlist,$file_size_min,$file_size_max){
 
@@ -117,8 +284,13 @@ class searchProcessor
         }
         $file_size_min *= 1024*1024;
         $file_size_max *= 1024*1024;
+        $filterType = 'file_size';
+        return $this->rangeFilter($videoidlist,$filterType,$file_size_min,$file_size_max);
+    }
+    private function rangeFilter($videoidlist,$filterType,$min,$max){
+
         $qMarks = str_repeat('?,', count($videoidlist) - 1) . '?';
-        $query = $this->conn->prepare("SELECT * From videos where  id  IN ($qMarks) and file_size between $file_size_min AND $file_size_max ");
+        $query = $this->conn->prepare("SELECT * From videos where  id  IN ($qMarks) and $filterType between $min AND $max ");
         $query->execute($videoidlist);
         $filesizeresult = $query->fetchAll(PDO::FETCH_ASSOC);
         $finalVideoIDlist = array();
@@ -238,30 +410,23 @@ class searchProcessor
         }
 //        check privacy
         $keywordVideoResult = $this->checkPrivacy($keywordVideoResult,$usernameLoggedIn);
+        return $this->getDetailHTML($keywordVideoResult);
+    }
+    public function showHotKeyWord(){
+        $query = $this->conn->prepare("SELECT * From keyword order by search_times desc LIMIT 3");
+         $query->execute();
+        $keywordresult = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach($keywordVideoResult as $value){
-            $title = $value["title"];
-            $uploaded_by = $value["uploaded_by"];
-            $description = $value["description"];
-            $views = $value["views"];
-            $upload_date = $value["upload_date"];
-            $videoid = $value["id"];
-            $thumbnailpath = $this->getthumbnail($videoid);
-            $thumbnailpath = $thumbnailpath["file_path"];
-            $duration = $value['video_duration'];
-            $category = $value['category'];
-            $categoryname = $this->getcategoryname($category);
-            $categoryname = $categoryname['name'];
-            $flieSize = round($value['file_size'] / 1024 / 1024, 2);
-            $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a>";
-            array_push($this->searchVideolist,
-                "<div id='singlevideo'>$videolink             
-                    <div id='videocontent'><h3>$title</h3><ul><li>$uploaded_by</li> <li>$views views</li><li>$upload_date</li> </ul>
-                     <ul><li>Catrgory:$categoryname </li><li>Duration:$duration </li> <li> Size:$flieSize M</li></ul>
-                    <p>Description:$description</p>
-                    </div>                
-                    </div>");
+        $topkeywordlist =array();
+        foreach($keywordresult as $value){
+            $keyword = $value["keyword"];
+            $searchTimes = $value['search_times'];
+            $keywordlink = "<a href='search.php?search_input=$keyword'>$keyword</a>";
+            array_push($topkeywordlist,"
+                <div>$keywordlink
+                &nbsp;$searchTimes&nbsp;times&nbsp;
+                </div>");
         }
-        return $this->searchVideolist;
+        return $topkeywordlist;
     }
 }

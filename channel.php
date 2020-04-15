@@ -2,7 +2,7 @@
 require_once('./includes/header.php');
 require_once('./includes/class/channelProcessor.php');
 require_once("./includes/nav.php");
-if(!isset($_GET['channel'])){
+if((!isset($_GET['channel']) ) || $_GET['channel']==""){
     echo "<script>alert('You are not choose any channel, redirect to Home page after click'); location.href = 'index.php';</script>";
 }
 $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
@@ -193,7 +193,14 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
                 user:user
             },
             success:function(result) {
+                console.log(result);
+                if(result== ''){
+
+                    $("#sign_in_modal").modal('show');
+                }
+                else{
                 alert(result);
+                }
             }
         })
 
@@ -221,9 +228,14 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
                     user:user
                 },
                 success:function(result) {
+                    if(result ==''){
+
+                        $("#sign_in_modal").modal('show');
+                    }
+                    else{
                     $('#myModal').modal("show");
                     document.getElementById("subscribeResult").innerText = result;
-
+                    }
                 }
 
                 })
@@ -245,7 +257,8 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
 //          $(function () is jQuery short-hand for $(document).ready(function() { ... });
          $(function () {
              var user='<?php echo $_GET['channel']; ?>';
-
+            // setup how many records in one page for channel and videos sorting tab
+            var recordsPerPage = 6;
 //set privacy modal confirm button
              var privacy ='';
              $('#Privacy a').on('click', function() {
@@ -295,7 +308,7 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
 
                  window.pagObj = $('#pagination').twbsPagination({
 
-                     totalPages: (datalength % 4) ?  (datalength /4) + 1: datalength /4,
+                     totalPages: (datalength % recordsPerPage) ?  (datalength /recordsPerPage) + 1: datalength /recordsPerPage,
                      visiblePages: 5,
                      onPageClick: function (event, page) {
 
@@ -303,10 +316,10 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
 
 
                          // console.log(page + ' (from options)');
-                         for ($i = 4; $i >0 ; $i--) {
-                             if ( final1[page * 4 - $i]){
+                         for ($i = recordsPerPage; $i >0 ; $i--) {
+                             if ( final1[page * recordsPerPage - $i]){
                                  // console.log('channelresult=',final1[page * 4 - $i]);
-                                 document.getElementById("show").innerHTML += final1[page * 4 - $i] ;
+                                 document.getElementById("show").innerHTML += final1[page * recordsPerPage - $i] ;
                              }
                          }
 
@@ -317,7 +330,7 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
 
                   }
                        else{
-                      document.getElementById("show").innerHTML ="";
+                      document.getElementById("show").innerHTML ="This channel doesn't have any videos yet";
                   }
              }
          });
@@ -416,14 +429,14 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
                              //when change different sorting item, must destroy first
                              $('#pagination-sorting').twbsPagination('destroy');
                              window.pagObj = $('#pagination-sorting').twbsPagination({
-                                 totalPages: (datalength % 4) ?  (datalength /4) + 1: datalength /4,
+                                 totalPages: (datalength % recordsPerPage) ?  (datalength /recordsPerPage) + 1: datalength /recordsPerPage,
                                  visiblePages: 5,
                                  onPageClick: function (event, page) {
                                      document.getElementById("showSortingVideos").innerHTML="";
-                                     for ($i = 4; $i >0 ; $i--) {
-                                         if ( final5[page * 4 - $i]){
+                                     for ($i = recordsPerPage; $i >0 ; $i--) {
+                                         if ( final5[page * recordsPerPage - $i]){
 
-                                             document.getElementById("showSortingVideos").innerHTML += final5[page * 4 - $i] ;
+                                             document.getElementById("showSortingVideos").innerHTML += final5[page * recordsPerPage - $i] ;
                                          }
                                      }
 

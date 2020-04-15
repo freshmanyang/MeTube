@@ -240,6 +240,7 @@ class  channelProcessor
 
     private function queryPlaylistVideoList($videoList)
     {
+        if(!$videoList){return [];}
         $qMarks = str_repeat('?,', count($videoList) - 1) . '?';
         $query = $this->conn->prepare("Select * from videos WHERE  id IN ($qMarks)");
         $query->execute($videoList);
@@ -438,7 +439,7 @@ class  channelProcessor
     {
         $dbresult = $this->getPlayList();
 
-        $allplaylist ='';
+        $allplaylist = '';
         foreach ($dbresult as $value) {
 
             $allplaylist .= "<p><input type='checkbox' name='selectedPlayList[]' value='" . $value["playlistname"] . "'>";
@@ -522,15 +523,17 @@ class  channelProcessor
 //
         return $VideoPathplaylist;
     }
-        public function showVideoFromPlaylistRecord($playlistname){
-            $playlistvideorecord = $this->queryPlayList($playlistname);
-            $videoidfromplaylist = array();
-            foreach ($playlistvideorecord as $value) {
-                $videoidfromplaylist[] = $value["video_id"];
-            }
 
-            $videoinfofromplaylist = $this->queryPlaylistVideoList($videoidfromplaylist);
-            $VideoPathplaylist= array();
+    public function showVideoFromPlaylistRecord($playlistname)
+    {
+        $playlistvideorecord = $this->queryPlayList($playlistname);
+        $videoidfromplaylist = array();
+        foreach ($playlistvideorecord as $value) {
+            $videoidfromplaylist[] = $value["video_id"];
+        }
+
+        $videoinfofromplaylist = $this->queryPlaylistVideoList($videoidfromplaylist);
+        $VideoPathplaylist = array();
         foreach ($videoinfofromplaylist as $value) {
 
             $title = $value["title"];
@@ -587,9 +590,8 @@ class  channelProcessor
         $query->bindParam(':playlistname', $playlist);
         $query->bindParam(':mainuser', $this->usernameLoggedIn);
         $query->execute();
-        if( count($query->fetchAll(PDO::FETCH_ASSOC)))
-        {
-            return 'This video already in playlist '.$playlist;
+        if (count($query->fetchAll(PDO::FETCH_ASSOC))) {
+            return 'This video already in playlist ' . $playlist;
         }
         $query = $this->conn->prepare("INSERT INTO playlist (mainuser,playlistname,video_id) value(:mainuser,:playlistname,:videoid)");
         $query->bindParam(':mainuser', $this->usernameLoggedIn);
@@ -743,25 +745,28 @@ class  channelProcessor
 
         return $this->tableVideoRecord;
     }
-    public function addFriend($channel){
+
+    public function addFriend($channel)
+    {
         $query = $this->conn->prepare("SELECT * From contactlist where username=:username and mainuser=:mainuser");
         $query->bindParam(':username', $channel);
         $query->bindParam(':mainuser', $this->usernameLoggedIn);
         $query->execute();
-        if(count($query->fetchALL(PDO::FETCH_ASSOC))){
-            return 'You already have '.$channel.' in your contact list!';
+        if (count($query->fetchALL(PDO::FETCH_ASSOC))) {
+            return 'You already have ' . $channel . ' in your contact list!';
+        } else {
+            $groupname = 'friends';
+            $query = $this->conn->prepare("INSERT INTO contactlist (mainuser,username,groupname) value(:mainuser,:username,:groupname)");
+            $query->bindParam(':mainuser', $this->usernameLoggedIn);
+            $query->bindParam(':username', $channel);
+            $query->bindParam(':groupname', $groupname);
+            $query->execute();
         }
-        else{
-        $groupname = 'friends';
-        $query = $this->conn->prepare("INSERT INTO contactlist (mainuser,username,groupname) value(:mainuser,:username,:groupname)");
-        $query->bindParam(':mainuser', $this->usernameLoggedIn);
-        $query->bindParam(':username', $channel);
-        $query->bindParam(':groupname',$groupname);
-        $query->execute();
-        }
-        return 'Add '.$channel.' becomes Friend successful';
+        return 'Add ' . $channel . ' becomes Friend successful';
     }
-    public function setVideosPrivacy($videoslist,$privacy){
+
+    public function setVideosPrivacy($videoslist, $privacy)
+    {
         $qMarks = str_repeat('?,', count($videoslist) - 1) . '?';
         $mainUser = "'" . $this->usernameLoggedIn . "'";
         $query = $this->conn->prepare("UPDATE videos SET privacy=$privacy WHERE  uploaded_by=$mainUser AND id IN ($qMarks)");
@@ -769,6 +774,7 @@ class  channelProcessor
         Return 'Set Privacy successful';
 
     }
+
     public function showchannelonly($channel)
     {
         $blockUser = $this->getBlockUsername($this->usernameLoggedIn);
@@ -786,10 +792,9 @@ class  channelProcessor
         } else {
             $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='unsubscribe'>Unsubscribe</button> ";
         }
-        $addToFriendButton= "<button type=\"button\"  class=\"btn btn-success\"  id='addFriend'>Add Friend</button> </div>";
+        $addToFriendButton = "<button type=\"button\"  class=\"btn btn-success\"  id='addFriend'>Add Friend</button> </div>";
 
-        return "
-          $button $addToFriendButton  
+        return (isset($_SESSION['uid']) ? "$button $addToFriendButton" : "") . "
         <ul class=\"nav nav-tabs\" id=\"myTab1\" role=\"tablist\">
   <li id=\"channel1\" class=\"nav-item\">
     <a id=\"channel1\" class=\"nav-link active\" id=\"home-tab\" data-toggle=\"tab\" href=\"#channel2\" role=\"tab\" aria-controls=\"home\" aria-selected=\"true\">Channel</a>
@@ -814,19 +819,25 @@ class  channelProcessor
 //        if no videos, donot show delete button
         if (!count($this->video)) {
             $deletebutton = "";
+            $selectallbtn = "";
+            $selectall ="";
+            $setPrivacybtn = "";
+
         } else {
             $deletebutton = " <input type=\"submit\" class=\"btn btn-danger\" id=\"delete\" name = \"Delete\" value =\"Delete videos permanent\">";
+            $selectallbtn = "<input type=\"checkbox\" id=\"selectallbtn\"  value=\"Select All\"/>";
+            $selectall = "<label for=\"selectallbtn\">Select All:</label>";
+            $setPrivacybtn = "<input type=\"button\" class=\"btn btn-warning\" id=\"setPrivacy\" name = \"setPrivacy\" value =\"Set Videos Privacy\"><br>";
+
         }
         $selectplaylistbtn = "<input type=\"checkbox\" id=\"selectplaylistbtn\"  value=\"Select All\"/>";
         $selectplaylist = '<label for="selectplaylistbtn">Select All:</label>';
         $favorlistbtn = "<input type=\"checkbox\" id=\"selectfavoritelistbtn\"  value=\"Select All\"/>";
         $favorlist = '<label for="selectfavoritelistbtn">Select All:</label>';
-        $selectallbtn = "<input type=\"checkbox\" id=\"selectallbtn\"  value=\"Select All\"/>";
-        $setPrivacybtn = "<input type=\"button\" class=\"btn btn-warning\" id=\"setPrivacy\" name = \"setPrivacy\" value =\"Set Videos Privacy\"><br>";
         $createPlaylistButton = "<input type=\"button\" class=\"btn btn-outline-primary\" id=\"createPlayList\" name = \"createPlayList\" value =\"Create PlayList\">";
         $deletePlaylistButton = "<input type=\"submit\" class=\"btn btn-outline-danger\" id=\"deletePlayList\" name = \"deletePlayList\" value =\"Remove PlayList\">";
         $addToFavoriteListButton = "<input type=\"submit\" class=\"btn btn-outline-info\" id=\"addToFavoriteList\" name = \"addToFavoriteList\" value =\"Add to FavoriteList\">";
-        $removeVideofromFavoritelistbtn = "<input type=\"submit\" class=\"btn btn-outline-info\" id=\"removeFromFavoriteList\" name = \"removeFromFavoriteList\" value =\"Remove From FavoriteList\">";
+        $removeVideofromFavoritelistbtn = "<input type=\"submit\" class=\"btn btn-outline-danger\" id=\"removeFromFavoriteList\" name = \"removeFromFavoriteList\" value =\"Remove From FavoriteList\">";
         return "<ul class=\"nav nav-tabs\" id=\"myTab1\" role=\"tablist\">
   <li id=\"channel1\" class=\"nav-item\">
     <a id=\"channel1\" class=\"nav-link active\" id=\"home-tab\" data-toggle=\"tab\" href=\"#channel2\" role=\"tab\" aria-controls=\"home\" aria-selected=\"true\">Channel</a>
@@ -852,7 +863,7 @@ class  channelProcessor
 <div class=\"tab-content\" id=\"myTabContent\">
   <div class=\"tab-pane fade show active\" id=\"channel2\" role=\"tabpanel\" aria-labelledby=\"home-tab\">
   <form action=\"channelprocess.php?channel=$this->user\" method=\"post\">
-            $deletebutton $setPrivacybtn  <label for=\"selectallbtn\">Select All:</label> $selectallbtn 
+            $deletebutton $setPrivacybtn $selectall  $selectallbtn 
             <div id=\"show\">
             </div>
   </form>
@@ -890,8 +901,8 @@ class  channelProcessor
             Sorting by
         </button>
         <div class=\"dropdown-menu\" id=\"sortingList\">
-            <a class='dropdown-item' href='#'>Views</a>
-            <a class='dropdown-item' href='#'>Uploading_time</a>
+            <a class='dropdown-item' href='#'>Most Viewed</a>
+            <a class='dropdown-item' href='#'>Most recently uploaded</a>
             <a class='dropdown-item' href='#'>Video_title</a>
             <a class='dropdown-item' href='#'>Duration</a>
             <a class='dropdown-item' href='#'>File_size</a>

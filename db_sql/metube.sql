@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `videos` (
     `category` VARCHAR(50),
     `upload_date` DATETIME NOT NULL,
     `views` INT NOT NULL DEFAULT 0,
-    `video_duration` VARCHAR(30) NOT NULL DEFAULT '00:00',
+    `video_duration` TIME NOT NULL DEFAULT '00:00:00',
     `file_size` INT(10) DEFAULT 0,
     `like` INT DEFAULT 0,
     `dislike` INT DEFAULT 0,
@@ -184,5 +184,30 @@ CREATE TABLE IF NOT EXISTS `replies` (
   `text` TEXT NOT NULL,
   comment_date DATETIME NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `keyword`
+--
+
+CREATE TABLE IF NOT EXISTS `keyword` (
+  `keyword_id` INT NOT NULL AUTO_INCREMENT,
+  `keyword` VARCHAR(30) NOT NULL UNIQUE,
+  `search_times` INT(10) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`keyword_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `keyword`
+--
+
+CREATE TABLE IF NOT EXISTS `video_keyword` (
+  `video_id` INT NOT NULL,
+  `keyword_id` INT NOT NULL,
+  PRIMARY KEY (`keyword_id`,`video_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
