@@ -240,6 +240,7 @@ class  channelProcessor
 
     private function queryPlaylistVideoList($videoList)
     {
+        if(!$videoList){return [];}
         $qMarks = str_repeat('?,', count($videoList) - 1) . '?';
         $query = $this->conn->prepare("Select * from videos WHERE  id IN ($qMarks)");
         $query->execute($videoList);
@@ -818,19 +819,25 @@ class  channelProcessor
 //        if no videos, donot show delete button
         if (!count($this->video)) {
             $deletebutton = "";
+            $selectallbtn = "";
+            $selectall ="";
+            $setPrivacybtn = "";
+
         } else {
             $deletebutton = " <input type=\"submit\" class=\"btn btn-danger\" id=\"delete\" name = \"Delete\" value =\"Delete videos permanent\">";
+            $selectallbtn = "<input type=\"checkbox\" id=\"selectallbtn\"  value=\"Select All\"/>";
+            $selectall = "<label for=\"selectallbtn\">Select All:</label>";
+            $setPrivacybtn = "<input type=\"button\" class=\"btn btn-warning\" id=\"setPrivacy\" name = \"setPrivacy\" value =\"Set Videos Privacy\"><br>";
+
         }
         $selectplaylistbtn = "<input type=\"checkbox\" id=\"selectplaylistbtn\"  value=\"Select All\"/>";
         $selectplaylist = '<label for="selectplaylistbtn">Select All:</label>';
         $favorlistbtn = "<input type=\"checkbox\" id=\"selectfavoritelistbtn\"  value=\"Select All\"/>";
         $favorlist = '<label for="selectfavoritelistbtn">Select All:</label>';
-        $selectallbtn = "<input type=\"checkbox\" id=\"selectallbtn\"  value=\"Select All\"/>";
-        $setPrivacybtn = "<input type=\"button\" class=\"btn btn-warning\" id=\"setPrivacy\" name = \"setPrivacy\" value =\"Set Videos Privacy\"><br>";
         $createPlaylistButton = "<input type=\"button\" class=\"btn btn-outline-primary\" id=\"createPlayList\" name = \"createPlayList\" value =\"Create PlayList\">";
         $deletePlaylistButton = "<input type=\"submit\" class=\"btn btn-outline-danger\" id=\"deletePlayList\" name = \"deletePlayList\" value =\"Remove PlayList\">";
         $addToFavoriteListButton = "<input type=\"submit\" class=\"btn btn-outline-info\" id=\"addToFavoriteList\" name = \"addToFavoriteList\" value =\"Add to FavoriteList\">";
-        $removeVideofromFavoritelistbtn = "<input type=\"submit\" class=\"btn btn-outline-info\" id=\"removeFromFavoriteList\" name = \"removeFromFavoriteList\" value =\"Remove From FavoriteList\">";
+        $removeVideofromFavoritelistbtn = "<input type=\"submit\" class=\"btn btn-outline-danger\" id=\"removeFromFavoriteList\" name = \"removeFromFavoriteList\" value =\"Remove From FavoriteList\">";
         return "<ul class=\"nav nav-tabs\" id=\"myTab1\" role=\"tablist\">
   <li id=\"channel1\" class=\"nav-item\">
     <a id=\"channel1\" class=\"nav-link active\" id=\"home-tab\" data-toggle=\"tab\" href=\"#channel2\" role=\"tab\" aria-controls=\"home\" aria-selected=\"true\">Channel</a>
@@ -856,7 +863,7 @@ class  channelProcessor
 <div class=\"tab-content\" id=\"myTabContent\">
   <div class=\"tab-pane fade show active\" id=\"channel2\" role=\"tabpanel\" aria-labelledby=\"home-tab\">
   <form action=\"channelprocess.php?channel=$this->user\" method=\"post\">
-            $deletebutton $setPrivacybtn  <label for=\"selectallbtn\">Select All:</label> $selectallbtn 
+            $deletebutton $setPrivacybtn $selectall  $selectallbtn 
             <div id=\"show\">
             </div>
   </form>
@@ -894,8 +901,8 @@ class  channelProcessor
             Sorting by
         </button>
         <div class=\"dropdown-menu\" id=\"sortingList\">
-            <a class='dropdown-item' href='#'>Views</a>
-            <a class='dropdown-item' href='#'>Uploading_time</a>
+            <a class='dropdown-item' href='#'>Most Viewed</a>
+            <a class='dropdown-item' href='#'>Most recently uploaded</a>
             <a class='dropdown-item' href='#'>Video_title</a>
             <a class='dropdown-item' href='#'>Duration</a>
             <a class='dropdown-item' href='#'>File_size</a>

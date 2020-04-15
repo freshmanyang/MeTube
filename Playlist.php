@@ -2,6 +2,10 @@
 <?php require_once("./includes/nav.php"); ?>
 <?php require_once('./includes/class/channelProcessor.php');?>
 <?php
+if(empty($usernameLoggedIn)){
+    echo "<script>alert('You are not login, redirect to home page after click'); location.href = 'index.php';</script>";
+//    header("refresh:3;url=index.php");
+}
 $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
 ?>
 <link rel="stylesheet" href="./assets/css/playlist.css">
@@ -14,8 +18,13 @@ $channel = new channelProcessor($conn,$_GET['channel'],$usernameLoggedIn);
         <div id="showvideofromplaylist">
 
         </div>
-         <div><label for="selectoneplaylistbtn">Select All:</label>
-                <input type="checkbox" id="selectoneplaylistbtn"  value="Select All"/>
+         <div>
+             <?php if($usernameLoggedIn){
+                 echo " <label for=\"selectoneplaylistbtn\">Select All:</label>
+                <input type=\"checkbox\" id=\"selectoneplaylistbtn\"  value=\"Select All\"/>";
+             }
+              ?>
+
         <div id="showvideosrecord"></div>
          </div>
         </form>
