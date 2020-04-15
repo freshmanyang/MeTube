@@ -724,7 +724,7 @@ class  channelProcessor
             }
         }
         if (!$this->checksubscribe($this->user)) {
-            $button = "<div><button type=\"button\"  class=\"btn btn-success\"  id='subscribe'>Subscribe</button> ";
+            $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='subscribe'>Subscribe</button> ";
         } else {
             $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='unsubscribe'>Unsubscribe</button> ";
         }
