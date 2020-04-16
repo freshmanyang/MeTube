@@ -41,7 +41,7 @@ $(function () {
     });
 
     // click profile button, show modal
-    $(".profile-btn").on("click",function () {
+    $(".profile-btn").on("click", function () {
         let modalName = $(this).attr("target-modal");
         $(modalName).modal('show');
     });
@@ -52,6 +52,16 @@ $(function () {
         $(this).find('form').removeClass('was-validated');
         $(this).find('.invalid-feedback').text('');
         $(this).find('.custom-file-label').text('');
-    })
+    });
 
+    // show sign in modal if user click button that needs to sign in
+    $('#to_profile,#to_contact_list, #to_upload, #to_channel, #upload_button').on('click',function (e) {
+        let user_id = $('.header-popup-wrapper img').attr('user-id');
+        console.log(user_id);
+        if(!user_id){
+            e.preventDefault();
+            e.stopPropagation();
+            $("#sign_in_modal").modal('show');
+        }
+    })
 });

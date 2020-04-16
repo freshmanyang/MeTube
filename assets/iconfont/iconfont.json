@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1287716",
+      "name": "download",
+      "font_class": "download",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "142082",
+      "name": "thumb-up",
+      "font_class": "thumb-up",
+      "unicode": "e8de",
+      "unicode_decimal": 59614
+    },
+    {
+      "icon_id": "1410568",
+      "name": "thumb-down",
+      "font_class": "thumb-down",
+      "unicode": "e6e3",
+      "unicode_decimal": 59107
+    },
+    {
+      "icon_id": "9648328",
+      "name": "File save",
+      "font_class": "save",
+      "unicode": "e706",
+      "unicode_decimal": 59142
+    },
+    {
       "icon_id": "7988883",
       "name": "calender",
       "font_class": "calender",
@@ -193,20 +221,6 @@
       "font_class": "Settingscontroloptions",
       "unicode": "e9d3",
       "unicode_decimal": 59859
-    },
-    {
-      "icon_id": "11982730",
-      "name": "Dislike, unlike, thumb down",
-      "font_class": "Dislikeunlikethumbdown",
-      "unicode": "e9d7",
-      "unicode_decimal": 59863
-    },
-    {
-      "icon_id": "11982744",
-      "name": "Like, vote, thumb up",
-      "font_class": "Likevotethumbup",
-      "unicode": "e9dc",
-      "unicode_decimal": 59868
     },
     {
       "icon_id": "12649475",

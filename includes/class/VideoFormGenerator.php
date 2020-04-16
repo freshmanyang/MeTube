@@ -15,14 +15,16 @@ class VideoFormGenerator
         $fileInput = $this->createFileInput();
         $titleInput = $this->createTitleInput();
         $descriptionInput = $this->createDescriptionInput();
+        $keywordsInput = $this->createKeywordsInput();
         $privacyInput = $this->createPrivacyInput();
         $categoryInput = $this->createCategoryInput();
         $uploadButton = $this->createUploadButton();
         return "
-            <form action='./media_upload_process.php' method='post' enctype='multipart/form-data' id='upload_video_form'>
+            <form action='./media_upload_process.php' method='post' enctype='multipart/form-data' id='upload_video_form' autocomplete='off'>
                 $fileInput
                 $titleInput
                 $descriptionInput
+                $keywordsInput
                 $privacyInput
                 $categoryInput
                 $uploadButton
@@ -55,7 +57,16 @@ class VideoFormGenerator
     {
         return "
             <div class='form-group'>
-                <textarea class='form-control' placeholder='description' name='description' maxlength='200' rows='5'></textarea>
+                <textarea class='form-control' placeholder='Input description' name='description' maxlength='800' rows='5'></textarea>
+            </div>
+        ";
+    }
+
+    private function createKeywordsInput()
+    {
+        return "
+            <div class='form-group'>
+                <textarea class='form-control' placeholder='Input keywords, split with comma or space' name='keywords' maxlength='100' rows='2' required></textarea>
             </div>
         ";
     }
@@ -79,7 +90,7 @@ class VideoFormGenerator
         $query = $this->conn->prepare("SELECT * FROM category");
         $query->execute(); // run execute
         $html = "<div class='form-group'><select class='selectpicker' data-width='100%' title='Choose a category...' name='category'>";
-        for ($i = 0; $row = $query->fetch(PDO::FETCH_ASSOC); $i++) {  // get the next line as associated array
+        for ($i = 1; $row = $query->fetch(PDO::FETCH_ASSOC); $i++) {  // get the next line as associated array
             $html .= "<option value='$i'>" . $row["name"] . "</option>";
         }
         $html .= "</select></div>";

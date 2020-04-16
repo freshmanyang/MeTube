@@ -2,8 +2,10 @@
 require_once("./includes/config.php");
 require_once("./includes/class/User.php");
 require_once("./includes/class/Video.php");
+//require_once('./includes/clemsonconfig.php');
 $uid = isset($_SESSION['uid']) ? $_SESSION['uid'] : '';
 $userLoginInObj = new User($conn, $uid);
+$usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn'] : '';
 ?>
 <!doctype html>
 <html lang="en">
@@ -19,9 +21,9 @@ $userLoginInObj = new User($conn, $uid);
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
     <!-- iconfont css -->
-    <link rel="stylesheet" href="./assets/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/assets/iconfont/iconfont.css">
     <!-- main style css -->
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -42,9 +44,11 @@ $userLoginInObj = new User($conn, $uid);
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+    <!-- pagination-->
+    <script src="../assets/js/jquery.twbsPagination.js" type="text/javascript"></script>
     <!-- local js -->
-    <script src="./assets/js/common-action.js" defer></script>
-    <script src="./assets/js/account.js" defer></script>
+    <script src="/assets/js/common-action.js" defer></script>
+    <script src="/assets/js/account.js" defer></script>
     <title>MeTube</title>
 </head>
 <body>
@@ -55,11 +59,11 @@ $userLoginInObj = new User($conn, $uid);
         <span class="logo-name">MeTube</span>
     </a>
     <div class="search-container">
-        <form class="search-form" action="./search.php">
+        <form class="search-form" action="./search.php" method="get">
             <div class="search-box" id="search_box">
-                <input id="search_input" type="text" placeholder="Search">
+                <input id="search_input" name="search_input" type="search" placeholder="Search">
             </div>
-            <button class="search-button"><i class="iconfont icon-search"></i></button>
+            <button type="submit" class="search-button"><i class="iconfont icon-search"></i></button>
         </form>
     </div>
     <div class="end">
@@ -79,9 +83,12 @@ $userLoginInObj = new User($conn, $uid);
         <div class="header">
             <div class="header-renderer">
                 <?php
-                echo "<img src='" . $userLoginInObj->getAvatarPath() . "' class='avatar-md'>";
-                echo "<p class='username' id='header_username'>" . $userLoginInObj->getUsername() . "</p>";
-                echo "<p class='email'>" . $userLoginInObj->getEmail() . "</p>";
+                $userAvatarPath = $userLoginInObj->getAvatarPath();
+                $userName = $userLoginInObj->getUsername();
+                $userEmail = $userLoginInObj->getEmail();
+                echo "<img src='$userAvatarPath' class='avatar-md' user-id='$uid'>";
+                echo "<p class='username' id='header_username'>$userName</p>";
+                echo "<p class='email'>$userEmail</p>";
                 ?>
             </div>
         </div>

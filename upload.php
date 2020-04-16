@@ -1,7 +1,7 @@
 <?php require_once("./includes/header.php"); ?>
 <?php require_once("./includes/nav.php"); ?>
 <main class="main-section-container" id="main">
-    <div class="main-content-container">
+    <div class="main-content-container" style="display: block;">
         <div class="form-wrapper">
             <div class="column">
                 <?php
