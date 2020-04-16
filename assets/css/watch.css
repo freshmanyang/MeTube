@@ -6,6 +6,26 @@
     width: 100%;
 }
 
+.watch-left .hide-media{
+    width: 100%;
+    height: 0;
+    padding-bottom: 50%;
+    background-color: #030303;
+    position: relative;
+}
+
+.watch-left .hide-media p{
+    position: absolute;
+    top: 45%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 2vw;
+    font-weight: bold;
+    color: #ffffff;
+}
+
 .video-primary-info-renderer {
     padding-top: 16px;
     padding-bottom: 8px;
@@ -318,6 +338,89 @@
 
 .suggestion {
     max-width: 425px;
-    height: 100%;
+    margin-left: 24px;
+    margin-bottom: 8px;
+    padding-right: 24px;
     flex-grow: 1;
+}
+
+.suggestion .reco-header{
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #030303;
+    padding: 4px 0 16px 0;
+}
+
+.suggestion .reco-video-wrapper {
+    display: flex;
+    width: 100%;
+    height: 94px;
+    margin-bottom: 8px;
+}
+
+.reco-videos-container{
+    width: 100%;
+}
+
+.reco-videos-container .left {
+    display: block;
+    width: 168px;
+    height: 100%;
+    margin-right: 8px;
+}
+
+.reco-videos-container .left img {
+    height: 100%;
+}
+
+.reco-videos-container .left .reco-video-duration {
+    position: relative;
+    float: right;
+    right: 4px;
+    bottom: 18px;
+    background-color: #030303;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 12px;
+    color: #ffffff;
+    outline: none;
+    text-decoration: none;
+}
+
+.reco-videos-container .right {
+    width: 100%;
+}
+
+.reco-videos-container .right a{
+    display: block;
+    width: 100%;
+    outline: none;
+    text-decoration: none;
+}
+
+.reco-videos-container .right a .reco-video-title {
+    margin: 0 0 4px 0;
+    display: -webkit-box;
+    max-height: 32px;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #030303;
+}
+
+.reco-videos-container .right a .reco-video-owner,
+.reco-videos-container .right a .reco-video-views,
+.reco-videos-container .right a .dot,
+.reco-videos-container .right a .reco-video-upload-date{
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 13px;
+    color: #606060;
 }

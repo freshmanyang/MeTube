@@ -4,6 +4,7 @@ require_once("./includes/class/AccountHandler.php");
 require_once("./includes/class/CommentHandler.php");
 require_once("./includes/class/AvatarUpload.php");
 require_once("./includes/class/User.php");
+require_once("./includes/class/Video.php");
 
 $accountHandler = new AccountHandler($conn);
 if (isset($_SESSION["uid"])) {
@@ -186,6 +187,15 @@ if (isset($_POST["like"]) && isset($_POST["video_id"])) {
         $query->bindParam(":video_id", $video_id);
         $query->execute();
         $dislikedCount = $query->rowCount();
+        // update likedCount and dislikedCount to videos table
+        $query = $conn->prepare("UPDATE videos SET `like` =:likedCount WHERE id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindValue(":likedCount", $likedCount);
+        $query->execute();
+        $query = $conn->prepare("UPDATE videos SET dislike =:dislikedCount WHERE id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindValue(":dislikedCount", $dislikedCount);
+        $query->execute();
         $response['data'] = array('likedCount' => $likedCount, 'dislikedCount' => $dislikedCount);
     } else { // if not signIn, do nothing with the database
         $response['status'] = false;
@@ -215,6 +225,15 @@ if (isset($_POST["dislike"]) && isset($_POST["video_id"])) {
         $query->bindParam(":video_id", $video_id);
         $query->execute();
         $dislikedCount = $query->rowCount();
+        // update likedCount and dislikedCount to videos table
+        $query = $conn->prepare("UPDATE videos SET `like` =:likedCount WHERE id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindValue(":likedCount", $likedCount);
+        $query->execute();
+        $query = $conn->prepare("UPDATE videos SET dislike =:dislikedCount WHERE id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindValue(":dislikedCount", $dislikedCount);
+        $query->execute();
         $response['data'] = array('likedCount' => $likedCount, 'dislikedCount' => $dislikedCount);
     } else { // if not signIn, do nothing with the database
         $response['status'] = false;
@@ -286,7 +305,7 @@ if (isset($_POST["post_reply"]) && isset($_POST["video_id"]) && isset($_POST["co
     exit;
 }
 
-// window scroll to bottom, get 5 more comments
+// get 5 more comments
 if (isset($_POST["get_comment"]) && isset($_POST["video_id"]) && isset($_POST["page"])) {
     $start = $_POST["page"] * 5;
     $commentsObj = new CommentHandler($conn, $_POST["video_id"]);
@@ -295,6 +314,22 @@ if (isset($_POST["get_comment"]) && isset($_POST["video_id"]) && isset($_POST["p
         $response['status'] = true;
         $newCommentsDiv = $commentsObj->commentsRenderer($newComments);
         $response['data'] = $newCommentsDiv;
+    } else {
+        $response['status'] = false;
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// get 5 more recommend videos
+if (isset($_POST["get_recommendation"]) && isset($_POST["video_id"]) && isset($_POST["page"])) {
+    $start = $_POST["page"] * 5;
+    $videoObj = new Video($conn, $_POST["video_id"], '');
+    $newRecommendationVideos = $videoObj->getRecommendationVideos($start, 5);
+    if ($newRecommendationVideos) {
+        $response['status'] = true;
+        $newRecommendationVideosDiv = $videoObj->recommendationsVideoRenderer($newRecommendationVideos);
+        $response['data'] = $newRecommendationVideosDiv;
     } else {
         $response['status'] = false;
     }
