@@ -23,13 +23,13 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 -- Table structure for table `videos`
 -- file_path: video file path
--- privacy: {"private": 0 "public": 1 "friends": 2}
+-- privacy: {"private": 0 "public": 1 "friends": 2 "family": 3}
 --
 
 CREATE TABLE IF NOT EXISTS `videos` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `uploaded_by` VARCHAR(20) NOT NULL,
-    `title` VARCHAR(30) NOT NULL,
+    `title` VARCHAR(70) NOT NULL,
     `description` TEXT,
     `privacy` TINYINT DEFAULT 1,
     `file_path` VARCHAR(250) NOT NULL,

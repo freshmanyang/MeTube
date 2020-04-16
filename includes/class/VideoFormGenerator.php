@@ -48,7 +48,7 @@ class VideoFormGenerator
     {
         return "
             <div class='form-group'>
-                <input type='text' class='form-control' placeholder='title' name='title' maxlength='30' required>
+                <input type='text' class='form-control' placeholder='title' name='title' maxlength='70' required>
             </div>
         ";
     }
@@ -78,6 +78,7 @@ class VideoFormGenerator
                 <select class='selectpicker' data-width='100%' title='Choose a privacy Option...' name='privacy' required>
                     <option value='1'>public</option>
                     <option value='2'>friends</option>
+                    <option value='3'>family</option>
                     <option value='0'>private</option>
                 </select>
             </div>
