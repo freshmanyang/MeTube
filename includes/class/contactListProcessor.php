@@ -98,6 +98,7 @@ class contactListProcessor
         $query->execute();
         $this->viewquery = $query->fetchAll(PDO::FETCH_ASSOC);
 //        print_r($this->viewquery);
+        $this->view = '<option value="All">All</option>';
         foreach ($this->viewquery as $key => $value) {
             $this->view .= '<option value="' . $value[groupname] . '">' . $value[groupname] . '</option>';
         }
@@ -106,6 +107,9 @@ class contactListProcessor
 
     public function viewFilter($groupname)
     {
+        if(!strcmp($groupname,'All')){
+            return $this->fetchData();
+        }
         $query = $this->conn->prepare("SELECT * From contactlist WHERE mainuser =:mainUser and groupname=:groupname");
         $query->bindParam(':mainUser', $this->usernameLoggedIn);
         $query->bindParam(':groupname', $groupname);

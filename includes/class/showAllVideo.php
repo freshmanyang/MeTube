@@ -137,6 +137,9 @@ class showAllVideo
                 array_splice($videowithblock, $key, 1);
             } elseif ($value['privacy'] == 2) {
                 $uploaded_by = $value["uploaded_by"];
+                if(!strcmp($username,$uploaded_by)){
+                    continue;
+                }
                 $query = $this->conn->prepare("SELECT * From contactlist where username=:username and mainuser=:mainuser");
                 $query->bindParam(':username', $username);
                 $query->bindParam(':mainuser', $uploaded_by);

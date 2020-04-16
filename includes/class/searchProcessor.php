@@ -185,9 +185,10 @@ class searchProcessor
             $videolink = "<a href='watch.php?vid=$videoid'><img src='$thumbnailpath' alt='$title' height='200' width='300'></a>";
             array_push($this->adVancedSearchVideolist,
                 "<div id='singlevideo'>$videolink             
-                    <div id='videocontent'><h3>$title</h3><ul><li>$uploaded_by</li> <li>$views views</li><li>$upload_date</li> </ul>
+                    <div id='videocontent'><h3>$title</h3>
+                    <div><ul><li>$uploaded_by</li> <li>$views views</li><li>$upload_date</li> </ul>
                      <ul><li>Catrgory:$categoryname </li><li>Duration:$duration </li> <li> Size:$flieSize M</li></ul>
-                    <ul><li>Keyword:$keywordList</li></ul>
+                    <ul> <li>Keyword:$keywordList</li></ul></div>
                     <ul id='description'><li>Description:</li>$description</ul>
                     </div>                
                     </div>");
@@ -379,6 +380,9 @@ class searchProcessor
                 array_splice($videowithblock, $key, 1);
             } elseif ($value['privacy'] == 2) {
                 $uploaded_by = $value["uploaded_by"];
+                if (!strcmp($username, $uploaded_by)) {
+                    continue;
+                }
                 $query = $this->conn->prepare("SELECT * From contactlist where username=:username and mainuser=:mainuser");
                 $query->bindParam(':username', $username);
                 $query->bindParam(':mainuser', $uploaded_by);

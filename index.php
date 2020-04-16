@@ -89,23 +89,27 @@
                 success: function (result) {
                     final = JSON.parse(result);
                     datalength = final.length;
-                    window.pagObj = $('#pagination').twbsPagination({
-                        // totalPages plugin if you want display 4 records at one page, total pages= total data /4
-                        totalPages: (datalength % recordsPerPage) ? (datalength / recordsPerPage) + 1 : datalength / recordsPerPage,
-                        visiblePages: 5,
-                        onPageClick: function (event, page) {
-                            document.getElementById("allvideopage").innerHTML = "";
-                            // console.info(page + ' (from options)');
-                            for ($i = recordsPerPage; $i > 0; $i--) {
-                                if (!(final[page * recordsPerPage - $i] == null)) {
-                                    document.getElementById("allvideopage").innerHTML +=
-                                        final[page * recordsPerPage - $i];
+                    if (datalength == 0) {
+                        document.getElementById("allvideopage").innerHTML = "There is no videos yet";
+                    } else {
+                        window.pagObj = $('#pagination').twbsPagination({
+                            // totalPages plugin if you want display 4 records at one page, total pages= total data /4
+                            totalPages: (datalength % recordsPerPage) ? (datalength / recordsPerPage) + 1 : datalength / recordsPerPage,
+                            visiblePages: 5,
+                            onPageClick: function (event, page) {
+                                document.getElementById("allvideopage").innerHTML = "";
+                                // console.info(page + ' (from options)');
+                                for ($i = recordsPerPage; $i > 0; $i--) {
+                                    if (!(final[page * recordsPerPage - $i] == null)) {
+                                        document.getElementById("allvideopage").innerHTML +=
+                                            final[page * recordsPerPage - $i];
+                                    }
                                 }
                             }
-                        }
-                    }).on('page', function (event, page) {
-                        // console.info(page + ' (from event listening)');
-                    });
+                        }).on('page', function (event, page) {
+                            // console.info(page + ' (from event listening)');
+                        });
+                    }
                 }
             });
         });

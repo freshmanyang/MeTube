@@ -11,6 +11,7 @@
     <div id="advanced-search-container" style="display:none;">
         <!--        <div id="advanced-search-container" >-->
         <div id="first_row">
+            <form>
             <label for="videoTitle">Video Title</label>
             <input type="text" id="videoTitle" placeholder="keyword" size="10">
             <label for="upload_by">Upload By:</label>
@@ -56,6 +57,8 @@
             <input type="datetime-local" id="uplodate_end" name="uplodate_end" value='2020-04-13T08:00'>
         </P>
         <input type="submit" class="btn btn-outline-info" id="advancedSearch" name="advancedSearch">
+        <input type="reset" class="btn btn-outline-dark">
+        </form>
     </div>
     <!--    <div id="main-content-container" class="paddingTop" >-->
     <div id="main-content-container">

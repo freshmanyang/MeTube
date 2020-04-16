@@ -37,8 +37,13 @@
     flex-basis: 100%;
 }
 
-#search_result #singlevideo #videocontent ul li {
-    float: left;
+#search_result #singlevideo #videocontent div ul {
+    display: flex;
+    /*flex-flow: row wrap;*/
+    flex-basis: 100%;
+}
+
+#search_result #singlevideo #videocontent div li {
     width: 200px;
 }
 
