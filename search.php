@@ -11,7 +11,7 @@
     <div id="advanced-search-container" style="display:none;">
         <!--        <div id="advanced-search-container" >-->
         <div id="first_row">
-            <form>
+         <form>
             <label for="videoTitle">Video Title</label>
             <input type="text" id="videoTitle" placeholder="keyword" size="10">
             <label for="upload_by">Upload By:</label>
@@ -100,7 +100,8 @@
             document.getElementById("category").innerHTML = category;
         });
         //advancedsearch button click
-        $('#advancedSearch').on("click", function () {
+        $('#advancedSearch').on("click", function (event) {
+            event.preventDefault();
             var file_size_min = document.getElementById("file_size_min").value;
             var file_size_max = document.getElementById("file_size_max").value;
             var duration_min = document.getElementById("duration_min").value;
@@ -157,6 +158,7 @@
                             }).on('page', function (event, page) {
                             });
                         } else {
+                            $('#pagination').twbsPagination('destroy');
                             document.getElementById("search_result").innerText = "No matched Videos";
                         }
                     }
@@ -196,6 +198,7 @@
                     }).on('page', function (event, page) {
                     });
                 } else {
+                    $('#pagination').twbsPagination('destroy');
                     document.getElementById("search_result").innerHTML = "No matched Videos";
                 }
             }
