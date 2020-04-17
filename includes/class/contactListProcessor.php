@@ -1,6 +1,5 @@
 <?php
 
-
 class contactListProcessor
 {
     private $conn, $usernameLoggedIn, $sqlData, $table, $view, $viewquery, $viewfilter, $filtertable;
@@ -27,7 +26,6 @@ class contactListProcessor
         $query->bindParam(':username', $username);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
-
     }
 
     private function userexist($username)
@@ -36,7 +34,6 @@ class contactListProcessor
         $query->bindParam(':username', $username);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
-
     }
 
     public function fetchData()
@@ -48,7 +45,6 @@ class contactListProcessor
             if ($value['blocked'] == 1) {
                 $block = 'V';
             }
-
             $this->table .= '<tr> <th scope="row">' . $count . '</th>';
             $this->table .= '<td>' . '<input type="checkbox" name="contactList[]" value = "' . $value['username'] . '"> </td>';
             $this->table .= '<td>' . $value['username'] . '</td>' . '<td>' . $value['groupname'] . '</td>' . '<td>' . $block . '</td>';
@@ -77,7 +73,6 @@ class contactListProcessor
         if (empty($this->userexist($conntactName))) {
             return "The username " . $conntactName . " that you input not exist in MeTube system";
         }
-
         $query = $this->conn->prepare("INSERT INTO contactlist (mainuser,username,groupname,blocked) value(:mainuser,:contactName,:groupName,:blocked)");
         $query->bindParam(':mainuser', $this->usernameLoggedIn);
         $query->bindParam(':contactName', $conntactName);
@@ -88,14 +83,12 @@ class contactListProcessor
 
     public function blockContact($blockList, $block)
     {
-
         $qMarks = str_repeat('?,', count($blockList) - 1) . '?';
         $mainUser = "'" . $this->usernameLoggedIn . "'";
         $query = $this->conn->prepare("UPDATE contactlist set blocked= $block WHERE mainuser= $mainUser AND username IN ($qMarks)");
         $query->execute($blockList);
         $query = $this->conn->prepare("DELETE from subscriptions  WHERE username=$mainUser AND Subscriptions IN ($qMarks)");
         $query->execute($blockList);
-
     }
 
     public function getviewfilter()
@@ -105,6 +98,7 @@ class contactListProcessor
         $query->execute();
         $this->viewquery = $query->fetchAll(PDO::FETCH_ASSOC);
 //        print_r($this->viewquery);
+        $this->view = '<option value="All">All</option>';
         foreach ($this->viewquery as $key => $value) {
             $this->view .= '<option value="' . $value[groupname] . '">' . $value[groupname] . '</option>';
         }
@@ -113,7 +107,9 @@ class contactListProcessor
 
     public function viewFilter($groupname)
     {
-
+        if(!strcmp($groupname,'All')){
+            return $this->fetchData();
+        }
         $query = $this->conn->prepare("SELECT * From contactlist WHERE mainuser =:mainUser and groupname=:groupname");
         $query->bindParam(':mainUser', $this->usernameLoggedIn);
         $query->bindParam(':groupname', $groupname);
@@ -125,7 +121,6 @@ class contactListProcessor
             if ($value['blocked'] == 1) {
                 $block = 'V';
             }
-
             $this->filtertable .= '<tr> <th scope="row">' . $count . '</th>';
             $this->filtertable .= '<td>' . '<input type="checkbox" name="contactList[]" value = "' . $value['username'] . '"> </td>';
             $this->filtertable .= '<td>' . $value['username'] . '</td>' . '<td>' . $value['groupname'] . '</td>' . '<td>' . $block . '</td>';
@@ -134,5 +129,4 @@ class contactListProcessor
         }
         return "$this->filtertable";
     }
-
 }
