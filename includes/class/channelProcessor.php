@@ -20,12 +20,12 @@ class  channelProcessor
         $this->video = $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    private function getUserIDfromUsername($username)
+    public function getUserIdFromUsername($username)
     {
         $query = $this->conn->prepare("SELECT id From users where username=:username");
         $query->bindParam(':username', $username);
         $query->execute();
-        return $query->fetch(PDO::FETCH_ASSOC);
+        return $query->fetch(PDO::FETCH_ASSOC)['id'];
     }
 
     public function create()
@@ -625,7 +625,7 @@ class  channelProcessor
                 array_splice($videowithblock, $key, 1);
             } elseif ($value['privacy'] == 2) {
                 $uploaded_by = $value["uploaded_by"];
-                if(!strcmp($username,$uploaded_by)){
+                if (!strcmp($username, $uploaded_by)) {
                     continue;
                 }
                 $query = $this->conn->prepare("SELECT * From contactlist where username=:username and mainuser=:mainuser");
@@ -732,11 +732,12 @@ class  channelProcessor
             $button = "<div><button type=\"button\"  class=\"btn btn-danger\"  id='unsubscribe'>Unsubscribe</button> ";
         }
         if (!$this->checkfriend($this->user)) {
-            $FriendButton = "<button type=\"button\"  class=\"btn btn-success\"  id='addFriend'>Add Friend</button> </div>";
+            $FriendButton = "<button type=\"button\"  class=\"btn btn-success\"  id='addFriend'>Add Friend</button>";
         } else {
-            $FriendButton = "<button type=\"button\"  class=\"btn btn-danger\"  id='removeFriend'>Remove Friend</button> </div>";
+            $FriendButton = "<button type=\"button\"  class=\"btn btn-danger\"  id='removeFriend'>Remove Friend</button>";
         }
-        return (isset($_SESSION['uid']) ? "$button $FriendButton" : "") . "
+        $ChatButton = "<button type=\"button\"  class=\"btn btn-info\"  id='chat_button'>Chat</button></div>";
+        return (isset($_SESSION['uid']) ? "$button $FriendButton $ChatButton" : "") . "
                         <ul class=\"nav nav-tabs\" id=\"myTab1\" role=\"tablist\">
                   <li id=\"channel1\" class=\"nav-item\">
                     <a id=\"channel1\" class=\"nav-link active\" id=\"home-tab\" data-toggle=\"tab\" href=\"#channel2\" role=\"tab\" aria-controls=\"home\" aria-selected=\"true\">Channel</a>

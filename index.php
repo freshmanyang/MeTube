@@ -2,7 +2,7 @@
 <?php require_once("./includes/nav.php"); ?>
 <?php require_once('./includes/class/showAllVideo.php'); ?>
 <main class="main-section-container" id="main">
-    <div class="main-content-container">
+    <div class="main-content-container" id="index">
         <?php
         $showAllVideo = new showAllVideo($conn);
         if (isset($usernameLoggedIn)) {
@@ -87,9 +87,9 @@
                 },
                 datatype: 'json',
                 success: function (result) {
-                    final = JSON.parse(result);
-                    datalength = final.length;
-                    if (datalength == 0) {
+                    var final = JSON.parse(result);
+                    var datalength = final.length;
+                    if (datalength === 0) {
                         document.getElementById("allvideopage").innerHTML = "There is no videos yet";
                     } else {
                         window.pagObj = $('#pagination').twbsPagination({
@@ -99,7 +99,7 @@
                             onPageClick: function (event, page) {
                                 document.getElementById("allvideopage").innerHTML = "";
                                 // console.info(page + ' (from options)');
-                                for ($i = recordsPerPage; $i > 0; $i--) {
+                                for (var $i = recordsPerPage; $i > 0; $i--) {
                                     if (!(final[page * recordsPerPage - $i] == null)) {
                                         document.getElementById("allvideopage").innerHTML +=
                                             final[page * recordsPerPage - $i];
