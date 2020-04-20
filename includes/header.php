@@ -75,7 +75,7 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
         <button class="master-head-button" id="mail_notification_button"><i class="iconfont icon-mail"></i></button>
         <?php
         if (!isset($_SESSION['uid'])) {
-            echo "<button class=\"btn btn-primary btn-sm\"  data-toggle=\"modal\" data-target=\"#sign_in_modal\">Sign In</button>";
+            echo "<button class=\"btn btn-primary btn-sm\"  data-toggle=\"modal\" data-target=\"#sign_in_modal\">SIGN IN</button>";
         } else {
             echo "<button class='avatar-button'>
                 <img src='" . $userLoginInObj->getAvatarPath() . "' class='avatar-sm' id='header_avatar'>

@@ -475,7 +475,6 @@ $("#update_password_form").on("submit", function updatePassword(e) {
             contentType: false,
             processData: false,
             success: function (res) {
-                console.log(res.status);
                 $("#update_password_modal").modal('hide');
                 if (!res.status) {
                     $("#warning_message").text('Something went wrong. Password was not uploaded.');

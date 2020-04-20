@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_title">Sign Up</h5>
+                <h5 class="modal-title" id="modal_title">SIGN UP</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -86,10 +86,10 @@
                 </form>
             </div>
             <div class="modal-footer">
-<!--                <button type="button" class="btn btn-primary" id="sign_up_btn">Sign Up</button>-->
-                <button type="submit" class="btn btn-primary" id="sign_up_btn" name="sign_up_submit" form="sign_up_form">Sign Up</button>
+<!--                <button type="button" class="btn btn-primary" id="sign_up_btn">SIGN UP</button>-->
+                <button type="submit" class="btn btn-primary" id="sign_up_btn" name="sign_up_submit" form="sign_up_form">SIGN UP</button>
                 <button type="button" class="btn btn-secondary" id="to_sign_in_modal" data-toggle="modal" data-target="#sign_in_modal"
-                        data-dismiss="modal">Sign In
+                        data-dismiss="modal">SIGN IN
                 </button>
             </div>
         </div>

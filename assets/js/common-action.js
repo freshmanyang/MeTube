@@ -46,7 +46,6 @@ function updateNotifications(user_id) {
                     });
                     $("#mail_notification_popup .no-new-messages").hide();
                 } else {
-                    console.log(1);
                     $("#mail_notification_popup .no-new-messages").show();
                 }
             }
