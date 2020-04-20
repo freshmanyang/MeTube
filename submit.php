@@ -6,9 +6,13 @@ require_once("./includes/class/CommentHandler.php");
 require_once("./includes/class/AvatarUpload.php");
 require_once("./includes/class/User.php");
 require_once("./includes/class/Video.php");
+require_once("./includes/class/CommunityHandler.php");
+require_once("./includes/class/TopicHandler.php");
 
 $accountHandler = new AccountHandler($conn);
 $messageHandler = new MessageHandler($conn);
+$communityHandler = new CommunityHandler($conn);
+$topicHandler = new TopicHandler($conn);
 if (isset($_SESSION["uid"])) {
     $userObj = new User($conn, $_SESSION["uid"]);
 }
@@ -340,7 +344,7 @@ if (isset($_POST["get_recommendation"]) && isset($_POST["video_id"]) && isset($_
 }
 
 // update notifications
-if (isset($_POST["update_notifications"]) && isset($_POST["user_id"])){
+if (isset($_POST["update_notifications"]) && isset($_POST["user_id"])) {
     $response['data'] = $messageHandler->getNotificationsByUserId($_POST["user_id"]);
     $response['status'] = true;
     echo json_encode($response);
@@ -391,11 +395,63 @@ if (isset($_POST["send_message"]) && isset($_POST["sender_id"]) && isset($_POST[
     exit;
 }
 
+// user create a new community
+if (isset($_POST["create_community"]) && isset($_POST["community_name"]) && isset($_POST["user_id"])) {
+    $insertedCommunity = $communityHandler->createCommunity($_POST["community_name"]);
+    if ($insertedCommunity) {
+        $response['status'] = $communityHandler->joinCommunity($insertedCommunity['id'], $_POST["user_id"]);
+        $response['data'] = $communityHandler->communityRenderer(array($insertedCommunity));
+    } else {
+        $response['status'] = false;
+        $response['data'] = '';
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// user join a community
+if (isset($_POST["join_community"]) && isset($_POST["community_id"]) && isset($_POST["user_id"])) {
+    $response['status'] = $communityHandler->joinCommunity($_POST["community_id"], $_POST["user_id"]);
+    echo json_encode($response);
+    exit;
+}
+
+// create a new topic
+if (isset($_POST["create_topic"]) && isset($_POST["community_id"]) && isset($_POST["user_id"]) && isset($_POST["title"]) && isset($_POST["text"])) {
+    $postedTopic = $topicHandler->postNewTopic($_POST["user_id"], $_POST["title"], nl2br($_POST["text"]));
+    if ($postedTopic) {
+        $response['status'] = $topicHandler->bindTopicToCommunity($_POST["community_id"], $postedTopic['id']);
+        $response['data'] = $topicHandler->topicRenderer(array($postedTopic));
+    } else {
+        $response['status'] = false;
+        $response['data'] = '';
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// leave a new comment to a topic
+if (isset($_POST["post_comment"]) && isset($_POST["topic_id"]) && isset($_POST["user_id"]) && isset($_POST["text"])) {
+    $postedComment = $topicHandler->postNewComment($_POST["user_id"], $_POST["text"]);
+    if ($postedComment) {
+        $response['status'] = $topicHandler->bindCommentToTopic($_POST["topic_id"], $postedComment["id"]);
+        $commentDiv = $topicHandler->commentRenderer(array($postedComment))[0];
+        $commentCount = $topicHandler->getCommentCountById($_POST["topic_id"]);
+        $response['data'] = array('comment_div' => $commentDiv, 'comment_count' => $commentCount);
+    } else {
+        $response['status'] = false;
+        $response['data'] = '';
+    }
+    echo json_encode($response);
+    exit;
+}
+
 // if nothing above, sing out
 if (isset($_SESSION['uid'])) {
     $accountHandler->signOut();
     $url = $_SERVER['HTTP_REFERER'];
-    if (strpos($url, 'watch.php') === false) { // go back to index.php from any page when logout except from watch.php
+    if (strpos($url, 'watch.php') === false && strpos($url, 'community.php') === false &&
+        strpos($url, 'topic.php') === false) {
         header("Location:index.php");
     } else {
         echo "<script type='text/javascript'>history.go(-1)</script>";

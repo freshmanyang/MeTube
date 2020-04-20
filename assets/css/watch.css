@@ -229,7 +229,7 @@
 
 #comment_editor.is-focus,
 #reply_editor.is-focus {
-    border-bottom: 2px solid #030303;
+    border-bottom: thin solid #7a3374;
     outline: none;
     color: #030303;
 }

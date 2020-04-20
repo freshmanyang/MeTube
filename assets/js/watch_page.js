@@ -324,7 +324,6 @@ $(function () {
         let comment_id = submitReplyBtn.parent().parent().parent().parent().parent().attr('comment-id');
         let user_id = submitReplyBtn.parent().parent().prev().children().attr('user-id');
         let text = submitReplyBtn.parent().prev()[0].innerText.replace(/(?:\r\n|\r|\n)/g, '<br>');
-        console.log(comment_id);
         $.ajax({
             type: 'post',
             url: './submit.php',
@@ -500,7 +499,6 @@ $(function () {
                         } else { // no data get from the server side
                             $('.suggestion .no-more-data').show();
                             $('.suggestion .loading-image-wrapper .loading-image').hide();
-                            console.log(1);
                         }
                     },
                     error: function (xhr, status, error) { // ajax error

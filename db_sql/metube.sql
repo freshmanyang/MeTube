@@ -254,3 +254,81 @@ CREATE TABLE IF NOT EXISTS `notification` (
   `read_status` BOOLEAN DEFAULT false,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `community`
+--
+
+CREATE TABLE IF NOT EXISTS `community` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `community_name` VARCHAR(70) NOT NULL UNIQUE,
+  `create_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `community_user`
+--
+
+CREATE TABLE IF NOT EXISTS `community_user` (
+  `community_id` INT NOT NULL,
+  `user_id` INT NOT NULL,
+  PRIMARY KEY (`community_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `community_topic`
+--
+
+CREATE TABLE IF NOT EXISTS `community_topic` (
+  `community_id` INT NOT NULL,
+  `topic_id` INT NOT NULL,
+  PRIMARY KEY (`community_id`,`topic_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `topic`
+--
+
+CREATE TABLE IF NOT EXISTS `topic` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(150) NOT NULL,
+  `post_by` INT NOT NULL,
+  `text` TEXT NOT NULL,
+  `post_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `topic_topic_comment`
+--
+
+CREATE TABLE IF NOT EXISTS `topic_topic_comment` (
+  `topic_id` INT NOT NULL,
+  `topic_comment_id` INT NOT NULL,
+  PRIMARY KEY (`topic_id`,`topic_comment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `topic_comment`
+--
+
+CREATE TABLE IF NOT EXISTS `topic_comment` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `comment_by` INT NOT NULL,
+  `text` TEXT NOT NULL,
+  `comment_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

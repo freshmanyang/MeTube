@@ -17,10 +17,10 @@
             <p>People & sharing</p>
         </div>
     </a>
-    <a href="./upload.php" class="endpoint" id="to_upload">
+    <a href="./community.php" class="endpoint" id="to_community">
         <div class="endpoint-content">
-            <i class="iconfont icon-video"></i>
-            <p>Upload new video</p>
+            <i class="iconfont icon-Community" style="font-weight: bold"></i>
+            <p>Community</p>
         </div>
     </a>
     <a href="./channel.php?channel=<?php echo $usernameLoggedIn?>" class="endpoint" id="to_channel">
