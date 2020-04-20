@@ -2,6 +2,8 @@
 require_once("./includes/config.php");
 require_once("./includes/class/User.php");
 require_once("./includes/class/Video.php");
+require_once("./includes/class/MessageHandler.php");
+require_once("./includes/class/CommentHandler.php");
 //require_once('./includes/clemsonconfig.php');
 $uid = isset($_SESSION['uid']) ? $_SESSION['uid'] : '';
 $userLoginInObj = new User($conn, $uid);
@@ -40,10 +42,12 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
     <!-- bootstrap-select js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
     <!-- bootstrap Tempus Dominus -->
-<!--    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
+    <!--    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"/>
     <!-- pagination-->
     <script src="../assets/js/jquery.twbsPagination.js" type="text/javascript"></script>
     <!-- local js -->
@@ -68,7 +72,7 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
     </div>
     <div class="end">
         <a href="./upload.php" class="master-head-button" id="upload_button"><i class="iconfont icon-upload"></i></a>
-        <button class="master-head-button" id="notification_button"><i class="iconfont icon-notification"></i></button>
+        <button class="master-head-button" id="mail_notification_button"><i class="iconfont icon-mail"></i></button>
         <?php
         if (!isset($_SESSION['uid'])) {
             echo "<button class=\"btn btn-primary btn-sm\"  data-toggle=\"modal\" data-target=\"#sign_in_modal\">Sign In</button>";
@@ -78,6 +82,18 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
               </button>";
         }
         ?>
+    </div>
+    <div class="mail-notification-wrapper" id="mail_notification_popup" style="display: none">
+        <div class="no-new-messages" style="display: none">No new messages</div>
+<!--        --><?php
+//        if (isset($_SESSION['uid'])) {
+//            $messageHandlerObj = new MessageHandler($conn);
+//            $notifications = $messageHandlerObj->getNotificationsByUserId($uid);
+//            foreach ($notifications as $notification) {
+//                echo $notification;
+//            }
+//        }
+//        ?>
     </div>
     <div class="header-popup-wrapper" id="popup" style="display: none">
         <div class="header">
@@ -100,10 +116,10 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
                 </div>
             </a>
             <a href="./submit.php" class="endpoint">
-            <div class="endpoint-content">
-                <i class="iconfont icon-signout"></i>
-                <p>Sign out</p>
-            </div>
+                <div class="endpoint-content">
+                    <i class="iconfont icon-signout"></i>
+                    <p>Sign out</p>
+                </div>
             </a>
         </div>
     </div>
@@ -111,4 +127,5 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
 <?php require_once("./includes/components/sign_up_modal.php"); ?>
 <?php require_once("./includes/components/sign_in_modal.php"); ?>
 <?php require_once("./includes/components/alert_modal.php"); ?>
+<?php require_once("./includes/components/message_dialog_modal.php"); ?>
 

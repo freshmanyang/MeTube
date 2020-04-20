@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_title">Name</h5>
+                <h5 class="modal-title" id="modal_title">Password</h5>
             </div>
             <div class="modal-body">
                 <form enctype="multipart/form-data" class="needs-validation" id="update_password_form" novalidate>

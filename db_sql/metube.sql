@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `keyword` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `keyword`
+-- Table structure for table `video_keyword`
 --
 
 CREATE TABLE IF NOT EXISTS `video_keyword` (
@@ -211,3 +211,46 @@ CREATE TABLE IF NOT EXISTS `video_keyword` (
   PRIMARY KEY (`keyword_id`,`video_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dialog`
+-- contact_id_pair : "id_1,id_2"
+--
+
+CREATE TABLE IF NOT EXISTS `dialog` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `contact_id_pair` VARCHAR(10),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `message`
+--
+
+CREATE TABLE IF NOT EXISTS `message` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `dialog_id` INT NOT NULL,
+  `sender_id` INT NOT NULL,
+  `text` TEXT NOT NULL,
+  `upload_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notification`
+--
+
+CREATE TABLE IF NOT EXISTS `notification` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `receiver_id` INT NOT NULL,
+  `sender_id` INT NOT NULL,
+  `dialog_id` INT NOT NULL,
+  `create_date` DATETIME NOT NULL,
+  `read_status` BOOLEAN DEFAULT false,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

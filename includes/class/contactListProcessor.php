@@ -45,9 +45,10 @@ class contactListProcessor
             if ($value['blocked'] == 1) {
                 $block = 'V';
             }
+            $channelLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=' . $value['username'];
             $this->table .= '<tr> <th scope="row">' . $count . '</th>';
             $this->table .= '<td>' . '<input type="checkbox" name="contactList[]" value = "' . $value['username'] . '"> </td>';
-            $this->table .= '<td>' . $value['username'] . '</td>' . '<td>' . $value['groupname'] . '</td>' . '<td>' . $block . '</td>';
+            $this->table .= '<td><a href="' . $channelLink . '">' . $value['username'] . '</a></td>' . '<td>' . $value['groupname'] . '</td>' . '<td>' . $block . '</td>';
             $this->table .= '</tr>';
             $count++;
         }
@@ -100,14 +101,14 @@ class contactListProcessor
 //        print_r($this->viewquery);
         $this->view = '<option value="All">All</option>';
         foreach ($this->viewquery as $key => $value) {
-            $this->view .= '<option value="' . $value[groupname] . '">' . $value[groupname] . '</option>';
+            $this->view .= '<option value="' . $value['groupname'] . '">' . $value['groupname'] . '</option>';
         }
         return "$this->view";
     }
 
     public function viewFilter($groupname)
     {
-        if(!strcmp($groupname,'All')){
+        if (!strcmp($groupname, 'All')) {
             return $this->fetchData();
         }
         $query = $this->conn->prepare("SELECT * From contactlist WHERE mainuser =:mainUser and groupname=:groupname");
@@ -121,9 +122,10 @@ class contactListProcessor
             if ($value['blocked'] == 1) {
                 $block = 'V';
             }
+            $channelLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=' . $value['username'];
             $this->filtertable .= '<tr> <th scope="row">' . $count . '</th>';
             $this->filtertable .= '<td>' . '<input type="checkbox" name="contactList[]" value = "' . $value['username'] . '"> </td>';
-            $this->filtertable .= '<td>' . $value['username'] . '</td>' . '<td>' . $value['groupname'] . '</td>' . '<td>' . $block . '</td>';
+            $this->filtertable .= '<td><a href="' . $channelLink . '">' . $value['username'] . '</a></td>' . '<td>' . $value['groupname'] . '</td>' . '<td>' . $block . '</td>';
             $this->filtertable .= '</tr>';
             $count++;
         }

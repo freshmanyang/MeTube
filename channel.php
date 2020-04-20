@@ -9,9 +9,9 @@ $channel = new channelProcessor($conn, $_GET['channel'], $usernameLoggedIn);
 ?>
 <main class="main-section-container" id="main">
     <div class="main-content-container">
-        <div id="channelPage">
+        <div id="channelPage" channel-user-id="<?php echo $channel->getUserIdFromUsername($_GET['channel'])?>">
             <div class="container">
-                <h2>Welcome to <?php echo ucfirst($_GET['channel']) ?>'s Channel</h2>
+                <h2>Welcome to <?php echo $_GET['channel'] ?>'s Channel</h2>
                 <?php
                 if (!strcmp($usernameLoggedIn, $_GET['channel'])) {
                     echo $channel->showall();

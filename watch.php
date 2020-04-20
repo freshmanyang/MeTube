@@ -3,6 +3,7 @@
 <?php require_once("./includes/class/VideoPlayer.php"); ?>
 <?php require_once("./includes/class/CommentHandler.php"); ?>
 <?php require_once('./includes/class/channelProcessor.php'); ?>
+?>
 <?php $channel = new channelProcessor($conn, '', $usernameLoggedIn); ?>
 <link rel="stylesheet" href="./assets/css/watch.css">
 <script src="./assets/js/watch_page.js" defer></script>

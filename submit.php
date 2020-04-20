@@ -1,12 +1,14 @@
 <?php
 require_once("./includes/config.php");
 require_once("./includes/class/AccountHandler.php");
+require_once("./includes/class/MessageHandler.php");
 require_once("./includes/class/CommentHandler.php");
 require_once("./includes/class/AvatarUpload.php");
 require_once("./includes/class/User.php");
 require_once("./includes/class/Video.php");
 
 $accountHandler = new AccountHandler($conn);
+$messageHandler = new MessageHandler($conn);
 if (isset($_SESSION["uid"])) {
     $userObj = new User($conn, $_SESSION["uid"]);
 }
@@ -331,6 +333,58 @@ if (isset($_POST["get_recommendation"]) && isset($_POST["video_id"]) && isset($_
         $newRecommendationVideosDiv = $videoObj->recommendationsVideoRenderer($newRecommendationVideos);
         $response['data'] = $newRecommendationVideosDiv;
     } else {
+        $response['status'] = false;
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// update notifications
+if (isset($_POST["update_notifications"]) && isset($_POST["user_id"])){
+    $response['data'] = $messageHandler->getNotificationsByUserId($_POST["user_id"]);
+    $response['status'] = true;
+    echo json_encode($response);
+    exit;
+}
+
+// get all messages for paired users
+if (isset($_POST["request_messages"]) && isset($_POST["paired_user_id"]) && isset($_POST["user_id"])) {
+    $dialogId = $messageHandler->getDialogId($_POST["paired_user_id"], $_POST["user_id"]);
+    $messageHandler->setReadStatus($dialogId, $_POST["user_id"]);
+    $response['status'] = true;
+    $messages = $messageHandler->getAllMessagesByDialogId($dialogId);
+    $response['data'] = $messageHandler->messageRenderer($messages);
+    echo json_encode($response);
+    exit;
+}
+
+// get next messages for paired users
+if (isset($_POST["request_next_messages"]) && isset($_POST["paired_user_id"]) && isset($_POST["user_id"]) && isset($_POST["last_message_id"])) {
+    $dialogId = $messageHandler->getDialogId($_POST["paired_user_id"], $_POST["user_id"]);
+    $messageHandler->setReadStatus($dialogId, $_POST["user_id"]);
+    $response['status'] = true;
+    $messages = $messageHandler->getNextMessages($dialogId, $_POST["last_message_id"]);
+    $response['data'] = $messageHandler->messageRenderer($messages);
+//    $response['data'] = array($_POST["paired_user_id"], $_POST["user_id"], $_POST["last_message_id"]);
+    echo json_encode($response);
+    exit;
+}
+
+// user send message to another user
+if (isset($_POST["send_message"]) && isset($_POST["sender_id"]) && isset($_POST["receiver_id"]) && isset($_POST["text"])) {
+    if ($messageHandler->isBlocked($_POST["sender_id"], $_POST["receiver_id"])) {
+        // if user is blocked, return false
+        $response['status'] = false;
+        $response['data'] = 'blocked';
+        echo json_encode($response);
+        exit;
+    }
+    $sendMessage = $messageHandler->createMessage($_POST["sender_id"], $_POST["receiver_id"], $_POST["text"]);
+    if ($sendMessage) {
+        $response['data'] = $messageHandler->messageRenderer(array($sendMessage));
+        $response['status'] = true;
+    } else {
+        $response['data'] = '';
         $response['status'] = false;
     }
     echo json_encode($response);
