@@ -1,7 +1,7 @@
 <?php
 require_once('./includes/header.php');
 require_once('./includes/class/channelProcessor.php');
-require_once("./includes/nav.php");
+require_once("includes/nav.php");
 if ((!isset($_GET['channel'])) || $_GET['channel'] == "") {
     echo "<script>alert('You are not choose any channel, redirect to Home page after click'); location.href = 'index.php';</script>";
 }

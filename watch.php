@@ -1,12 +1,12 @@
-<?php require_once("./includes/header.php"); ?>
-<?php require_once("./includes/nav.php"); ?>
-<?php require_once("./includes/class/VideoPlayer.php"); ?>
-<?php require_once("./includes/class/CommentHandler.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/nav.php"); ?>
+<?php require_once("includes/class/VideoPlayer.php"); ?>
+<?php require_once("includes/class/CommentHandler.php"); ?>
 <?php require_once('./includes/class/channelProcessor.php'); ?>
 ?>
 <?php $channel = new channelProcessor($conn, '', $usernameLoggedIn); ?>
-<link rel="stylesheet" href="./assets/css/watch.css">
-<script src="./assets/js/watch_page.js" defer></script>
+<link rel="stylesheet" href="assets/css/watch.css">
+<script src="assets/js/watch_page.js" defer></script>
 <main class="main-section-container" id="main">
     <div class="main-content-container">
         <?php
@@ -87,7 +87,7 @@
                     <?php endif ?>
                 </div>
             </div>
-            <?php require_once("./includes/components/add_to_playlist_modal.php"); ?>
+            <?php require_once("includes/components/add_to_playlist_modal.php"); ?>
             <div class="video-secondary-info-renderer">
                 <div class="upper-wrapper">
                     <a href="<?php echo $channelLink . $videoObj->getVideoOwnerName(); ?>"
@@ -172,7 +172,7 @@
                         <?php endif ?>
                     </div>
                     <div class="loading-image-wrapper">
-                        <img class="loading-image" src="./assets/imgs/loading.gif" style="display: none">
+                        <img class="loading-image" src="assets/imgs/loading.gif" style="display: none">
                     </div>
                     <div class="no-more-data" style="display: none;">No more data</div>
                 </div>
@@ -192,7 +192,7 @@
                 <?php endif ?>
             </div>
             <div class="loading-image-wrapper">
-                <img class="loading-image" src="./assets/imgs/loading.gif" style="display: none">
+                <img class="loading-image" src="assets/imgs/loading.gif" style="display: none">
             </div>
             <div class="no-more-data" style="display: none;">No more data</div>
         </div>

@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="./submit.php" method="post" enctype="multipart/form-data" class="needs-validation"
+                <form action="submit.php" method="post" enctype="multipart/form-data" class="needs-validation"
                       id="sign_in_form" novalidate>
                     <div class="form-group mb-2">
                         <label for="input_email">Email address</label>

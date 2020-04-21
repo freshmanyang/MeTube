@@ -1,6 +1,6 @@
-<?php require_once("./includes/header.php"); ?>
-<?php require_once("./includes/nav.php"); ?>
-<link rel="stylesheet" href="./assets/css/profile.css">
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/nav.php"); ?>
+<link rel="stylesheet" href="assets/css/profile.css">
 <main class="profile-main-section">
     <div class="profile-main-content">
         <header>
@@ -60,12 +60,12 @@
             </article>
         </section>
     </div>
-    <?php require_once("./includes/components/update_avatar_modal.php"); ?>
-    <?php require_once("./includes/components/update_name_modal.php"); ?>
-    <?php require_once("./includes/components/update_username_modal.php"); ?>
-    <?php require_once("./includes/components/update_birthday_modal.php"); ?>
-    <?php require_once("./includes/components/update_gender_modal.php"); ?>
-    <?php require_once("./includes/components/update_password_modal.php"); ?>
+    <?php require_once("includes/components/update_avatar_modal.php"); ?>
+    <?php require_once("includes/components/update_name_modal.php"); ?>
+    <?php require_once("includes/components/update_username_modal.php"); ?>
+    <?php require_once("includes/components/update_birthday_modal.php"); ?>
+    <?php require_once("includes/components/update_gender_modal.php"); ?>
+    <?php require_once("includes/components/update_password_modal.php"); ?>
 </main>
 </body>
 </html>

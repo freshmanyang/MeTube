@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="./submit.php" method="post" enctype="multipart/form-data" class="needs-validation"
+                <form action="submit.php" method="post" enctype="multipart/form-data" class="needs-validation"
                       id="sign_up_form" novalidate>
                     <div class="form-row">
                         <div class="col-md-6 mb-2">

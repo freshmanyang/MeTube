@@ -1,5 +1,5 @@
-<?php require_once("./includes/header.php"); ?>
-<?php require_once("./includes/nav.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/nav.php"); ?>
 <?php require_once('./includes/class/channelProcessor.php'); ?>
 <?php
 if (empty($usernameLoggedIn)) {
@@ -8,7 +8,7 @@ if (empty($usernameLoggedIn)) {
 }
 $channel = new channelProcessor($conn, $_GET['channel'], $usernameLoggedIn);
 ?>
-<link rel="stylesheet" href="./assets/css/playlist.css">
+<link rel="stylesheet" href="assets/css/playlist.css">
 <main class="main-section-container" id="main">
     <div class="main-content-container">
         <form action="channelprocess.php?channel=<?php echo $_GET['channel'] ?>&playlist=<?php echo $_GET['playlist'] ?>"
