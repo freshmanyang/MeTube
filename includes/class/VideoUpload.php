@@ -5,7 +5,7 @@ class VideoUpload
 {
     private $conn; // database connection descriptor
     private $videoData, $title, $description, $keywords, $privacy, $category, $uploaded_by;
-    private $sizeLimit = 10000000; // size limitation for a single uploaded video
+    private $sizeLimit = 1000000000; // size limitation for a single uploaded video
     private $validVideoFormats = array('avi', 'wmv', 'mp4', 'mpeg', 'rmvb', '3gp', 'mkv', 'flv');
     private $targetDir = "./uploads/videos/"; // local directory for video storage
 //    private $ffmpegPath = realpath("./ffmpeg/ffmpeg");
