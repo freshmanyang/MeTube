@@ -1,6 +1,6 @@
-<?php require_once("./includes/header.php"); ?>
-<?php require_once("./includes/nav.php"); ?>
-<?php require_once("./includes/class/VideoUpload.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/nav.php"); ?>
+<?php require_once("includes/class/VideoUpload.php"); ?>
 <main class="main-section-container" id="main">
     <div class="main-content-container">
         <?php

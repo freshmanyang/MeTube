@@ -1,11 +1,11 @@
-<?php require_once("./includes/header.php"); ?>
-<?php require_once("./includes/nav.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/nav.php"); ?>
 <main class="main-section-container" id="main">
     <div class="main-content-container" style="display: block;">
         <div class="form-wrapper">
             <div class="column">
                 <?php
-                require_once("./includes/class/VideoFormGenerator.php");
+                require_once("includes/class/VideoFormGenerator.php");
                 $formGenerator = new VideoFormGenerator($conn);
                 echo $formGenerator->createUploadForm();
                 ?>
@@ -24,7 +24,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <img src="./assets/imgs/loading.gif" alt="">
+                        <img src="assets/imgs/loading.gif" alt="">
                         <p>Uploading....</p>
                     </div>
                 </div>

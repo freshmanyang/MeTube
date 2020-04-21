@@ -1,5 +1,5 @@
-<?php require_once("./includes/header.php"); ?>
-<?php require_once("./includes/nav.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/nav.php"); ?>
 <?php require_once('./includes/class/showAllVideo.php'); ?>
 <main class="main-section-container" id="main">
     <div class="main-content-container" id="index">

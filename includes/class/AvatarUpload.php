@@ -4,7 +4,7 @@
 class AvatarUpload
 {
     private $conn, $imageData, $uid;
-    private $targetDir = "./uploads/avatars/";
+    private $targetDir = "uploads/avatars/";
     private $defaultAvatarPath = './assets/imgs/avatars/default.png';
     private $finalFilePath  = '';
 

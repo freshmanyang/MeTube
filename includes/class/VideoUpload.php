@@ -7,9 +7,9 @@ class VideoUpload
     private $videoData, $title, $description, $keywords, $privacy, $category, $uploaded_by;
     private $sizeLimit = 1000000000; // size limitation for a single uploaded video
     private $validVideoFormats = array('avi', 'wmv', 'mp4', 'mpeg', 'rmvb', '3gp', 'mkv', 'flv');
-    private $targetDir = "./uploads/videos/"; // local directory for video storage
-//    private $ffmpegPath = realpath("./ffmpeg/ffmpeg");
-//    private $ffprobePath = realpath("./ffmpeg/ffmpeg");
+    private $targetDir = "uploads/videos/"; // local directory for video storage
+//    private $ffmpegPath = realpath("ffmpeg/ffmpeg");
+//    private $ffprobePath = realpath("ffmpeg/ffmpeg");
 
     public function __construct($conn)
     {
@@ -70,7 +70,7 @@ class VideoUpload
     private function convertVideoToMP4($filePath, $finalFilePath)
     {
         // convert video from other formats to mp4 format
-        $cmd = "./ffmpeg/ffmpeg -i $filePath $finalFilePath 2>&1";
+        $cmd = "ffmpeg/ffmpeg -i $filePath $finalFilePath 2>&1";
         $outPutLog = array();
         exec($cmd, $outPutLog, $returnCode);
         if ($returnCode != 0) {
@@ -95,7 +95,7 @@ class VideoUpload
     private function getVideoDuration($finalFilePath)
     {
         // get duration for each video
-        return (int)shell_exec("./ffmpeg/ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $finalFilePath");
+        return (int)shell_exec("ffmpeg/ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $finalFilePath");
     }
 
     private function uploadVideoDuration($duration, $videoID)
@@ -163,7 +163,7 @@ class VideoUpload
         // create three thumbnails for an uploaded video
         $tnSize = "1280x720"; // size of a thumbnail
         $tnNum = 3; // number of thumbnails
-        $tnPath = "./uploads/videos/thumbnails"; // path to the thumbnail
+        $tnPath = "uploads/videos/thumbnails"; // path to the thumbnail
         $duration = $this->getVideoDuration($finalFilePath);
         $videoID = $this->conn->lastInsertId(); // get the last generated id of the inserted data in table
         // Insert duration into database before generate thumbnails
@@ -185,7 +185,7 @@ class VideoUpload
             $imagePath = "$tnPath/$videoID-$imageName";
 
             // call ffmpeg
-            $cmd = "./ffmpeg/ffmpeg -i $finalFilePath -ss $interval -s $tnSize -vframes 1 $imagePath 2>&1";
+            $cmd = "ffmpeg/ffmpeg -i $finalFilePath -ss $interval -s $tnSize -vframes 1 $imagePath 2>&1";
             $outPutLog = array();
             exec($cmd, $outPutLog, $returnCode);
             if ($returnCode != 0) {

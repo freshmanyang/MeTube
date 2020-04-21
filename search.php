@@ -1,10 +1,10 @@
-<?php require_once("./includes/header.php"); ?>
-<?php require_once("./includes/nav.php"); ?>
-<?php require_once("./includes/class/searchProcessor.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/nav.php"); ?>
+<?php require_once("includes/class/searchProcessor.php"); ?>
 <?php require_once('./includes/class/showAllVideo.php'); ?>
 <?php $search = new searchProcessor($conn); ?>
 <?php $showAllVideo = new showAllVideo($conn); ?>
-<link rel="stylesheet" href="./assets/css/search.css">
+<link rel="stylesheet" href="assets/css/search.css">
 <main class="main-section-container" id="main">
     <div id="hot_keyword"></div>
     <button class="search-show-hide btn btn-outline-dark">Advanced Search</button>

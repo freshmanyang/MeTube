@@ -1,5 +1,5 @@
 <?php
-require_once("./includes/class/searchProcessor.php");
+require_once("includes/class/searchProcessor.php");
 require_once('./includes/config.php');
 $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn'] : "";
 $search = new searchProcessor($conn);

@@ -1,9 +1,9 @@
 <?php
-require_once("./includes/config.php");
-require_once("./includes/class/User.php");
-require_once("./includes/class/Video.php");
-require_once("./includes/class/MessageHandler.php");
-require_once("./includes/class/CommentHandler.php");
+require_once("includes/config.php");
+require_once("includes/class/User.php");
+require_once("includes/class/Video.php");
+require_once("includes/class/MessageHandler.php");
+require_once("includes/class/CommentHandler.php");
 //require_once('./includes/clemsonconfig.php');
 $uid = isset($_SESSION['uid']) ? $_SESSION['uid'] : '';
 $userLoginInObj = new User($conn, $uid);
@@ -49,7 +49,7 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"/>
     <!-- pagination-->
-    <script src="../assets/js/jquery.twbsPagination.js" type="text/javascript"></script>
+    <script src="assets/js/jquery.twbsPagination.js" type="text/javascript"></script>
     <!-- local js -->
     <script src="/assets/js/common-action.js" defer></script>
     <script src="/assets/js/account.js" defer></script>
@@ -58,12 +58,12 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
 <body>
 <header class="master-head-container">
     <button class="master-head-button" id="menu_button"><i class="iconfont icon-menu"></i></button>
-    <a href="./index.php" class="logo">
+    <a href="index.php" class="logo">
         <i class="iconfont icon-play"></i>
         <span class="logo-name">MeTube</span>
     </a>
     <div class="search-container">
-        <form class="search-form" action="./search.php" method="get">
+        <form class="search-form" action="search.php" method="get">
             <div class="search-box" id="search_box">
                 <input id="search_input" name="search_input" type="search" placeholder="Search">
             </div>
@@ -71,7 +71,7 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
         </form>
     </div>
     <div class="end">
-        <a href="./upload.php" class="master-head-button" id="upload_button"><i class="iconfont icon-upload"></i></a>
+        <a href="upload.php" class="master-head-button" id="upload_button"><i class="iconfont icon-upload"></i></a>
         <button class="master-head-button" id="mail_notification_button"><i class="iconfont icon-mail"></i></button>
         <?php
         if (!isset($_SESSION['uid'])) {
@@ -109,13 +109,13 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
             </div>
         </div>
         <div class="footer">
-            <a href="./profile.php" class="endpoint">
+            <a href="profile.php" class="endpoint">
                 <div class="endpoint-content">
                     <i class="iconfont icon-profile"></i>
                     <p>Profile</p>
                 </div>
             </a>
-            <a href="./submit.php" class="endpoint">
+            <a href="submit.php" class="endpoint">
                 <div class="endpoint-content">
                     <i class="iconfont icon-signout"></i>
                     <p>Sign out</p>
@@ -124,8 +124,8 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
         </div>
     </div>
 </header>
-<?php require_once("./includes/components/sign_up_modal.php"); ?>
-<?php require_once("./includes/components/sign_in_modal.php"); ?>
-<?php require_once("./includes/components/alert_modal.php"); ?>
-<?php require_once("./includes/components/message_dialog_modal.php"); ?>
+<?php require_once("includes/components/sign_up_modal.php"); ?>
+<?php require_once("includes/components/sign_in_modal.php"); ?>
+<?php require_once("includes/components/alert_modal.php"); ?>
+<?php require_once("includes/components/message_dialog_modal.php"); ?>
 

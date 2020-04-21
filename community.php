@@ -1,14 +1,14 @@
-<?php require_once("./includes/header.php"); ?>
-<?php require_once("./includes/nav.php"); ?>
-<?php require_once("./includes/class/CommunityHandler.php"); ?>
-<?php require_once("./includes/class/TopicHandler.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/nav.php"); ?>
+<?php require_once("includes/class/CommunityHandler.php"); ?>
+<?php require_once("includes/class/TopicHandler.php"); ?>
 <?php $communityHandler = new CommunityHandler($conn); ?>
-<link rel="stylesheet" href="./assets/css/community.css">
+<link rel="stylesheet" href="assets/css/community.css">
 <main class="main-section-container" id="main">
     <div class="main-content-container">
         <div class="community-wrapper">
             <?php if (!isset($_GET['community_id'])): ?>
-                <?php require_once("./includes/components/new_community_modal.php"); ?>
+                <?php require_once("includes/components/new_community_modal.php"); ?>
                 <div class="header-wrapper">
                     <p>MeTube's Communities</p>
                     <button class="btn btn-success btn-sm" id="create_community_btn">NEW</button>
@@ -26,7 +26,7 @@
                 ?>
             <?php else: ?>
                 <?php $communityInfo = $communityHandler->getCommunityById($_GET['community_id']); ?>
-                <?php require_once("./includes/components/new_topic_modal.php"); ?>
+                <?php require_once("includes/components/new_topic_modal.php"); ?>
                 <div class="community-page-header">
                     <h2><?php echo $communityInfo['community_name']?></h2>
                     <?php

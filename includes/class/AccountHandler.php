@@ -56,7 +56,7 @@ class AccountHandler
         $query->bindParam(":email", $postData['input_email']);
         $query->bindValue(":password", hash('sha512', $postData['input_password']));
         $query->bindValue(":sign_up_date", date("Y-m-d H:i:s"));
-        $query->bindValue(":avatar_path", "./assets/imgs/avatars/default.png");
+        $query->bindValue(":avatar_path", "assets/imgs/avatars/default.png");
         if ($query->execute()) {
             return $this->conn->lastInsertId();
         }

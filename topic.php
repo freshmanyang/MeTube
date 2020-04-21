@@ -1,10 +1,10 @@
-<?php require_once("./includes/header.php"); ?>
-<?php require_once("./includes/nav.php"); ?>
-<?php require_once("./includes/class/CommunityHandler.php"); ?>
-<?php require_once("./includes/class/TopicHandler.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/nav.php"); ?>
+<?php require_once("includes/class/CommunityHandler.php"); ?>
+<?php require_once("includes/class/TopicHandler.php"); ?>
 <?php $communityHandler = new CommunityHandler($conn); ?>
 <?php $topicHandler = new TopicHandler($conn); ?>
-<link rel="stylesheet" href="./assets/css/topic.css">
+<link rel="stylesheet" href="assets/css/topic.css">
 <main class="main-section-container" id="main">
     <div class="main-content-container">
         <div class="main-wrapper">

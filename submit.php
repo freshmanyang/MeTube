@@ -1,13 +1,13 @@
 <?php
-require_once("./includes/config.php");
-require_once("./includes/class/AccountHandler.php");
-require_once("./includes/class/MessageHandler.php");
-require_once("./includes/class/CommentHandler.php");
-require_once("./includes/class/AvatarUpload.php");
-require_once("./includes/class/User.php");
-require_once("./includes/class/Video.php");
-require_once("./includes/class/CommunityHandler.php");
-require_once("./includes/class/TopicHandler.php");
+require_once("includes/config.php");
+require_once("includes/class/AccountHandler.php");
+require_once("includes/class/MessageHandler.php");
+require_once("includes/class/CommentHandler.php");
+require_once("includes/class/AvatarUpload.php");
+require_once("includes/class/User.php");
+require_once("includes/class/Video.php");
+require_once("includes/class/CommunityHandler.php");
+require_once("includes/class/TopicHandler.php");
 
 $accountHandler = new AccountHandler($conn);
 $messageHandler = new MessageHandler($conn);
