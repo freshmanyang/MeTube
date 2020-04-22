@@ -141,12 +141,12 @@ class MessageHandler
             $userId = $_SESSION['uid'];
             $userName = $this->getUsernameById($userId);
             $userAvatarPath = $this->getAvatarPathById($userId);
-            $userChannelLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=' . $userName;
+            $userChannelLink = 'channel.php?channel=' . $userName;
 
             $pairedUserId = $this->getPariedUserId($dialogId, $userId);
             $pairedUserName = $this->getUsernameById($pairedUserId);
             $pairedUserAvatarPath = $this->getAvatarPathById($pairedUserId);
-            $pairedUserChannelLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=' . $pairedUserName;
+            $pairedUserChannelLink = 'channel.php?channel=' . $pairedUserName;
 
 
             if ($userId != $senderId) {

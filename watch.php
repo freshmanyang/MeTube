@@ -23,7 +23,7 @@
         $commentsObj = new CommentHandler($conn, $_GET['vid']);
         $comments = $commentsObj->getComments(0, 5);
         $recommendationVideos = $videoObj->getRecommendationVideos(0, 5);
-        $channelLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=';
+        $channelLink = 'channel.php?channel=';
         ?>
         <div class="watch-left">
             <?php if (!$checkAuth): ?>

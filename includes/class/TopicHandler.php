@@ -79,8 +79,8 @@ class TopicHandler
                 $commentCount = $commentCount . ' Comments';
             }
 
-            $channelLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=' . $postUserName;
-            $topicLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'topic.php?topic_id=' . $topicId;
+            $channelLink = 'channel.php?channel=' . $postUserName;
+            $topicLink = 'topic.php?topic_id=' . $topicId;
 
             $element = "<div class='topic-wrapper'>
                             <a href='$topicLink' target='_blank' class='topic-link' style='display: block'>
@@ -148,7 +148,7 @@ class TopicHandler
             $commentUserId = $commentUser->getUserId();
             $commentUserName = $commentUser->getUsername();
             $commentUserAvatar = $commentUser->getAvatarPath();
-            $channelLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=' . $commentUserName;
+            $channelLink = 'channel.php?channel=' . $commentUserName;
 
             $element = "<div class='comment-box' comment-id='$commentId'>
                             <a href='$channelLink' class='user-page-link'>

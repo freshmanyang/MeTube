@@ -6,7 +6,7 @@ class AvatarUpload
     private $conn, $imageData, $uid;
     private $targetDir = "uploads/avatars/";
     private $defaultAvatarPath = './assets/imgs/avatars/default.png';
-    private $finalFilePath  = '';
+    private $finalFilePath = '';
 
     public function __construct($conn, $imageData, $uid)
     {
@@ -19,6 +19,12 @@ class AvatarUpload
     {
         // move video file from temp dir to the designated dir
         return move_uploaded_file($tempPath, $filePath);
+    }
+
+    private function setFilePermission($finalFilePath)
+    {
+        // set file permission for uploaded files
+        return chmod($finalFilePath, 0644);
     }
 
     private function getOldAvatarPath()
@@ -72,6 +78,10 @@ class AvatarUpload
         }
 
         if (!$this->moveFile($imageData["tmp_name"], $this->finalFilePath)) {
+            return false;
+        }
+
+        if (!$this->setFilePermission($this->finalFilePath)) {
             return false;
         }
 
