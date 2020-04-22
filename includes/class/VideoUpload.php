@@ -8,12 +8,22 @@ class VideoUpload
     private $sizeLimit = 1000000000; // size limitation for a single uploaded video
     private $validVideoFormats = array('avi', 'wmv', 'mp4', 'mpeg', 'rmvb', '3gp', 'mkv', 'flv');
     private $targetDir = "uploads/videos/"; // local directory for video storage
+	private $ffmpegPath;
+    private $ffprobePath;
 //    private $ffmpegPath = realpath("ffmpeg/ffmpeg");
 //    private $ffprobePath = realpath("ffmpeg/ffmpeg");
 
     public function __construct($conn)
     {
         $this->conn = $conn;
+//        windows route
+//        $this->ffmpegPath = realpath("ffmpeg/bin/ffmpeg.exe");
+//        $this->ffprobePath = realpath("ffmpeg/bin/ffprobe.exe");
+//        unix route
+//        $this->ffmpegPath = realpath("./ffmpeg/ffmpeg");
+//        $this->ffprobePath = realpath("./ffmpeg/ffprobe");
+        $this->ffmpegPath = realpath("/usr/bin/ffmpeg");
+        $this->ffprobePath = realpath("/usr/bin/ffprobe");
     }
 
     public function setData($videoData, $title, $description, $keywords, $privacy, $category, $uploaded_by)
@@ -76,7 +86,8 @@ class VideoUpload
     private function convertVideoToMP4($filePath, $finalFilePath)
     {
         // convert video from other formats to mp4 format
-        $cmd = "ffmpeg/ffmpeg -i $filePath $finalFilePath 2>&1";
+    //    $cmd = "ffmpeg/ffmpeg -i $filePath $finalFilePath 2>&1";
+		$cmd = "$this->ffmpegPath -i $filePath $finalFilePath 2>&1";
         $outPutLog = array();
         exec($cmd, $outPutLog, $returnCode);
         if ($returnCode != 0) {
@@ -101,7 +112,8 @@ class VideoUpload
     private function getVideoDuration($finalFilePath)
     {
         // get duration for each video
-        return (int)shell_exec("ffmpeg/ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $finalFilePath");
+        //return (int)shell_exec("ffmpeg/ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $finalFilePath");
+		return (int)shell_exec("$this->ffprobePath -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $finalFilePath");
     }
 
     private function uploadVideoDuration($duration, $videoID)
@@ -191,7 +203,8 @@ class VideoUpload
             $imagePath = "$tnPath/$videoID-$imageName";
 
             // call ffmpeg
-            $cmd = "ffmpeg/ffmpeg -i $finalFilePath -ss $interval -s $tnSize -vframes 1 $imagePath 2>&1";
+            //$cmd = "ffmpeg/ffmpeg -i $finalFilePath -ss $interval -s $tnSize -vframes 1 $imagePath 2>&1";
+			$cmd = "$this->ffmpegPath -i $finalFilePath -ss $interval -s $tnSize -vframes 1 $imagePath 2>&1";
             $outPutLog = array();
             exec($cmd, $outPutLog, $returnCode);
             if ($returnCode != 0) {

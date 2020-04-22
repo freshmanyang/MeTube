@@ -53,6 +53,8 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
     <!-- local js -->
     <script src="assets/js/common-action.js" defer></script>
     <script src="assets/js/account.js" defer></script>
+    <!-- favicon.ico -->
+    <link rel="shortcut icon" href="favicon.ico">
     <title>MeTube</title>
 </head>
 <body>
