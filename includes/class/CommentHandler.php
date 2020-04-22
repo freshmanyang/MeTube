@@ -66,7 +66,7 @@ class CommentHandler
                 $replyDivStr = implode("", $repliesDivArr); // combine array to a string
             }
 
-            $channelLink =  (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel='.$commentUserName;
+            $channelLink =  'channel.php?channel='.$commentUserName;
 
             $element = "<div class='comment-box' comment-id='$commentId'>
                             <a href='$channelLink' class='user-page-link'>
@@ -121,7 +121,7 @@ class CommentHandler
             $timeDiff = $this->getTimeDiff($reply["comment_date"]);
             $textDiv = $this->createTextDiv($reply["text"]);
 
-            $channelLink =  (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel='.$replyUserName;
+            $channelLink =  'channel.php?channel='.$replyUserName;
 
 
             $element = "<div class='reply-box'>
@@ -257,7 +257,7 @@ class CommentHandler
         $loginUserAvatar = $loginUserInfo["avatar_path"];
         $loginUserName = $loginUserInfo["username"];
 
-        $channelLink =  (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel='.$loginUserName;
+        $channelLink =  'channel.php?channel='.$loginUserName;
 
         return "<span class='reply-btn' id='reply_btn'>REPLY</span>
                 <div class='reply-box' style='display: none'>

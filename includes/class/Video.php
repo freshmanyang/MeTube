@@ -212,7 +212,7 @@ class Video
             $timeDiff = CommentHandler::getTimeDiff($recoVideo["upload_date"]);
             $videoThumbnailPath = $this->getThumbnailPathById($videoId);
 
-            $videoLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'watch.php?vid=' . $videoId;
+            $videoLink = 'watch.php?vid=' . $videoId;
 
             $element = "<div class='reco-video-wrapper' video-id='$videoId'>
                             <a href='$videoLink' class='left'>

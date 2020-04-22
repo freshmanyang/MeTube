@@ -45,7 +45,7 @@ class contactListProcessor
             if ($value['blocked'] == 1) {
                 $block = 'V';
             }
-            $channelLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=' . $value['username'];
+            $channelLink = 'channel.php?channel=' . $value['username'];
             $this->table .= '<tr> <th scope="row">' . $count . '</th>';
             $this->table .= '<td>' . '<input type="checkbox" name="contactList[]" value = "' . $value['username'] . '"> </td>';
             $this->table .= '<td><a href="' . $channelLink . '">' . $value['username'] . '</a></td>' . '<td>' . $value['groupname'] . '</td>' . '<td>' . $block . '</td>';
@@ -122,7 +122,7 @@ class contactListProcessor
             if ($value['blocked'] == 1) {
                 $block = 'V';
             }
-            $channelLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=' . $value['username'];
+            $channelLink = 'channel.php?channel=' . $value['username'];
             $this->filtertable .= '<tr> <th scope="row">' . $count . '</th>';
             $this->filtertable .= '<td>' . '<input type="checkbox" name="contactList[]" value = "' . $value['username'] . '"> </td>';
             $this->filtertable .= '<td><a href="' . $channelLink . '">' . $value['username'] . '</a></td>' . '<td>' . $value['groupname'] . '</td>' . '<td>' . $block . '</td>';

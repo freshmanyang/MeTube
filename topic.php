@@ -21,7 +21,7 @@
                 <?php
                 $topicHandler = new TopicHandler($conn);
                 $topicInfo = $topicHandler->getTopicById($_GET['topic_id']);
-                $channelLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'channel.php?channel=';
+                $channelLink = 'channel.php?channel=';
                 echo $topicHandler->topicRenderer(array($topicInfo))[0];
                 ?>
                 <div class="comments-section">

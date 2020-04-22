@@ -52,6 +52,12 @@ class VideoUpload
         return move_uploaded_file($tempPath, $filePath);
     }
 
+    private function setFilePermission($finalFilePath)
+    {
+        // set file permission for uploaded files
+        return chmod($finalFilePath, 0644);
+    }
+
     private function insertVideoData($finalFilePath)
     {
         // insert video data into database
@@ -175,7 +181,7 @@ class VideoUpload
             echo "Failed to update video size.";
             return false;
         }
-        if(!$this->uploadKeywords($videoID)){
+        if (!$this->uploadKeywords($videoID)) {
             echo "Failed to insert keywords into database.";
             return false;
         }
@@ -193,6 +199,10 @@ class VideoUpload
                 foreach ($outPutLog as $line) {
                     echo $line . "<br />";
                 }
+            }
+            if (!$this->setFilePermission($imagePath)) {
+                echo "Failed to set permission to file " . $imagePath;
+                return false;
             }
             // insert into thumbnails table
             $query = $this->conn->prepare("INSERT INTO thumbnails (video_id, file_path, selected) 
@@ -243,6 +253,11 @@ class VideoUpload
         // convert other video format to mp4 format.
         if (!$this->convertVideoToMP4($filePath, $finalFilePath)) {
             echo "Cannot convert video to .mp4 format";
+            return false;
+        }
+        // set converted video permission to 0644
+        if (!$this->setFilePermission($finalFilePath)) {
+            echo "Failed to set permission to file " . $finalFilePath;
             return false;
         }
         // delete the original video file

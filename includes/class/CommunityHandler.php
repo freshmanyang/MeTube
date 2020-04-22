@@ -97,7 +97,7 @@ class CommunityHandler
             $this->count += 1;
             $communityId = $community['id'];
             $communityName = $community['community_name'];
-            $communityLink = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/' . 'community.php?community_id=' . $communityId;
+            $communityLink = 'community.php?community_id=' . $communityId;
             $element = "<div class='community'>
                             <a href='$communityLink' target='_blank' class='community-link'>
                                 <div class='count'>#$this->count</div>
