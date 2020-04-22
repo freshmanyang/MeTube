@@ -1,11 +1,18 @@
 <?php
-require_once("./includes/config.php");
-require_once("./includes/class/AccountHandler.php");
-require_once("./includes/class/CommentHandler.php");
-require_once("./includes/class/AvatarUpload.php");
-require_once("./includes/class/User.php");
+require_once("includes/config.php");
+require_once("includes/class/AccountHandler.php");
+require_once("includes/class/MessageHandler.php");
+require_once("includes/class/CommentHandler.php");
+require_once("includes/class/AvatarUpload.php");
+require_once("includes/class/User.php");
+require_once("includes/class/Video.php");
+require_once("includes/class/CommunityHandler.php");
+require_once("includes/class/TopicHandler.php");
 
 $accountHandler = new AccountHandler($conn);
+$messageHandler = new MessageHandler($conn);
+$communityHandler = new CommunityHandler($conn);
+$topicHandler = new TopicHandler($conn);
 if (isset($_SESSION["uid"])) {
     $userObj = new User($conn, $_SESSION["uid"]);
 }
@@ -186,6 +193,15 @@ if (isset($_POST["like"]) && isset($_POST["video_id"])) {
         $query->bindParam(":video_id", $video_id);
         $query->execute();
         $dislikedCount = $query->rowCount();
+        // update likedCount and dislikedCount to videos table
+        $query = $conn->prepare("UPDATE videos SET `like` =:likedCount WHERE id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindValue(":likedCount", $likedCount);
+        $query->execute();
+        $query = $conn->prepare("UPDATE videos SET dislike =:dislikedCount WHERE id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindValue(":dislikedCount", $dislikedCount);
+        $query->execute();
         $response['data'] = array('likedCount' => $likedCount, 'dislikedCount' => $dislikedCount);
     } else { // if not signIn, do nothing with the database
         $response['status'] = false;
@@ -215,6 +231,15 @@ if (isset($_POST["dislike"]) && isset($_POST["video_id"])) {
         $query->bindParam(":video_id", $video_id);
         $query->execute();
         $dislikedCount = $query->rowCount();
+        // update likedCount and dislikedCount to videos table
+        $query = $conn->prepare("UPDATE videos SET `like` =:likedCount WHERE id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindValue(":likedCount", $likedCount);
+        $query->execute();
+        $query = $conn->prepare("UPDATE videos SET dislike =:dislikedCount WHERE id=:video_id");
+        $query->bindParam(":video_id", $video_id);
+        $query->bindValue(":dislikedCount", $dislikedCount);
+        $query->execute();
         $response['data'] = array('likedCount' => $likedCount, 'dislikedCount' => $dislikedCount);
     } else { // if not signIn, do nothing with the database
         $response['status'] = false;
@@ -286,7 +311,7 @@ if (isset($_POST["post_reply"]) && isset($_POST["video_id"]) && isset($_POST["co
     exit;
 }
 
-// window scroll to bottom, get 5 more comments
+// get 5 more comments
 if (isset($_POST["get_comment"]) && isset($_POST["video_id"]) && isset($_POST["page"])) {
     $start = $_POST["page"] * 5;
     $commentsObj = new CommentHandler($conn, $_POST["video_id"]);
@@ -302,11 +327,131 @@ if (isset($_POST["get_comment"]) && isset($_POST["video_id"]) && isset($_POST["p
     exit;
 }
 
+// get 5 more recommend videos
+if (isset($_POST["get_recommendation"]) && isset($_POST["video_id"]) && isset($_POST["page"])) {
+    $start = $_POST["page"] * 5;
+    $videoObj = new Video($conn, $_POST["video_id"], '');
+    $newRecommendationVideos = $videoObj->getRecommendationVideos($start, 5);
+    if ($newRecommendationVideos) {
+        $response['status'] = true;
+        $newRecommendationVideosDiv = $videoObj->recommendationsVideoRenderer($newRecommendationVideos);
+        $response['data'] = $newRecommendationVideosDiv;
+    } else {
+        $response['status'] = false;
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// update notifications
+if (isset($_POST["update_notifications"]) && isset($_POST["user_id"])) {
+    $response['data'] = $messageHandler->getNotificationsByUserId($_POST["user_id"]);
+    $response['status'] = true;
+    echo json_encode($response);
+    exit;
+}
+
+// get all messages for paired users
+if (isset($_POST["request_messages"]) && isset($_POST["paired_user_id"]) && isset($_POST["user_id"])) {
+    $dialogId = $messageHandler->getDialogId($_POST["paired_user_id"], $_POST["user_id"]);
+    $messageHandler->setReadStatus($dialogId, $_POST["user_id"]);
+    $response['status'] = true;
+    $messages = $messageHandler->getAllMessagesByDialogId($dialogId);
+    $response['data'] = $messageHandler->messageRenderer($messages);
+    echo json_encode($response);
+    exit;
+}
+
+// get next messages for paired users
+if (isset($_POST["request_next_messages"]) && isset($_POST["paired_user_id"]) && isset($_POST["user_id"]) && isset($_POST["last_message_id"])) {
+    $dialogId = $messageHandler->getDialogId($_POST["paired_user_id"], $_POST["user_id"]);
+    $messageHandler->setReadStatus($dialogId, $_POST["user_id"]);
+    $response['status'] = true;
+    $messages = $messageHandler->getNextMessages($dialogId, $_POST["last_message_id"]);
+    $response['data'] = $messageHandler->messageRenderer($messages);
+//    $response['data'] = array($_POST["paired_user_id"], $_POST["user_id"], $_POST["last_message_id"]);
+    echo json_encode($response);
+    exit;
+}
+
+// user send message to another user
+if (isset($_POST["send_message"]) && isset($_POST["sender_id"]) && isset($_POST["receiver_id"]) && isset($_POST["text"])) {
+    if ($messageHandler->isBlocked($_POST["sender_id"], $_POST["receiver_id"])) {
+        // if user is blocked, return false
+        $response['status'] = false;
+        $response['data'] = 'blocked';
+        echo json_encode($response);
+        exit;
+    }
+    $sendMessage = $messageHandler->createMessage($_POST["sender_id"], $_POST["receiver_id"], $_POST["text"]);
+    if ($sendMessage) {
+        $response['data'] = $messageHandler->messageRenderer(array($sendMessage));
+        $response['status'] = true;
+    } else {
+        $response['data'] = '';
+        $response['status'] = false;
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// user create a new community
+if (isset($_POST["create_community"]) && isset($_POST["community_name"]) && isset($_POST["user_id"])) {
+    $insertedCommunity = $communityHandler->createCommunity($_POST["community_name"]);
+    if ($insertedCommunity) {
+        $response['status'] = $communityHandler->joinCommunity($insertedCommunity['id'], $_POST["user_id"]);
+        $response['data'] = $communityHandler->communityRenderer(array($insertedCommunity));
+    } else {
+        $response['status'] = false;
+        $response['data'] = '';
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// user join a community
+if (isset($_POST["join_community"]) && isset($_POST["community_id"]) && isset($_POST["user_id"])) {
+    $response['status'] = $communityHandler->joinCommunity($_POST["community_id"], $_POST["user_id"]);
+    echo json_encode($response);
+    exit;
+}
+
+// create a new topic
+if (isset($_POST["create_topic"]) && isset($_POST["community_id"]) && isset($_POST["user_id"]) && isset($_POST["title"]) && isset($_POST["text"])) {
+    $postedTopic = $topicHandler->postNewTopic($_POST["user_id"], $_POST["title"], nl2br($_POST["text"]));
+    if ($postedTopic) {
+        $response['status'] = $topicHandler->bindTopicToCommunity($_POST["community_id"], $postedTopic['id']);
+        $response['data'] = $topicHandler->topicRenderer(array($postedTopic));
+    } else {
+        $response['status'] = false;
+        $response['data'] = '';
+    }
+    echo json_encode($response);
+    exit;
+}
+
+// leave a new comment to a topic
+if (isset($_POST["post_comment"]) && isset($_POST["topic_id"]) && isset($_POST["user_id"]) && isset($_POST["text"])) {
+    $postedComment = $topicHandler->postNewComment($_POST["user_id"], $_POST["text"]);
+    if ($postedComment) {
+        $response['status'] = $topicHandler->bindCommentToTopic($_POST["topic_id"], $postedComment["id"]);
+        $commentDiv = $topicHandler->commentRenderer(array($postedComment))[0];
+        $commentCount = $topicHandler->getCommentCountById($_POST["topic_id"]);
+        $response['data'] = array('comment_div' => $commentDiv, 'comment_count' => $commentCount);
+    } else {
+        $response['status'] = false;
+        $response['data'] = '';
+    }
+    echo json_encode($response);
+    exit;
+}
+
 // if nothing above, sing out
 if (isset($_SESSION['uid'])) {
     $accountHandler->signOut();
     $url = $_SERVER['HTTP_REFERER'];
-    if (strpos($url, 'watch.php') === false) { // go back to index.php from any page when logout except from watch.php
+    if (strpos($url, 'watch.php') === false && strpos($url, 'community.php') === false &&
+        strpos($url, 'topic.php') === false) {
         header("Location:index.php");
     } else {
         echo "<script type='text/javascript'>history.go(-1)</script>";

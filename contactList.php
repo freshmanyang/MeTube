@@ -1,7 +1,7 @@
 <?php
 require_once('./includes/header.php');
 require_once('./includes/class/contactListProcessor.php');
-require_once("./includes/nav.php");
+require_once("includes/nav.php");
 if (empty($usernameLoggedIn)) {
     echo "<script>alert('You are not login, redirect to home page after click'); location.href = 'index.php';</script>";
 //    header("refresh:3;url=index.php");
@@ -12,7 +12,7 @@ $conntactList = new contactListProcessor($conn, $usernameLoggedIn);
     <div class="main-content-container">
         <?php
         echo "<div class = 'contactPage'>";
-        echo "<div class = 'contactPage_head'> <h1><a href=\"contactList.php\">Contact List</a></h1><br><h3>" . "Hello " . ucfirst($usernameLoggedIn) . ",</h3><br>";
+        echo "<div class = 'contactPage_head'> <h1><a href=\"contactList.php\">Contact List</a></h1><br><h3>" . "Hello " . $usernameLoggedIn . "</h3><br>";
         if (isset($_POST['Delete'])) {
             if (isset($_POST['contactList'])) {
 //    var_dump($_POST['contactList']);

@@ -1,7 +1,7 @@
 $(function () {
     // click download button, insert record into download_list
     $('#download_btn').on("click", function () {
-        let video_id = $('.video-player').attr('video-id');
+        let video_id = $('#video_player').attr('video-id');
         $.ajax({
             type: 'post',
             url: './submit.php',
@@ -15,7 +15,7 @@ $(function () {
 
     // click like button, insert record into liked_list
     $('#like_btn').on("click", function () {
-        let video_id = $('.video-player').attr('video-id');
+        let video_id = $('#video_player').attr('video-id');
         $.ajax({
             type: 'post',
             url: './submit.php',
@@ -49,7 +49,7 @@ $(function () {
 
     // click dislike button, insert record into liked_list
     $('#dislike_btn').on("click", function () {
-        let video_id = $('.video-player').attr('video-id');
+        let video_id = $('#video_player').attr('video-id');
         $.ajax({
             type: 'post',
             url: './submit.php',
@@ -181,7 +181,7 @@ $(function () {
 
     // click comment btn to submit a new comment
     $('#submit_comment').on("click", function () {
-        let video_id = $('.video-player').attr('video-id');
+        let video_id = $('#video_player').attr('video-id');
         let user_id = $(this).parent().parent().prev().children().attr('user-id');
         let text = $('#comment_editor')[0].innerText.replace(/(?:\r\n|\r|\n)/g, '<br>');
         $.ajax({
@@ -227,7 +227,7 @@ $(function () {
                         newCommentBox.find("#reply_editor").on("input", function () {
                             replyEditorOnInput($(this));
                         });
-                        newCommentBox.find('#reply_btn').on("click", function (){
+                        newCommentBox.find('#reply_btn').on("click", function () {
                             showOrHideReplyArea($(this));
                         });
                         newCommentBox.find('#cancel_reply').on("click", function () {
@@ -300,7 +300,7 @@ $(function () {
         clickCancelReplyBtn($(this));
     });
 
-    function clickCancelReplyBtn(cancelReplyBtn){
+    function clickCancelReplyBtn(cancelReplyBtn) {
         let contentDefault = 'Add a public reply...';
         let replyBox = cancelReplyBtn.parent().prev();
         let submitReplyBtn = cancelReplyBtn.next();
@@ -319,12 +319,11 @@ $(function () {
         clickSubmitReplyBtn($(this));
     });
 
-    function clickSubmitReplyBtn(submitReplyBtn){
-        let video_id = $('.video-player').attr('video-id');
+    function clickSubmitReplyBtn(submitReplyBtn) {
+        let video_id = $('#video_player').attr('video-id');
         let comment_id = submitReplyBtn.parent().parent().parent().parent().parent().attr('comment-id');
         let user_id = submitReplyBtn.parent().parent().prev().children().attr('user-id');
         let text = submitReplyBtn.parent().prev()[0].innerText.replace(/(?:\r\n|\r|\n)/g, '<br>');
-        console.log(comment_id);
         $.ajax({
             type: 'post',
             url: './submit.php',
@@ -384,17 +383,17 @@ $(function () {
     }
 
     // bind event for show/hide reply box
-    $('[id = reply_btn]').on("click", function (){
+    $('[id = reply_btn]').on("click", function () {
         showOrHideReplyArea($(this));
     });
 
-    function showOrHideReplyArea(replyBtn){
+    function showOrHideReplyArea(replyBtn) {
         replyBtn.next().toggle();
     }
 
-    // live loading
-    $(function () {
-        let video_id = $('.video-player').attr('video-id');
+    // live loading comments
+    $(function loadComments() {
+        let video_id = $('#video_player').attr('video-id');
         let page = 1; // current page
         $(window).scroll(function () {
             let thisFunc = arguments.callee;
@@ -407,11 +406,11 @@ $(function () {
                     data: {get_comment: true, video_id: video_id, page: page},
                     dataType: 'json',
                     beforeSend: function () {
-                        $('.loading-image-wrapper .loading-image').show();
+                        $('.comments-section .loading-image-wrapper .loading-image').show();
                     },
                     success: function (res) {
                         if (res.status) { // success
-                            $('.loading-image-wrapper .loading-image').hide();
+                            $('.comments-section .loading-image-wrapper .loading-image').hide();
                             let res_length = res.data.length;
                             for (let i = 0; i < res_length; i++) {
                                 $('.comments-wrapper').append(res.data[i]);
@@ -428,7 +427,7 @@ $(function () {
                                 newCommentBox.find("#reply_editor").on("input", function () {
                                     replyEditorOnInput($(this));
                                 });
-                                newCommentBox.find('#reply_btn').on("click", function (){
+                                newCommentBox.find('#reply_btn').on("click", function () {
                                     showOrHideReplyArea($(this));
                                 });
                                 newCommentBox.find('#cancel_reply').on("click", function () {
@@ -445,12 +444,61 @@ $(function () {
                                 }, 500);
                             } else { // no more data to request
                                 // there's no need to restore the scroll function binding
-                                $('.no-more-data').show();
+                                $('.comments-section .no-more-data').show();
                             }
 
                         } else { // no data get from the server side
-                            $('.no-more-data').show();
-                            $('.loading-image-wrapper .loading-image').hide();
+                            $('.comments-section .no-more-data').show();
+                            $('.comments-section .loading-image-wrapper .loading-image').hide();
+                        }
+                    },
+                    error: function (xhr, status, error) { // ajax error
+                        let errorMessage = xhr.status + ': ' + xhr.statusText;
+                        $("#warning_message").text(errorMessage);
+                        $("#alert_modal").modal('show');
+                    }
+                });
+            }
+        });
+    });
+
+    // live loading comments
+    $(function loadRecommendVideos() {
+        let video_id = $('#video_player').attr('video-id');
+        let page = 1; // current page
+        $(window).scroll(function () {
+            let thisFunc = arguments.callee;
+            let self = $(this);
+            if ($(document).height() - $(window).height() - $(window).scrollTop() < 10 || $(window).scrollTop() >= $('.reco-videos-container').height() / 3) {
+                self.unbind('scroll', thisFunc); // cancel scroll event binding to prevent multiple ajax request
+                $.ajax({
+                    type: 'post',
+                    url: './submit.php',
+                    data: {get_recommendation: true, video_id: video_id, page: page},
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('.suggestion .loading-image-wrapper .loading-image').show();
+                    },
+                    success: function (res) {
+                        if (res.status) { // success
+                            $('.suggestion .loading-image-wrapper .loading-image').hide();
+                            let res_length = res.data.length;
+                            for (let i = 0; i < res_length; i++) {
+                                $('.reco-videos-container').append(res.data[i]);
+                            }
+                            if (res_length === 5) { // maybe there is more data in database we can get
+                                page += 1;
+                                setTimeout(function () { // restore the scroll event binding
+                                    self.bind('scroll', thisFunc);
+                                }, 500);
+                            } else { // no more data to request
+                                // there's no need to restore the scroll function binding
+                                $('.suggestion .no-more-data').show();
+                            }
+
+                        } else { // no data get from the server side
+                            $('.suggestion .no-more-data').show();
+                            $('.suggestion .loading-image-wrapper .loading-image').hide();
                         }
                     },
                     error: function (xhr, status, error) { // ajax error

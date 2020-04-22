@@ -23,13 +23,13 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 -- Table structure for table `videos`
 -- file_path: video file path
--- privacy: {"private": 0 "public": 1 "friends": 2}
+-- privacy: {"private": 0 "public": 1 "friends": 2 "family": 3}
 --
 
 CREATE TABLE IF NOT EXISTS `videos` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `uploaded_by` VARCHAR(20) NOT NULL,
-    `title` VARCHAR(30) NOT NULL,
+    `title` VARCHAR(70) NOT NULL,
     `description` TEXT,
     `privacy` TINYINT DEFAULT 1,
     `file_path` VARCHAR(250) NOT NULL,
@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `keyword` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `keyword`
+-- Table structure for table `video_keyword`
 --
 
 CREATE TABLE IF NOT EXISTS `video_keyword` (
@@ -211,3 +211,124 @@ CREATE TABLE IF NOT EXISTS `video_keyword` (
   PRIMARY KEY (`keyword_id`,`video_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dialog`
+-- contact_id_pair : "id_1,id_2"
+--
+
+CREATE TABLE IF NOT EXISTS `dialog` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `contact_id_pair` VARCHAR(10),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `message`
+--
+
+CREATE TABLE IF NOT EXISTS `message` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `dialog_id` INT NOT NULL,
+  `sender_id` INT NOT NULL,
+  `text` TEXT NOT NULL,
+  `upload_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notification`
+--
+
+CREATE TABLE IF NOT EXISTS `notification` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `receiver_id` INT NOT NULL,
+  `sender_id` INT NOT NULL,
+  `dialog_id` INT NOT NULL,
+  `create_date` DATETIME NOT NULL,
+  `read_status` BOOLEAN DEFAULT false,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `community`
+--
+
+CREATE TABLE IF NOT EXISTS `community` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `community_name` VARCHAR(70) NOT NULL UNIQUE,
+  `create_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `community_user`
+--
+
+CREATE TABLE IF NOT EXISTS `community_user` (
+  `community_id` INT NOT NULL,
+  `user_id` INT NOT NULL,
+  PRIMARY KEY (`community_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `community_topic`
+--
+
+CREATE TABLE IF NOT EXISTS `community_topic` (
+  `community_id` INT NOT NULL,
+  `topic_id` INT NOT NULL,
+  PRIMARY KEY (`community_id`,`topic_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `topic`
+--
+
+CREATE TABLE IF NOT EXISTS `topic` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(150) NOT NULL,
+  `post_by` INT NOT NULL,
+  `text` TEXT NOT NULL,
+  `post_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `topic_topic_comment`
+--
+
+CREATE TABLE IF NOT EXISTS `topic_topic_comment` (
+  `topic_id` INT NOT NULL,
+  `topic_comment_id` INT NOT NULL,
+  PRIMARY KEY (`topic_id`,`topic_comment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `topic_comment`
+--
+
+CREATE TABLE IF NOT EXISTS `topic_comment` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `comment_by` INT NOT NULL,
+  `text` TEXT NOT NULL,
+  `comment_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

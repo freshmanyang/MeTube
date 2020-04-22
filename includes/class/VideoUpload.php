@@ -5,15 +5,25 @@ class VideoUpload
 {
     private $conn; // database connection descriptor
     private $videoData, $title, $description, $keywords, $privacy, $category, $uploaded_by;
-    private $sizeLimit = 10000000; // size limitation for a single uploaded video
+    private $sizeLimit = 1000000000; // size limitation for a single uploaded video
     private $validVideoFormats = array('avi', 'wmv', 'mp4', 'mpeg', 'rmvb', '3gp', 'mkv', 'flv');
-    private $targetDir = "./uploads/videos/"; // local directory for video storage
-//    private $ffmpegPath = realpath("./ffmpeg/ffmpeg");
-//    private $ffprobePath = realpath("./ffmpeg/ffmpeg");
+    private $targetDir = "uploads/videos/"; // local directory for video storage
+	private $ffmpegPath;
+    private $ffprobePath;
+//    private $ffmpegPath = realpath("ffmpeg/ffmpeg");
+//    private $ffprobePath = realpath("ffmpeg/ffmpeg");
 
     public function __construct($conn)
     {
         $this->conn = $conn;
+//        windows route
+//        $this->ffmpegPath = realpath("ffmpeg/bin/ffmpeg.exe");
+//        $this->ffprobePath = realpath("ffmpeg/bin/ffprobe.exe");
+//        unix route
+//        $this->ffmpegPath = realpath("./ffmpeg/ffmpeg");
+//        $this->ffprobePath = realpath("./ffmpeg/ffprobe");
+        $this->ffmpegPath = realpath("/usr/bin/ffmpeg");
+        $this->ffprobePath = realpath("/usr/bin/ffprobe");
     }
 
     public function setData($videoData, $title, $description, $keywords, $privacy, $category, $uploaded_by)
@@ -52,6 +62,12 @@ class VideoUpload
         return move_uploaded_file($tempPath, $filePath);
     }
 
+    private function setFilePermission($finalFilePath)
+    {
+        // set file permission for uploaded files
+        return chmod($finalFilePath, 0644);
+    }
+
     private function insertVideoData($finalFilePath)
     {
         // insert video data into database
@@ -70,7 +86,8 @@ class VideoUpload
     private function convertVideoToMP4($filePath, $finalFilePath)
     {
         // convert video from other formats to mp4 format
-        $cmd = "./ffmpeg/ffmpeg -i $filePath $finalFilePath 2>&1";
+    //    $cmd = "ffmpeg/ffmpeg -i $filePath $finalFilePath 2>&1";
+		$cmd = "$this->ffmpegPath -i $filePath $finalFilePath 2>&1";
         $outPutLog = array();
         exec($cmd, $outPutLog, $returnCode);
         if ($returnCode != 0) {
@@ -95,7 +112,8 @@ class VideoUpload
     private function getVideoDuration($finalFilePath)
     {
         // get duration for each video
-        return (int)shell_exec("./ffmpeg/ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $finalFilePath");
+        //return (int)shell_exec("ffmpeg/ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $finalFilePath");
+		return (int)shell_exec("$this->ffprobePath -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $finalFilePath");
     }
 
     private function uploadVideoDuration($duration, $videoID)
@@ -163,7 +181,7 @@ class VideoUpload
         // create three thumbnails for an uploaded video
         $tnSize = "1280x720"; // size of a thumbnail
         $tnNum = 3; // number of thumbnails
-        $tnPath = "./uploads/videos/thumbnails"; // path to the thumbnail
+        $tnPath = "uploads/videos/thumbnails"; // path to the thumbnail
         $duration = $this->getVideoDuration($finalFilePath);
         $videoID = $this->conn->lastInsertId(); // get the last generated id of the inserted data in table
         // Insert duration into database before generate thumbnails
@@ -175,7 +193,7 @@ class VideoUpload
             echo "Failed to update video size.";
             return false;
         }
-        if(!$this->uploadKeywords($videoID)){
+        if (!$this->uploadKeywords($videoID)) {
             echo "Failed to insert keywords into database.";
             return false;
         }
@@ -185,7 +203,8 @@ class VideoUpload
             $imagePath = "$tnPath/$videoID-$imageName";
 
             // call ffmpeg
-            $cmd = "./ffmpeg/ffmpeg -i $finalFilePath -ss $interval -s $tnSize -vframes 1 $imagePath 2>&1";
+            //$cmd = "ffmpeg/ffmpeg -i $finalFilePath -ss $interval -s $tnSize -vframes 1 $imagePath 2>&1";
+			$cmd = "$this->ffmpegPath -i $finalFilePath -ss $interval -s $tnSize -vframes 1 $imagePath 2>&1";
             $outPutLog = array();
             exec($cmd, $outPutLog, $returnCode);
             if ($returnCode != 0) {
@@ -193,6 +212,10 @@ class VideoUpload
                 foreach ($outPutLog as $line) {
                     echo $line . "<br />";
                 }
+            }
+            if (!$this->setFilePermission($imagePath)) {
+                echo "Failed to set permission to file " . $imagePath;
+                return false;
             }
             // insert into thumbnails table
             $query = $this->conn->prepare("INSERT INTO thumbnails (video_id, file_path, selected) 
@@ -243,6 +266,11 @@ class VideoUpload
         // convert other video format to mp4 format.
         if (!$this->convertVideoToMP4($filePath, $finalFilePath)) {
             echo "Cannot convert video to .mp4 format";
+            return false;
+        }
+        // set converted video permission to 0644
+        if (!$this->setFilePermission($finalFilePath)) {
+            echo "Failed to set permission to file " . $finalFilePath;
             return false;
         }
         // delete the original video file

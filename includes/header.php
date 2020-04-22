@@ -1,7 +1,9 @@
 <?php
-require_once("./includes/config.php");
-require_once("./includes/class/User.php");
-require_once("./includes/class/Video.php");
+require_once("includes/config.php");
+require_once("includes/class/User.php");
+require_once("includes/class/Video.php");
+require_once("includes/class/MessageHandler.php");
+require_once("includes/class/CommentHandler.php");
 //require_once('./includes/clemsonconfig.php');
 $uid = isset($_SESSION['uid']) ? $_SESSION['uid'] : '';
 $userLoginInObj = new User($conn, $uid);
@@ -21,9 +23,9 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
     <!-- iconfont css -->
-    <link rel="stylesheet" href="/assets/iconfont/iconfont.css">
+    <link rel="stylesheet" href="assets/iconfont/iconfont.css">
     <!-- main style css -->
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -40,26 +42,30 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
     <!-- bootstrap-select js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
     <!-- bootstrap Tempus Dominus -->
-<!--    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
+    <!--    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"/>
     <!-- pagination-->
-    <script src="../assets/js/jquery.twbsPagination.js" type="text/javascript"></script>
+    <script src="assets/js/jquery.twbsPagination.js" type="text/javascript"></script>
     <!-- local js -->
-    <script src="/assets/js/common-action.js" defer></script>
-    <script src="/assets/js/account.js" defer></script>
+    <script src="assets/js/common-action.js" defer></script>
+    <script src="assets/js/account.js" defer></script>
+    <!-- favicon.ico -->
+    <link rel="shortcut icon" href="favicon.ico">
     <title>MeTube</title>
 </head>
 <body>
 <header class="master-head-container">
     <button class="master-head-button" id="menu_button"><i class="iconfont icon-menu"></i></button>
-    <a href="./index.php" class="logo">
+    <a href="index.php" class="logo">
         <i class="iconfont icon-play"></i>
         <span class="logo-name">MeTube</span>
     </a>
     <div class="search-container">
-        <form class="search-form" action="./search.php" method="get">
+        <form class="search-form" action="search.php" method="get">
             <div class="search-box" id="search_box">
                 <input id="search_input" name="search_input" type="search" placeholder="Search">
             </div>
@@ -67,17 +73,29 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
         </form>
     </div>
     <div class="end">
-        <a href="./upload.php" class="master-head-button" id="upload_button"><i class="iconfont icon-upload"></i></a>
-        <button class="master-head-button" id="notification_button"><i class="iconfont icon-notification"></i></button>
+        <a href="upload.php" class="master-head-button" id="upload_button"><i class="iconfont icon-upload"></i></a>
+        <button class="master-head-button" id="mail_notification_button"><i class="iconfont icon-mail"></i></button>
         <?php
         if (!isset($_SESSION['uid'])) {
-            echo "<button class=\"btn btn-primary btn-sm\"  data-toggle=\"modal\" data-target=\"#sign_in_modal\">Sign In</button>";
+            echo "<button class=\"btn btn-primary btn-sm\"  data-toggle=\"modal\" data-target=\"#sign_in_modal\">SIGN IN</button>";
         } else {
             echo "<button class='avatar-button'>
                 <img src='" . $userLoginInObj->getAvatarPath() . "' class='avatar-sm' id='header_avatar'>
               </button>";
         }
         ?>
+    </div>
+    <div class="mail-notification-wrapper" id="mail_notification_popup" style="display: none">
+        <div class="no-new-messages" style="display: none">No new messages</div>
+<!--        --><?php
+//        if (isset($_SESSION['uid'])) {
+//            $messageHandlerObj = new MessageHandler($conn);
+//            $notifications = $messageHandlerObj->getNotificationsByUserId($uid);
+//            foreach ($notifications as $notification) {
+//                echo $notification;
+//            }
+//        }
+//        ?>
     </div>
     <div class="header-popup-wrapper" id="popup" style="display: none">
         <div class="header">
@@ -93,22 +111,23 @@ $usernameLoggedIn = isset($_SESSION['userLoggedIn']) ? $_SESSION['userLoggedIn']
             </div>
         </div>
         <div class="footer">
-            <a href="./profile.php" class="endpoint">
+            <a href="profile.php" class="endpoint">
                 <div class="endpoint-content">
                     <i class="iconfont icon-profile"></i>
                     <p>Profile</p>
                 </div>
             </a>
-            <a href="./submit.php" class="endpoint">
-            <div class="endpoint-content">
-                <i class="iconfont icon-signout"></i>
-                <p>Sign out</p>
-            </div>
+            <a href="submit.php" class="endpoint">
+                <div class="endpoint-content">
+                    <i class="iconfont icon-signout"></i>
+                    <p>Sign out</p>
+                </div>
             </a>
         </div>
     </div>
 </header>
-<?php require_once("./includes/components/sign_up_modal.php"); ?>
-<?php require_once("./includes/components/sign_in_modal.php"); ?>
-<?php require_once("./includes/components/alert_modal.php"); ?>
+<?php require_once("includes/components/sign_up_modal.php"); ?>
+<?php require_once("includes/components/sign_in_modal.php"); ?>
+<?php require_once("includes/components/alert_modal.php"); ?>
+<?php require_once("includes/components/message_dialog_modal.php"); ?>
 

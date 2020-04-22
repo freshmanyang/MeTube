@@ -1,10 +1,10 @@
-<?php require_once("./includes/header.php"); ?>
-<?php require_once("./includes/nav.php"); ?>
-<?php require_once("./includes/class/searchProcessor.php"); ?>
+<?php require_once("includes/header.php"); ?>
+<?php require_once("includes/nav.php"); ?>
+<?php require_once("includes/class/searchProcessor.php"); ?>
 <?php require_once('./includes/class/showAllVideo.php'); ?>
 <?php $search = new searchProcessor($conn); ?>
 <?php $showAllVideo = new showAllVideo($conn); ?>
-<link rel="stylesheet" href="./assets/css/search.css">
+<link rel="stylesheet" href="assets/css/search.css">
 <main class="main-section-container" id="main">
     <div id="hot_keyword"></div>
     <button class="search-show-hide btn btn-outline-dark">Advanced Search</button>
@@ -53,8 +53,8 @@
             <label for="uplodate">Upload Date:</label>
             <!--            <input type="datetime-local" id="uplodate_start" name="uplodate_start" >-->
             <!--            <input type="datetime-local" id="uplodate_end" name="uplodate_end" >-->
-            <input type="datetime-local" id="uplodate_start" name="uplodate_start" value='2020-03-28T08:00'>
-            <input type="datetime-local" id="uplodate_end" name="uplodate_end" value='2020-04-13T08:00'>
+            <input type="datetime-local" id="uplodate_start" name="uplodate_start" value='2020-04-20T08:00'>
+            <input type="datetime-local" id="uplodate_end" name="uplodate_end" value='2020-04-25T08:00'>
         </P>
         <input type="submit" class="btn btn-outline-info" id="advancedSearch" name="advancedSearch">
         <input type="reset" class="btn btn-outline-dark">
@@ -220,6 +220,32 @@
                 });
             }
         });
+        //set search date range one week before to today
+         var currentDate = new Date();
+         var oneWeekAgo="", now="";
+         var stampbefore = currentDate.setDate(currentDate.getDate() - 7);
+         var stamp= new Date().getTime();
+         var date = new Date(stampbefore);
+         var today = new Date(stamp);
+         //+1 means seconds to miliseconds '2020-04-20T08:00'  date=new Date(stampbefore*1000);
+         //get one week ago date
+         var month =date.getMonth() +1;
+         var day = date.getDate();
+         var hours = date.getHours()+1;
+         if (month <10) month = "0" + month;      
+         if (day < 10) day = "0" + day;
+         if (hours < 10) hours = "0" + hours;
+         //get today's date
+         var todaymonth =today.getMonth() +1;
+         var todaydate = today.getDate();
+         var todayhours = today.getHours()+1;
+         if (todaymonth <10) todaymonth = "0" + todaymonth;      
+         if (todaydate < 10) todaydate = "0" + todaydate;
+         if (todayhours < 10) todayhours = "0" + todayhours;
+         oneWeekAgo += date.getFullYear()+'-'+month+'-'+day;
+         now += today.getFullYear()+'-'+todaymonth+'-'+todaydate;
+         document.getElementById("uplodate_start").value = oneWeekAgo+"T"+hours+":00";
+         document.getElementById("uplodate_end").value = now+"T"+todayhours+":00";
     });
 </script>
 </body>
